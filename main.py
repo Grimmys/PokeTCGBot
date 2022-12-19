@@ -1,5 +1,6 @@
-from discord import Intents, Client, app_commands
+from discord import Intents, Client, app_commands, Embed
 import logging
+from pokemontcgsdk import Card
 
 from os import environ as env
 
@@ -13,6 +14,17 @@ tree = app_commands.CommandTree(client)
 @tree.command(name="ping", description="Get bot latency")
 async def ping_command(interaction):
     await interaction.response.send_message(f"My ping is** {round(client.latency * 1000)}ms**")
+
+    
+@tree.command(name="card", description="Get a card with its id")
+async def card(interaction, id: str):
+    try:
+        card = Card.find(id)
+        embed = Embed(title=card.name, description=id, color=0x00ff00)
+        embed.set_image(url=card.images.large if card.images.large else card.images.small)
+        await interaction.response.send_message(embed=embed)
+    except:
+        await interaction.response.send_message(f'Card {id} does not exist.')
 
 
 @client.event
