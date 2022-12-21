@@ -1,25 +1,26 @@
-import discord
-from discord import Intents, Client, app_commands, Embed, SelectOption
+import asyncio
 import logging
+from os import environ as env
 
-from discord.ui import Select, View
+import discord
+from discord import Intents, Embed
+from discord.ext.commands import Bot
 from pokemontcgsdk import Card, PokemonTcgException
 
-from os import environ as env
+from src.commands.settings_command import SettingsCog
 
 intents = Intents.default()
 intents.message_content = True
 
-client = Client(intents=intents)
-tree = app_commands.CommandTree(client)
+bot = Bot(intents=intents, command_prefix="")
 
 
-@tree.command(name="ping", description="Get bot latency")
+@bot.tree.command(name="ping", description="Get bot latency")
 async def ping_command(interaction: discord.Interaction):
-    await interaction.response.send_message(f"My ping is** {round(client.latency * 1000)}ms**")
+    await interaction.response.send_message(f"My ping is** {round(bot.latency * 1000)}ms**")
 
 
-@tree.command(name="card", description="Get a card with its id")
+@bot.tree.command(name="card", description="Get a card with its id")
 async def get_card(interaction: discord.Interaction, card_id: str):
     try:
         card = Card.find(card_id)
@@ -30,41 +31,29 @@ async def get_card(interaction: discord.Interaction, card_id: str):
         await interaction.response.send_message(f'Card {card_id} does not exist.')
 
 
-language_options = [
-    SelectOption(label="Français", emoji="🇫🇷", value="0", description="Changer la langue en français"),
-    SelectOption(label="English", emoji="🇬🇧", value="1", description="Switch to English"),
-]
-
-
-@tree.command(name="settings", description="Change user settings")
-async def settings(interaction: discord.Interaction):
-    embed = Embed(title="---------- Settings ----------", color=0x808080)
-    embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
-    embed.add_field(name="Language", value=":flag_gb: English",
-                    inline=False)
-
-    async def change_language_callback(language_interaction):
-        selected_index = int(select.values[0])
-        await language_interaction.response.send_message(
-            f"Language changed to: {language_options[selected_index].label}", delete_after=2)
-
-    select = Select(
-        placeholder="Change language",
-        options=language_options
-    )
-    select.callback = change_language_callback
-
-    view = View()
-    view.add_item(select)
-
-    await interaction.response.send_message(embed=embed, view=view)
-
-
-@client.event
+@bot.event
 async def on_ready():
-    await tree.sync()
+    await bot.tree.sync()
+
+
+def setup_logs():
+    logger = logging.getLogger('discord')
+    logger.setLevel(logging.DEBUG)
+    handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    logger.addHandler(handler)
+
+
+async def setup_cogs():
+    await bot.add_cog(SettingsCog(bot))
+
+
+async def main():
+    setup_logs()
+    async with bot:
+        bot.loop.create_task(setup_cogs())
+        await bot.start(env.get("DISCORD_TOKEN"))
 
 
 if __name__ == "__main__":
-    handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
-    client.run(env.get("DISCORD_TOKEN"), log_handler=handler, log_level=logging.DEBUG)
+    asyncio.run(main())
