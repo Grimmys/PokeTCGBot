@@ -1,0 +1,14 @@
+{
+  "ping_cmd": {
+    "response_msg": "My ping is"
+  },
+  "settings_cmd": {
+    "title": "Settings",
+    "language_field_name": "Language",
+    "language_changed_response_msg": "Language changed to:",
+    "select_language_placeholder": "Change language"
+  },
+  "get_card_cmd": {
+    "card_not_found": "Card {1} does not exist."
+  }
+}
