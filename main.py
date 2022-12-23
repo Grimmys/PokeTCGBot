@@ -11,6 +11,7 @@ from src.commands.settings_command import SettingsCog
 from src.repositories.in_memory_settings_repository import InMemorySettingsRepository
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
+from src.commands.search_command import SearchCog
 
 intents = Intents.default()
 intents.message_content = True
@@ -66,6 +67,7 @@ def setup_logs():
 
 async def setup_cogs():
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service))
+    await bot.add_cog(SearchCog(bot))
 
 
 async def main():
