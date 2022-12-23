@@ -21,15 +21,16 @@ settings_service = SettingsService(InMemorySettingsRepository())
 localization_service = LocalizationService()
 t = localization_service.get_string
 
+
 @bot.tree.command(name="ping", description="Get bot latency")
-async def ping_command(interaction: discord.Interaction):
+async def ping_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user.id)
     await interaction.response.send_message(
         f"{t(user_language_id, 'ping_cmd.response_msg')} **{round(bot.latency * 1000)}ms**")
 
 
 @bot.tree.command(name="card", description="Get a card with its id")
-async def get_card(interaction: discord.Interaction, card_id: str):
+async def get_card_command(interaction: discord.Interaction, card_id: str) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user.id)
     try:
         card = Card.find(card_id)
@@ -37,7 +38,17 @@ async def get_card(interaction: discord.Interaction, card_id: str):
         embed.set_image(url=card.images.large if card.images.large else card.images.small)
         await interaction.response.send_message(embed=embed)
     except PokemonTcgException:
-        await interaction.response.send_message(t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
+        await interaction.response.send_message(
+            t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
+
+
+@bot.tree.command(name="help", description="Display the list of available commands")
+async def help_command(interaction: discord.Interaction) -> None:
+    user_language_id = settings_service.get_user_language_id(interaction.user.id)
+    embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------", description=t(user_language_id, 'help_cmd.description'), color=0x0000FF)
+    for command in bot.tree.get_commands():
+        embed.add_field(name=command.qualified_name, value=command.description, inline=False)
+    await interaction.response.send_message(embed=embed)
 
 
 @bot.event

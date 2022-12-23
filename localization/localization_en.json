@@ -10,5 +10,9 @@
   },
   "get_card_cmd": {
     "card_not_found": "Card {1} does not exist."
+  },
+  "help_cmd": {
+    "title": "Help",
+    "description": "List of available commands"
   }
 }

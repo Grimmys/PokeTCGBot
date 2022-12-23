@@ -10,5 +10,9 @@
   },
   "get_card_cmd": {
     "card_not_found": "La carte {1} n'existe pas."
+  },
+  "help_cmd": {
+    "title": "Aide", 
+    "description": "Liste des commandes disponibles"
   }
 }

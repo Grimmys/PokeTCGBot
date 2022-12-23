@@ -19,7 +19,7 @@ class SettingsCog(commands.Cog):
         self.t = localization_service.get_string
 
     @app_commands.command(name="settings", description="Change user settings")
-    async def settings(self, interaction: discord.Interaction) -> None:
+    async def settings_command(self, interaction: discord.Interaction) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
 
         embed = Embed(
