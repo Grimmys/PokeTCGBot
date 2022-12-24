@@ -67,13 +67,19 @@ async def setup_cogs():
     await bot.add_cog(BoosterCog(bot, settings_service, localization_service))
 
 
+def read_token_config():
+    with open("config.txt", "r") as config:
+        return config.read()
+
+
 async def main():
     setup_logs()
     async with bot:
         bot.loop.create_task(setup_cogs())
+        discord_token = env.get("DISCORD_TOKEN") if env.get("DISCORD_TOKEN") is not None else read_token_config()
         print("Bot starting")
         try:
-            await bot.start(env.get("DISCORD_TOKEN"))
+            await bot.start(discord_token)
         except Exception as e:
             print(e)
 
