@@ -71,8 +71,11 @@ async def main():
     setup_logs()
     async with bot:
         bot.loop.create_task(setup_cogs())
-        await bot.start(env.get("DISCORD_TOKEN"))
-        print("Bot is ready!")
+        print("Bot starting")
+        try:
+            await bot.start(env.get("DISCORD_TOKEN"))
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":
