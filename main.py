@@ -8,7 +8,7 @@ from discord.ext.commands import Bot
 from pokemontcgsdk import Card, PokemonTcgException
 
 from src.commands.settings_command import SettingsCog
-from src.repositories.in_memory_settings_repository import InMemorySettingsRepository
+from src.repositories.pickle_file_settings_repository import PickleFileSettingsRepository
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 
@@ -16,11 +16,6 @@ intents = Intents.default()
 intents.message_content = True
 
 bot = Bot(intents=intents, command_prefix="")
-
-settings_service = SettingsService(InMemorySettingsRepository())
-localization_service = LocalizationService()
-t = localization_service.get_string
-
 
 @bot.tree.command(name="ping", description="Get bot latency")
 async def ping_command(interaction: discord.Interaction) -> None:
@@ -76,4 +71,7 @@ async def main():
 
 
 if __name__ == "__main__":
+    settings_service = SettingsService(PickleFileSettingsRepository())
+    localization_service = LocalizationService()
+    t = localization_service.get_string
     asyncio.run(main())
