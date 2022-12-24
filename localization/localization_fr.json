@@ -14,5 +14,9 @@
   "help_cmd": {
     "title": "Aide", 
     "description": "Liste des commandes disponibles"
+  },
+  "booster_cmd": {
+    "title": "Booster",
+    "description": "Vous ne conservez pas les cartes malheureusement, ce n'est qu'une démonstration"
   }
 }

@@ -7,6 +7,7 @@ from discord import Intents, Embed
 from discord.ext.commands import Bot
 from pokemontcgsdk import Card, PokemonTcgException
 
+from src.commands.booster_command import BoosterCog
 from src.commands.settings_command import SettingsCog
 from src.repositories.pickle_file_settings_repository import PickleFileSettingsRepository
 from src.services.localization_service import LocalizationService
@@ -16,6 +17,7 @@ intents = Intents.default()
 intents.message_content = True
 
 bot = Bot(intents=intents, command_prefix="")
+
 
 @bot.tree.command(name="ping", description="Get bot latency")
 async def ping_command(interaction: discord.Interaction) -> None:
@@ -40,7 +42,8 @@ async def get_card_command(interaction: discord.Interaction, card_id: str) -> No
 @bot.tree.command(name="help", description="Display the list of available commands")
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user.id)
-    embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------", description=t(user_language_id, 'help_cmd.description'), color=0x0000FF)
+    embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------",
+                  description=t(user_language_id, 'help_cmd.description'), color=0x0000FF)
     for command in bot.tree.get_commands():
         embed.add_field(name=command.qualified_name, value=command.description, inline=False)
     await interaction.response.send_message(embed=embed)
@@ -61,6 +64,7 @@ def setup_logs():
 
 async def setup_cogs():
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service))
+    await bot.add_cog(BoosterCog(bot, settings_service, localization_service))
 
 
 async def main():

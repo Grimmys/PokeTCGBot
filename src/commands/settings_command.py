@@ -27,7 +27,6 @@ class SettingsCog(commands.Cog):
             color=0x808080)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
         current_user_language = LocalizationService.supported_languages[user_language_id]
 
         language_field_id = 0
