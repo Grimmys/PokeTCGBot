@@ -72,6 +72,7 @@ async def main():
     async with bot:
         bot.loop.create_task(setup_cogs())
         await bot.start(env.get("DISCORD_TOKEN"))
+        print("Bot is ready!")
 
 
 if __name__ == "__main__":
