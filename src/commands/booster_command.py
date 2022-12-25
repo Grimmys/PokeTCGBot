@@ -37,6 +37,6 @@ class BoosterCog(commands.Cog):
 
         for _ in range(random.randint(3, 9)):
             drawn_card = random.choice(self.all_card)
-            embed.add_field(name=drawn_card.id, value=drawn_card.name)
+            embed.add_field(name=drawn_card.id, value=f"{drawn_card.name} ({drawn_card.rarity})")
 
         await interaction.response.send_message(embed=embed)
