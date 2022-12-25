@@ -18,5 +18,19 @@
   "booster_cmd": {
     "title": "Booster",
     "description": "You don't keep these cards unfortunately, it's just a demo"
+  },
+  "joke_cmd": {
+    "title": "Pokémon Joke",
+    "description": "Warning: It's not because you don't find the joke funny that it is not a joke",
+    "joke_1": "It is the tale of a wild Pikachu. They run they run they run... And stumbles on a rock, then it becomes a Raichu.",
+    "joke_2": "Arceus appears in front of 3 Pokémons. \n\nPikachu: oh my god it's god! \nSquirtle: Oh great Arceus we are nothing without you!\nMew: Bitch please, you would not exist without me.",
+    "joke_3": "What TV show about dancing do Pokémon love?\n\nDancing with the Staryus.",
+    "joke_4": "What is a Pokémon fan’s favorite place to go in France?\n\nParas!",
+    "joke_5": "I wish you were the ground and I was a Diglett.\n\nThen I could be inside of you.",
+    "joke_6": "You must be a Charmander.\n\nBecause you’re making me hot.",
+    "joke_7": "Is that a Bellsprout in your pants or are you just happy to see me?",
+    "joke_8": "What did Pikachu say when ash fell off a cliff?\n\n “Pikachu”, that’s all he can say.",
+    "joke_9": "What is a Primeape? A Mankey which became an expert in trolling.",
+    "joke_10": "Hey miss you are so fresh.\n\n I wish I could Wobbuffet you!"
   }
 }

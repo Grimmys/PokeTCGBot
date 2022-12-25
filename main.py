@@ -8,6 +8,7 @@ from discord.ext.commands import Bot
 from pokemontcgsdk import Card, PokemonTcgException
 
 from src.commands.booster_command import BoosterCog
+from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.settings_command import SettingsCog
 from src.repositories.pickle_file_settings_repository import PickleFileSettingsRepository
 from src.services.localization_service import LocalizationService
@@ -65,6 +66,7 @@ def setup_logs():
 async def setup_cogs():
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service))
     await bot.add_cog(BoosterCog(bot, settings_service, localization_service))
+    await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
 
 
 def read_token_config():

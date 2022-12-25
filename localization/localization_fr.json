@@ -18,5 +18,19 @@
   "booster_cmd": {
     "title": "Booster",
     "description": "Vous ne conservez pas les cartes malheureusement, ce n'est qu'une démonstration"
+  },
+  "joke_cmd": {
+    "title": "Blague Pokémon",
+    "description": "Avertissement : ce n'est pas parce que vous trouvez la blague pas drôle que ce n'est pas une blague",
+    "joke_1": "C'est l'histoire d'un Pikachu, il cour il cour il cour et trébuche sur une pierre, puis c'est devenu un raichu",
+    "joke_2": "Arceus apparais devant 3 pokémon \n\nPikachu : oh mon dieu c'est dieu ! \nCarapuce : oh grand Arceus on est rien sans vous \nMew : bitch pleaz, tu existerait pas sans moi",
+    "joke_3": "Quelle programme télévisé de danse les Pokémon adorent ?\n\nDanse avec les Stari.",
+    "joke_4": "Quel est l'endroit préféré d'un fan de Pokémon à visiter en France ?\n\nParas !",
+    "joke_5": "Je rêverais que tu sois le sol et que je sois un Taupiqueur.\n\nComme ça je pourrais être à l'intérieur de toi.", 
+    "joke_6": "Tu es probablement un Salamèche.\n\nCar tu me rends chaud.",
+    "joke_7": "Y a-t-il un Chétiflor dans ton pantalon ou es-tu juste content de me voir ?",
+    "joke_8": "Qu'a dit Pikachu quand Sacha est tombé de la falaise ?\n\n “Pikachu”, c'est tout ce qu'il sait dire.",
+    "joke_9": "Qu'est-ce qu'un Colossinge ? Un Férosinge devenu expert en trollage.",
+    "joke_10": "Hé madame t'es trop fraîche, j'ai envie de te Qulbutoker."
   }
 }
