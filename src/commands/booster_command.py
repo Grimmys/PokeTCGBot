@@ -1,3 +1,4 @@
+import pickle
 import random
 
 import discord
@@ -10,21 +11,19 @@ from src.services.settings_service import SettingsService
 
 
 class BoosterCog(commands.Cog):
+    CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
+
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
                  localization_service: LocalizationService) -> None:
         self.bot = bot
         self.settings_service = settings_service
         self.t = localization_service.get_string
         self.sets: list[Set] = Set.all()
-        self.all_card_ids: list[str] = BoosterCog.compute_all_card_ids(self.sets)
+        self.all_card: list[Card] = BoosterCog.compute_all_cards()
 
     @staticmethod
-    def compute_all_card_ids(sets: list[Set]) -> list[str]:
-        ids: list[str] = []
-        for card_set in sets:
-            for index in range(1, card_set.total + 1):
-                ids.append(f"{card_set.id}-{index}")
-        return ids
+    def compute_all_cards() -> list[Card]:
+        return pickle.load(open(BoosterCog.CARDS_PICKLE_FILE_LOCATION, "rb"))
 
     @app_commands.command(name="booster", description="Open a random booster")
     async def booster_command(self, interaction: discord.Interaction) -> None:
@@ -36,8 +35,8 @@ class BoosterCog(commands.Cog):
             color=0x00ff00)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-        drawn_card_id = random.choice(self.all_card_ids)
-        card = Card.find(drawn_card_id)
-        embed.set_image(url=card.images.large if card.images.large else card.images.small)
+        for _ in range(random.randint(3, 9)):
+            drawn_card = random.choice(self.all_card)
+            embed.add_field(name=drawn_card.id, value=drawn_card.name)
 
         await interaction.response.send_message(embed=embed)
