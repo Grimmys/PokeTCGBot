@@ -10,6 +10,7 @@ from pokemontcgsdk import Card, PokemonTcgException
 from src.commands.booster_command import BoosterCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.settings_command import SettingsCog
+from src.commands.user_info_commands import UserInfoCog
 from src.repositories.pickle_file_settings_repository import PickleFileSettingsRepository
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
@@ -66,6 +67,7 @@ def setup_logs():
 async def setup_cogs():
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service))
     await bot.add_cog(BoosterCog(bot, settings_service, localization_service))
+    await bot.add_cog(UserInfoCog(bot, settings_service, localization_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
 
 

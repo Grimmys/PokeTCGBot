@@ -1,4 +1,9 @@
 {
+  "common": {
+    "pokedollar": "Pokémon Dollar",
+    "collection": "collection",
+    "booster": "booster"
+  },
   "ping_cmd": {
     "response_msg": "My ping is"
   },
@@ -18,6 +23,9 @@
   "booster_cmd": {
     "title": "Booster",
     "description": "You don't keep these cards unfortunately, it's just a demo"
+  },
+  "profile_cmd": {
+    "title": "Profile"
   },
   "joke_cmd": {
     "title": "Pokémon Joke",
