@@ -9,7 +9,7 @@ from src.services.settings_service import SettingsService
 
 
 class MiniGamesCog(commands.Cog):
-    NUMBER_OF_JOKES = 20
+    NUMBER_OF_JOKES = 31
 
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
                  localization_service: LocalizationService) -> None:
