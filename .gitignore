@@ -139,3 +139,6 @@ config.txt
 
 # project cached files
 *.p
+
+# server related files
+.local
