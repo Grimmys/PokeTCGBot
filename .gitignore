@@ -117,6 +117,9 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
+# Pycharm project settings
+.idea
+
 # mkdocs documentation
 /site
 
@@ -128,5 +131,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# env file
+# env variables file
 .envrc
+
+# config file
+config.txt
+
+# project cached files
+*.p
