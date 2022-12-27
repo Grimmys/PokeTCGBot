@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import random
 from os import environ as env
 
 import discord
@@ -95,6 +96,8 @@ async def main():
 
 
 if __name__ == "__main__":
+    random.seed()
+
     pickle_file_user_repository = PickleFileUserRepository()
     user_service = UserService(pickle_file_user_repository)
     settings_service = SettingsService(pickle_file_user_repository)
@@ -102,4 +105,5 @@ if __name__ == "__main__":
     type_service = TypeService()
     localization_service = LocalizationService()
     t = localization_service.get_string
+
     asyncio.run(main())
