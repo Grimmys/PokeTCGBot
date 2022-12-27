@@ -3,7 +3,7 @@ from discord import SelectOption, Embed, app_commands
 from discord.ext import commands
 from discord.ui import View, Select
 
-import src.colors as C
+from src.colors import GRAY
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 
@@ -25,7 +25,7 @@ class SettingsCog(commands.Cog):
 
         embed = Embed(
             title=f"---------- {self.t(user_language_id, 'settings_cmd.title')} ----------",
-            color=C.GRAY)
+            color=GRAY)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
         current_user_language = LocalizationService.supported_languages[user_language_id]
