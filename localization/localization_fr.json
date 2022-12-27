@@ -63,6 +63,6 @@
     "joke_31": "Comment appelle-t-on un gros poisson qui se déplace dans tous les sens ?\n\n Un Zigza-thon."
   },
   "search_cmd": {
-    "not_found": "Aucun résultat ne correspont à la recherche `{1}`."
+    "not_found": "Aucun résultat ne correspond à la recherche `{1}`."
   }
 }
