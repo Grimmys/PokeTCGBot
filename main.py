@@ -16,6 +16,7 @@ from src.repositories.pickle_file_user_repository import PickleFileUserRepositor
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
+import src.colors as C
 
 intents = Intents.default()
 intents.message_content = True
@@ -35,7 +36,7 @@ async def get_card_command(interaction: discord.Interaction, card_id: str) -> No
     user_language_id = settings_service.get_user_language_id(interaction.user.id)
     try:
         card = Card.find(card_id)
-        embed = Embed(title=card.name, description=card_id, color=0x00ff00)
+        embed = Embed(title=card.name, description=card_id, color=C.GREEN)
         embed.set_image(url=card.images.large if card.images.large else card.images.small)
         await interaction.response.send_message(embed=embed)
     except PokemonTcgException:
@@ -47,7 +48,7 @@ async def get_card_command(interaction: discord.Interaction, card_id: str) -> No
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user.id)
     embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------",
-                  description=t(user_language_id, 'help_cmd.description'), color=0x0000FF)
+                  description=t(user_language_id, 'help_cmd.description'), color=C.BLUE)
     for command in bot.tree.get_commands():
         embed.add_field(name=command.qualified_name, value=command.description, inline=False)
     await interaction.response.send_message(embed=embed)

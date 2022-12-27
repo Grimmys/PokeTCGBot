@@ -8,6 +8,7 @@ from pokemontcgsdk import Card, Set
 
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
+import src.colors as C
 
 
 class BoosterCog(commands.Cog):
@@ -32,7 +33,7 @@ class BoosterCog(commands.Cog):
         embed = Embed(
             title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
             description=self.t(user_language_id, 'booster_cmd.description'),
-            color=0x00ff00)
+            color=C.GREEN)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
         for _ in range(random.randint(3, 9)):
