@@ -5,18 +5,30 @@ from discord.ui import View, Button
 from pokemontcgsdk import Card
 
 from src.components.paginated_embed import PaginatedEmbed
+from src.services.localization_service import LocalizationService
+from src.services.settings_service import SettingsService
 
 SEARCH_PAGE_SIZE = 10
 
 
 class SearchCog(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: commands.Bot,  settings_service: SettingsService,
+                 localization_service: LocalizationService) -> None:
         self.bot = bot
+        self.settings_service = settings_service
+        self.t = localization_service.get_string
 
     @app_commands.command(name="search", description="Search card with several parameters")
     async def search_command(self, interaction: discord.Interaction, content: str) -> None:
+        user_language_id = self.settings_service.get_user_language_id(
+            interaction.user.id)
         all_cards = [{"name": card.id, "value": card.name}
                      for card in Card.where(q=f"name:*{content}*")]
+
+        if len(all_cards) == 0:
+            await interaction.response.send_message(self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
+            return
+
         embed = PaginatedEmbed(all_cards, SEARCH_PAGE_SIZE)
         view = View()
 

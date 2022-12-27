@@ -61,5 +61,8 @@
     "joke_29": "Comment appelle-t-on un enfant qui joue au Pôle Nord ?\n\n Un môme arctique.",
     "joke_30": "- Alors les enfants, c'est quoi votre Régi préféré ? \n- Régisteel !\n- Moi c'est Régirock !\n- Régice ! C'est le meilleur !!\n- Et toi c'est lequel ? \n- Souriez, Régilait !",
     "joke_31": "Comment appelle-t-on un gros poisson qui se déplace dans tous les sens ?\n\n Un Zigza-thon."
+  },
+  "search_cmd": {
+    "not_found": "Aucun résultat ne correspont à la recherche `{1}`."
   }
 }

@@ -61,5 +61,8 @@
     "joke_29": "Which Pokémon could also be a pirate?\n\n Arrrrrr-ceus.",
     "joke_30": "What’s Wailord’s favorite TV show?\n\n Whale of Fortune.",
     "joke_31": "What do you call a scout that likes to chew gum while climbing Pikes Peak?\n\n A Peak-A-Chewer!"
+  },
+  "search_cmd": {
+    "not_found": "No result for search `{1}`."
   }
 }

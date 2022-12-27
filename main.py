@@ -70,7 +70,7 @@ async def setup_cogs():
     await bot.add_cog(BoosterCog(bot, settings_service, localization_service))
     await bot.add_cog(UserInfoCog(bot, settings_service, localization_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
-    await bot.add_cog(SearchCog(bot))
+    await bot.add_cog(SearchCog(bot, settings_service, localization_service))
 
 
 def read_token_config():
