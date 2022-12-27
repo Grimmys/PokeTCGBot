@@ -11,10 +11,11 @@ from src.commands.booster_command import BoosterCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.settings_command import SettingsCog
 from src.commands.user_info_commands import UserInfoCog
+from src.commands.search_command import SearchCog
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
-from src.commands.search_command import SearchCog
+from src.services.user_service import UserService
 
 intents = Intents.default()
 intents.message_content = True
@@ -68,9 +69,9 @@ def setup_logs():
 async def setup_cogs():
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service))
     await bot.add_cog(BoosterCog(bot, settings_service, localization_service))
-    await bot.add_cog(UserInfoCog(bot, settings_service, localization_service))
-    await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
+    await bot.add_cog(UserInfoCog(bot, user_service, localization_service))
     await bot.add_cog(SearchCog(bot, settings_service, localization_service))
+    await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
 
 
 def read_token_config():
@@ -91,7 +92,9 @@ async def main():
 
 
 if __name__ == "__main__":
-    settings_service = SettingsService(PickleFileUserRepository())
+    pickle_file_user_repository = PickleFileUserRepository()
+    user_service = UserService(pickle_file_user_repository)
+    settings_service = SettingsService(pickle_file_user_repository)
     localization_service = LocalizationService()
     t = localization_service.get_string
     asyncio.run(main())
