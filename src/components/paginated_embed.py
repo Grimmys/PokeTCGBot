@@ -1,7 +1,7 @@
 from discord import Embed
 
 
-class PaginatedEmbed():
+class PaginatedEmbed:
     def __init__(self, content: list[dict[str, str]], page_size: int = 1, inline: bool = False) -> None:
         self.current_page = 0
         self.embed = Embed()
