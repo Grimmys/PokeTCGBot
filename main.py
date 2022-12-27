@@ -14,6 +14,7 @@ from src.commands.user_info_commands import UserInfoCog
 from src.commands.search_command import SearchCog
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.localization_service import LocalizationService
+from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
 from src.colors import GREEN, BLUE
@@ -69,7 +70,7 @@ def setup_logs():
 
 async def setup_cogs():
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service))
-    await bot.add_cog(BoosterCog(bot, settings_service, localization_service))
+    await bot.add_cog(BoosterCog(bot, settings_service, localization_service, rarity_service))
     await bot.add_cog(UserInfoCog(bot, user_service, localization_service))
     await bot.add_cog(SearchCog(bot, settings_service, localization_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
@@ -96,6 +97,7 @@ if __name__ == "__main__":
     pickle_file_user_repository = PickleFileUserRepository()
     user_service = UserService(pickle_file_user_repository)
     settings_service = SettingsService(pickle_file_user_repository)
+    rarity_service = RarityService()
     localization_service = LocalizationService()
     t = localization_service.get_string
     asyncio.run(main())

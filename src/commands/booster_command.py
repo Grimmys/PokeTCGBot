@@ -7,6 +7,7 @@ from discord.ext import commands
 from pokemontcgsdk import Card, Set
 
 from src.services.localization_service import LocalizationService
+from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
 from src.colors import GREEN
 
@@ -15,10 +16,11 @@ class BoosterCog(commands.Cog):
     CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
 
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
-                 localization_service: LocalizationService) -> None:
+                 localization_service: LocalizationService, rarity_service: RarityService) -> None:
         self.bot = bot
         self.settings_service = settings_service
         self.t = localization_service.get_string
+        self.rarity_service = rarity_service
         self.sets: list[Set] = Set.all()
         self.all_card: list[Card] = BoosterCog.compute_all_cards()
 
@@ -38,6 +40,7 @@ class BoosterCog(commands.Cog):
 
         for _ in range(random.randint(3, 9)):
             drawn_card = random.choice(self.all_card)
-            embed.add_field(name=drawn_card.id, value=f"{drawn_card.name} ({drawn_card.rarity}) - {drawn_card.set.name}")
+            rarity_emoji = "" if (rarity := self.rarity_service.get_rarity(drawn_card.rarity.lower())) is None else rarity.emoji
+            embed.add_field(name=drawn_card.id, value=f"{drawn_card.name}\n `{drawn_card.rarity} {rarity_emoji}`\n [{drawn_card.set.name}]") 
 
         await interaction.response.send_message(embed=embed)
