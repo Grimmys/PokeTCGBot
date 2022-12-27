@@ -25,16 +25,34 @@ class BoosterCog(commands.Cog):
         self.rarity_service = rarity_service
         self.type_service = type_service
         self.sets: list[Set] = Set.all()
-        self.all_card: list[Card] = BoosterCog.compute_all_cards()
+        self.cards_by_rarity: dict[str, list[Card]] = BoosterCog._compute_all_cards()
 
     @staticmethod
-    def compute_all_cards() -> list[Card]:
-        return pickle.load(open(BoosterCog.CARDS_PICKLE_FILE_LOCATION, "rb"))
+    def _compute_all_cards() -> dict[str, list[Card]]:
+        cards: list[Card] = pickle.load(open(BoosterCog.CARDS_PICKLE_FILE_LOCATION, "rb"))
+        # TODO: find out why some cards don't have any rarity and define what should be the default rarity for them
+        cards_with_rarity = list(filter(lambda card: card.rarity is not None, cards))
+        try:
+            return {
+                "common": list(filter(lambda card: card.rarity.lower() == "common", cards_with_rarity)),
+                "uncommon": list(filter(lambda card: card.rarity.lower() == "uncommon", cards_with_rarity)),
+                "others": list(
+                    filter(lambda card: card.rarity.lower() not in ("common", "uncommon"), cards_with_rarity))
+            }
+        except Exception as e:
+            print(e)
 
     def _get_card_type_display(self, card: Card) -> str:
         if card.types is None or len(card.types) == 0:
             return ""
         return f"[{self.type_service.get_type(card.types[0].lower()).emoji}]"
+
+    def _display_card_in_embed(self, card: Card, embed: Embed):
+        rarity_emoji = "" if (rarity := self.rarity_service.get_rarity(
+            card.rarity.lower())) is None else rarity.emoji
+        type_emoji = self._get_card_type_display(card)
+        embed.add_field(name=card.id,
+                        value=f"{card.name} {type_emoji}\n `{card.rarity} {rarity_emoji}`\n ~ {card.set.name} ~")
 
     @app_commands.command(name="booster", description="Open a random booster")
     async def booster_command(self, interaction: discord.Interaction) -> None:
@@ -46,12 +64,15 @@ class BoosterCog(commands.Cog):
             color=GREEN)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-        for _ in range(random.randint(3, 9)):
-            drawn_card = random.choice(self.all_card)
-            rarity_emoji = "" if (rarity := self.rarity_service.get_rarity(
-                drawn_card.rarity.lower())) is None else rarity.emoji
-            type_emoji = self._get_card_type_display(drawn_card)
-            embed.add_field(name=drawn_card.id,
-                            value=f"{drawn_card.name} {type_emoji}\n `{drawn_card.rarity} {rarity_emoji}`\n ~ {drawn_card.set.name} ~")
+        # Draw the 5 common cards
+        for _ in range(5):
+            self._display_card_in_embed(random.choice(self.cards_by_rarity["common"]), embed)
+
+        # Draw the 3 uncommon cards
+        for _ in range(3):
+            self._display_card_in_embed(random.choice(self.cards_by_rarity["uncommon"]), embed)
+
+        # Draw the rare or higher card
+        self._display_card_in_embed(random.choice(self.cards_by_rarity["others"]), embed)
 
         await interaction.response.send_message(embed=embed)
