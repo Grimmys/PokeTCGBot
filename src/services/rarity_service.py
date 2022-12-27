@@ -14,11 +14,11 @@ class RarityService:
             "rare holo ex": RarityEntity("rare holo ex", "🌟"),
             "rare holo gx": RarityEntity("rare holo gx", "🌟"),
             "rare shiny": RarityEntity("rare shiny", "✨"),
-            "rare ultra": RarityEntity("rare ultra", "🔥"),
-            "rare holo lv.x": RarityEntity("rare holo lv.x", "🔥"),
+            "rare ultra": RarityEntity("rare ultra", "💥"),
+            "rare holo lv.x": RarityEntity("rare holo lv.x", "💥"),
             "rare holo vmax": RarityEntity("rare holo vmax", "🦖"),
-            "rare rainbow": RarityEntity("rare rainbow", "💥"),
-            "rare secret": RarityEntity("rare secret", "💥"),
+            "rare rainbow": RarityEntity("rare rainbow", "💎"),
+            "rare secret": RarityEntity("rare secret", "💎"),
             "legend": RarityEntity("legend", "📜"),
             "promo": RarityEntity("promo", "💯")
         }
