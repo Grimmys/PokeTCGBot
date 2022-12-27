@@ -7,8 +7,11 @@ from discord import Intents, Embed
 from discord.ext.commands import Bot
 from pokemontcgsdk import Card, PokemonTcgException
 
+from src.commands.booster_command import BoosterCog
+from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.settings_command import SettingsCog
-from src.repositories.in_memory_settings_repository import InMemorySettingsRepository
+from src.commands.user_info_commands import UserInfoCog
+from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.commands.search_command import SearchCog
@@ -17,10 +20,6 @@ intents = Intents.default()
 intents.message_content = True
 
 bot = Bot(intents=intents, command_prefix="")
-
-settings_service = SettingsService(InMemorySettingsRepository())
-localization_service = LocalizationService()
-t = localization_service.get_string
 
 
 @bot.tree.command(name="ping", description="Get bot latency")
@@ -46,7 +45,8 @@ async def get_card_command(interaction: discord.Interaction, card_id: str) -> No
 @bot.tree.command(name="help", description="Display the list of available commands")
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user.id)
-    embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------", description=t(user_language_id, 'help_cmd.description'), color=0x0000FF)
+    embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------",
+                  description=t(user_language_id, 'help_cmd.description'), color=0x0000FF)
     for command in bot.tree.get_commands():
         embed.add_field(name=command.qualified_name, value=command.description, inline=False)
     await interaction.response.send_message(embed=embed)
@@ -60,22 +60,38 @@ async def on_ready():
 def setup_logs():
     logger = logging.getLogger('discord')
     logger.setLevel(logging.DEBUG)
-    handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+    handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
 
 
 async def setup_cogs():
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service))
+    await bot.add_cog(BoosterCog(bot, settings_service, localization_service))
+    await bot.add_cog(UserInfoCog(bot, settings_service, localization_service))
+    await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
     await bot.add_cog(SearchCog(bot))
+
+
+def read_token_config():
+    with open("config.txt", "r") as config:
+        return config.read()
 
 
 async def main():
     setup_logs()
     async with bot:
         bot.loop.create_task(setup_cogs())
-        await bot.start(env.get("DISCORD_TOKEN"))
+        discord_token = env.get("DISCORD_TOKEN") if env.get("DISCORD_TOKEN") is not None else read_token_config()
+        print("Bot starting")
+        try:
+            await bot.start(discord_token)
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":
+    settings_service = SettingsService(PickleFileUserRepository())
+    localization_service = LocalizationService()
+    t = localization_service.get_string
     asyncio.run(main())

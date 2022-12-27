@@ -1,4 +1,9 @@
 {
+  "common": {
+    "pokedollar": "Pokémon Dollar",
+    "collection": "collection",
+    "booster": "booster"
+  },
   "ping_cmd": {
     "response_msg": "My ping is"
   },
@@ -14,5 +19,47 @@
   "help_cmd": {
     "title": "Help",
     "description": "List of available commands"
+  },
+  "booster_cmd": {
+    "title": "Booster",
+    "description": "You don't keep these cards unfortunately, it's just a demo"
+  },
+  "profile_cmd": {
+    "title": "Profile"
+  },
+  "joke_cmd": {
+    "title": "Pokémon Joke",
+    "description": "Warning: It's not because you don't find the joke funny that it is not a joke",
+    "joke_1": "It is the tale of a wild Pikachu. They run they run they run... And stumbles on a rock, then it becomes a Raichu.",
+    "joke_2": "Arceus appears in front of 3 Pokémons. \n\nPikachu: oh my god it's god! \nSquirtle: Oh great Arceus we are nothing without you!\nMew: Bitch please, you would not exist without me.",
+    "joke_3": "What TV show about dancing do Pokémon love?\n\nDancing with the Staryus.",
+    "joke_4": "What is a Pokémon fan’s favorite place to go in France?\n\nParas!",
+    "joke_5": "I wish you were the ground and I was a Diglett.\n\nThen I could be inside of you.",
+    "joke_6": "You must be a Charmander.\n\nBecause you’re making me hot.",
+    "joke_7": "Is that a Bellsprout in your pants or are you just happy to see me?",
+    "joke_8": "What did Pikachu say when ash fell off a cliff?\n\n “Pikachu”, that’s all he can say.",
+    "joke_9": "What is a Primeape? A Mankey which became an expert in trolling.",
+    "joke_10": "Hey miss you are so fresh.\n\n I wish I could Wobbuffet you!",
+    "joke_11": "What noise is a firearm making ? Rattata.",
+    "joke_12": "What does a Pokémon player take to not stink? Some Deoxys.",
+    "joke_13": "Go make your Jynx on my Jigglypuff.",
+    "joke_14": "Do you want to see my Poké Balls?",
+    "joke_15": "It's not because of the team that I'm called the Rocket",
+    "joke_16": "Hi, do you want to see my Weedle?",
+    "joke_17": "When I see you it's Hydro Pump in my cheeky.",
+    "joke_18": "I overheard someone telling Pokémon jokes, but I couldn't catch 'em all.",
+    "joke_19": "According to recent surveys, fans of Pokémon love electric type the most. These results are shocking.",
+    "joke_20": "Why should you always bring Charmander camping?\n\nHe's the fire starter.", 
+    "joke_21": "How is the milk of a drugged Miltank called?\n\nWeewee Milk.",
+    "joke_22": "What is the favorite color of a Meowth?\n\nCyan, because they wish to be a Per-sian.",
+    "joke_23": "What does one Geodude say to the other Geodude?\n\n Let’s rock!",
+    "joke_24": "What appears over Ash’s head when he gets an idea?\n\n A LightBulbasaur.",
+    "joke_25": "What do you call a Pokemon that wants to be a police officer?\n\n Magic-cop!",
+    "joke_26": "How do you get Pikachu on a bus?\n\nPoke him on!",
+    "joke_27": "Why are Zigzagoon lying during mid-day ?\n\nBecause they want to evolve into Li-noone.",
+    "joke_28": "- Hello Sir, do you have the collector figurine of Green Lanturn ? \n- Well no, sorry but it is out of Stock.",
+    "joke_29": "Which Pokémon could also be a pirate?\n\n Arrrrrr-ceus.",
+    "joke_30": "What’s Wailord’s favorite TV show?\n\n Whale of Fortune.",
+    "joke_31": "What do you call a scout that likes to chew gum while climbing Pikes Peak?\n\n A Peak-A-Chewer!"
   }
 }
