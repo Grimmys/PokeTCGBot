@@ -11,7 +11,7 @@ from src.commands.booster_command import BoosterCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.settings_command import SettingsCog
 from src.commands.user_info_commands import UserInfoCog
-from src.repositories.pickle_file_settings_repository import PickleFileSettingsRepository
+from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 
@@ -89,7 +89,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    settings_service = SettingsService(PickleFileSettingsRepository())
+    settings_service = SettingsService(PickleFileUserRepository())
     localization_service = LocalizationService()
     t = localization_service.get_string
     asyncio.run(main())
