@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
+import src.colors as C
 
 
 class UserInfoCog(commands.Cog):
@@ -21,7 +22,7 @@ class UserInfoCog(commands.Cog):
 
         embed = Embed(
             title=f"---------- {self.t(user_language_id, 'profile_cmd.title')} ----------",
-            color=0xffff00)
+            color=C.YELLOW)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
         embed.add_field(name=f"{self.t(user_language_id, 'common.pokedollar')}s",

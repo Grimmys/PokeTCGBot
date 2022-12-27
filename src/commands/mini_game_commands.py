@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
+import src.colors as C
 
 
 class MiniGamesCog(commands.Cog):
@@ -28,6 +29,6 @@ class MiniGamesCog(commands.Cog):
         embed = Embed(
             title=f"---------- {self.t(user_language_id, 'joke_cmd.title')} ----------",
             description=content,
-            color=0xa020f0)
+            color=C.MAGENTA)
 
         await interaction.response.send_message(embed=embed)
