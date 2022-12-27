@@ -120,6 +120,9 @@ venv.bak/
 # Pycharm project settings
 .idea
 
+# VSCode project settings
+.vscode
+
 # mkdocs documentation
 /site
 
@@ -131,9 +134,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# env file
-.envrc
-.vscode/
 # env variables file
 .envrc
 
