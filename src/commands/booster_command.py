@@ -12,6 +12,21 @@ from src.services.settings_service import SettingsService
 from src.colors import GREEN
 from src.services.type_service import TypeService
 
+TIER_0_RARITIES = {"Rare"}
+TIER_1_RARITIES = {"Rare Holo", "Promo"}
+TIER_2_RARITIES = {"Rare Holo EX", "Rare Holo GX", "Rare Holo V", "Rare BREAK"}
+TIER_3_RARITIES = {"Radiant Rare", "Rare Holo LV.C", "Rare Holo VMAX", "Rare ACE", "Rare Ultra", "Amazing Rare",
+                   "Rare Prime", "Rare Prism Star", "Rare Shining", "Rare Shiny"}
+TIER_4_RARITIES = {"LEGEND", "Rare Holo Star", "Rare Rainbow", "Rare Secret", "Rare Shiny GX", "V-UNION",
+                   "Rare Holo VSTAR"}
+TIER_DROP_RATES = [
+    40,
+    30,
+    20,
+    8,
+    2,
+]
+
 
 class BoosterCog(commands.Cog):
     CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
@@ -31,8 +46,7 @@ class BoosterCog(commands.Cog):
     def _filter_cards_for_rarities(cards: list[Card], rarities: set[str]) -> list[Card]:
         filtered_cards = []
         for card in cards:
-            rarity = card.rarity.lower()
-            if rarity in rarities:
+            if card.rarity in rarities:
                 filtered_cards.append(card)
         return filtered_cards
 
@@ -42,22 +56,13 @@ class BoosterCog(commands.Cog):
         # TODO: find out why some cards don't have any rarity and define what should be the default rarity for them
         cards_with_rarity = list(filter(lambda card: card.rarity is not None, cards))
         return {
-            "common": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"common"}),
-            "uncommon": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"uncommon"}),
-            "tier_0": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"rare"}),
-            "tier_1": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"rare holo", "promo"}),
-            "tier_2": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"rare holo ex", "rare holo gx",
-                                                                                "rare holo v", "rare break"}),
-            "tier_3": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"radiant rare", "rare holo lv.x",
-                                                                                "rare holo vmax", "rare ace",
-                                                                                "rare ultra",
-                                                                                "amazing rare", "rare prime",
-                                                                                "rare prism rare",
-                                                                                "rare shining", "rare shiny"}),
-            "tier_4": BoosterCog._filter_cards_for_rarities(cards_with_rarity,
-                                                            {"legend", "rare holo star", "rare rainbow",
-                                                             "rare secret", "rare shiny gx", "v-union",
-                                                             "rare holo vstar"})
+            "common": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"Common"}),
+            "uncommon": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"Uncommon"}),
+            "tier_0": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_0_RARITIES),
+            "tier_1": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_1_RARITIES),
+            "tier_2": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_2_RARITIES),
+            "tier_3": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_3_RARITIES),
+            "tier_4": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_4_RARITIES)
         }
 
     def _get_card_type_display(self, card: Card) -> str:
@@ -73,20 +78,12 @@ class BoosterCog(commands.Cog):
                         value=f"{card.name} {type_emoji}\n `{card.rarity} {rarity_emoji}`\n ~ {card.set.name} ~")
 
     def _draw_rare_card(self) -> Card:
-        card_tier = ""
-        drop_number = random.random()
-        if drop_number < 0.4:
-            card_tier = "tier_0"
-        elif drop_number < 0.7:
-            card_tier = "tier_1"
-        elif drop_number < 0.9:
-            card_tier = "tier_2"
-        elif drop_number < 0.98:
-            card_tier = "tier_3"
-        elif drop_number < 1:
-            card_tier = "tier_4"
-
+        card_tier = random.choices(["tier_0", "tier_1", "tier_2", "tier_3", "tier_4"], weights=TIER_DROP_RATES)[0]
         return random.choice(self.cards_by_rarity[card_tier])
+
+    @staticmethod
+    def _formatted_tier_list(rarity_tier: set[str]) -> str:
+        return "\n* ".join(rarity_tier)
 
     @app_commands.command(name="booster", description="Open a random booster")
     async def booster_command(self, interaction: discord.Interaction) -> None:
@@ -108,5 +105,27 @@ class BoosterCog(commands.Cog):
 
         # Draw the rare or higher card
         self._display_card_in_embed(self._draw_rare_card(), embed)
+
+        await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="drop_rates",
+                          description="Get the probability for each tier of cards to be in a booster")
+    async def drop_rates_command(self, interaction: discord.Interaction) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+
+        embed = Embed(
+            title=f"---------- {self.t(user_language_id, 'drop_rates_cmd.title')} ----------",
+            description=self.t(user_language_id, 'drop_rates_cmd.description'),
+            color=GREEN
+        )
+
+        embed.add_field(name=f"Tier 0 - {TIER_DROP_RATES[0]}%".ljust(20, ""),
+                        value=f"* {BoosterCog._formatted_tier_list(TIER_0_RARITIES)}")
+        embed.add_field(name=f"Tier 1 - {TIER_DROP_RATES[1]}%".ljust(20, ""),
+                        value=f"* {BoosterCog._formatted_tier_list(TIER_1_RARITIES)}")
+        embed.add_field(name=f"Tier 2 - {TIER_DROP_RATES[2]}%".ljust(5, ""),
+                        value=f"* {BoosterCog._formatted_tier_list(TIER_2_RARITIES)}")
+        embed.add_field(name=f"Tier 3 - {TIER_DROP_RATES[3]}%".ljust(5, ""), value=f"* {BoosterCog._formatted_tier_list(TIER_3_RARITIES)}")
+        embed.add_field(name=f"Tier 4 - {TIER_DROP_RATES[4]}%".ljust(5, ""), value=f"* {BoosterCog._formatted_tier_list(TIER_4_RARITIES)}")
 
         await interaction.response.send_message(embed=embed)

@@ -24,6 +24,10 @@
     "title": "Booster",
     "description": "Vous ne conservez pas les cartes malheureusement, ce n'est qu'une démonstration"
   },
+  "drop_rates_cmd": {
+    "title": "Taux de drop",
+    "description": "Taux pour la dernière carte d'un booster de base"
+  },
   "profile_cmd": {
     "title": "Profil"
   },

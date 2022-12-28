@@ -24,6 +24,10 @@
     "title": "Booster",
     "description": "You don't keep these cards unfortunately, it's just a demo"
   },
+  "drop_rates_cmd": {
+    "title": "Drop rates",
+    "description": "Drop for the last card of a basic booster"
+  },
   "profile_cmd": {
     "title": "Profile"
   },
