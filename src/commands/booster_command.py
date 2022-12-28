@@ -14,7 +14,7 @@ from src.colors import GREEN
 from src.services.type_service import TypeService
 
 TIER_0_RARITIES = {"Rare"}
-TIER_1_RARITIES = {"Rare Holo", "Promo"}
+TIER_1_RARITIES = {"Rare Holo"}
 TIER_2_RARITIES = {"Rare Holo EX", "Rare Holo GX", "Rare Holo V", "Rare BREAK"}
 TIER_3_RARITIES = {"Radiant Rare", "Rare Holo LV.C", "Rare Holo VMAX", "Rare ACE", "Rare Ultra", "Amazing Rare",
                    "Rare Prime", "Rare Prism Star", "Rare Shining", "Rare Shiny"}
