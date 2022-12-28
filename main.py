@@ -8,6 +8,7 @@ from discord import Intents, Embed
 from discord.ext.commands import Bot
 from pokemontcgsdk import Card, PokemonTcgException
 
+import config
 from src.commands.booster_command import BoosterCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.settings_command import SettingsCog
@@ -78,16 +79,11 @@ async def setup_cogs():
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
 
 
-def read_token_config():
-    with open("config.txt", "r") as config:
-        return config.read()
-
-
 async def main():
     setup_logs()
     async with bot:
         bot.loop.create_task(setup_cogs())
-        discord_token = env.get("DISCORD_TOKEN") if env.get("DISCORD_TOKEN") is not None else read_token_config()
+        discord_token = env.get("DISCORD_TOKEN") if env.get("DISCORD_TOKEN") is not None else config.DISCORD_TOKEN
         print("Bot starting")
         try:
             await bot.start(discord_token)

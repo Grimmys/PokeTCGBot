@@ -6,6 +6,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from pokemontcgsdk import Card, Set
 
+import config
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
@@ -100,8 +101,13 @@ class BoosterCog(commands.Cog):
             self._display_card_in_embed(random.choice(self.cards_by_rarity["common"]), embed)
 
         # Draw the 3 uncommon cards
+        uncommon_upgrade_triggered = False
         for _ in range(3):
-            self._display_card_in_embed(random.choice(self.cards_by_rarity["uncommon"]), embed)
+            if not uncommon_upgrade_triggered and random.random() < config.UNCOMMON_UPGRADE_RATE:
+                uncommon_upgrade_triggered = True
+                self._display_card_in_embed(self._draw_rare_card(), embed)
+            else:
+                self._display_card_in_embed(random.choice(self.cards_by_rarity["uncommon"]), embed)
 
         # Draw the rare or higher card
         self._display_card_in_embed(self._draw_rare_card(), embed)

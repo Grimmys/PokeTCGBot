@@ -10,7 +10,7 @@
   "settings_cmd": {
     "title": "Préférences",
     "language_field_name": "Langue",
-    "language_changed_response_msg": "Nouvelle langue configurée:",
+    "language_changed_response_msg": "Nouvelle langue configurée :",
     "select_language_placeholder": "Changer la langue"
   },
   "get_card_cmd": {

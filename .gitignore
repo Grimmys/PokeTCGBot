@@ -138,7 +138,7 @@ dmypy.json
 .envrc
 
 # config file
-config.txt
+config.py
 
 # project cached files
 *.p
