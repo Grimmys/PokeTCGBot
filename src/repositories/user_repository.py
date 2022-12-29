@@ -17,3 +17,7 @@ class UserRepository(ABC):
     @abstractmethod
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         pass
+
+    @abstractmethod
+    def change_basic_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        pass

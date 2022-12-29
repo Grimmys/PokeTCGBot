@@ -22,3 +22,7 @@ class InMemoryUserRepository(UserRepository):
             self._user_entities_by_id[user_id].settings.language_id = new_language_id
             return True
         return False
+
+    def change_basic_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        # TODO: implementation
+        pass

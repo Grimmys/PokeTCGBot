@@ -43,3 +43,11 @@ class PickleFileUserRepository(UserRepository):
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
+
+    def change_basic_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].cooldowns.timestamp_for_next_basic_booster = updated_timestamp_for_cooldown
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
