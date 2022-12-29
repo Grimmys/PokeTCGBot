@@ -112,7 +112,9 @@ class BoosterCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_basic_booster > time.time():
-            await interaction.response.send_message(f"Next free booster: <t:{user.cooldowns.timestamp_for_next_basic_booster}:R>")
+            discord_formatted_timestamp = f"<t:{user.cooldowns.timestamp_for_next_basic_booster}:R>"
+            await interaction.response.send_message(
+                f"{self.t(user_language_id, 'booster_cmd.cooldown')} {discord_formatted_timestamp}")
         else:
             self.user_service.reset_basic_booster_cooldown(user.id)
             embed = Embed(

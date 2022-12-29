@@ -22,7 +22,8 @@
   },
   "booster_cmd": {
     "title": "Booster",
-    "description": "You don't keep these cards unfortunately, it's just a demo"
+    "description": "You don't keep these cards unfortunately, it's just a demo",
+    "cooldown": "Next free booster:"
   },
   "drop_rates_cmd": {
     "title": "Drop rates",
