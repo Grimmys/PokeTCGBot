@@ -1,5 +1,6 @@
 import pickle
 import random
+import time
 
 import discord
 from discord import Embed, app_commands
@@ -12,6 +13,7 @@ from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
 from src.colors import GREEN
 from src.services.type_service import TypeService
+from src.services.user_service import UserService
 
 TIER_0_RARITIES = {"Rare"}
 TIER_1_RARITIES = {"Rare Holo"}
@@ -33,11 +35,12 @@ class BoosterCog(commands.Cog):
     CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
 
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
-                 localization_service: LocalizationService, rarity_service: RarityService,
+                 localization_service: LocalizationService, user_service: UserService, rarity_service: RarityService,
                  type_service: TypeService) -> None:
         self.bot = bot
         self.settings_service = settings_service
         self.t = localization_service.get_string
+        self.user_service = user_service
         self.rarity_service = rarity_service
         self.type_service = type_service
         self.sets: list[Set] = Set.all()
@@ -86,16 +89,7 @@ class BoosterCog(commands.Cog):
     def _formatted_tier_list(rarity_tier: set[str]) -> str:
         return "\n* ".join(rarity_tier)
 
-    @app_commands.command(name="booster", description="Open a random booster")
-    async def booster_command(self, interaction: discord.Interaction) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
-
-        embed = Embed(
-            title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
-            description=self.t(user_language_id, 'booster_cmd.description'),
-            color=GREEN)
-        embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
-
+    def _generate_booster_cards(self, embed):
         # Draw the 5 common cards
         for _ in range(5):
             self._display_card_in_embed(random.choice(self.cards_by_rarity["common"]), embed)
@@ -112,7 +106,23 @@ class BoosterCog(commands.Cog):
         # Draw the rare or higher card
         self._display_card_in_embed(self._draw_rare_card(), embed)
 
-        await interaction.response.send_message(embed=embed)
+    @app_commands.command(name="booster", description="Open a basic booster")
+    async def booster_command(self, interaction: discord.Interaction) -> None:
+        user = self.user_service.get_user(interaction.user.id)
+        user_language_id = user.settings.language_id
+
+        if user.cooldowns.timestamp_for_next_basic_booster > time.time():
+            await interaction.response.send_message("Not now!")
+        else:
+            embed = Embed(
+                title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                description=self.t(user_language_id, 'booster_cmd.description'),
+                color=GREEN)
+            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+
+            self._generate_booster_cards(embed)
+
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="drop_rates",
                           description="Get the probability for each tier of cards to be in a booster")
@@ -131,7 +141,9 @@ class BoosterCog(commands.Cog):
                         value=f"* {BoosterCog._formatted_tier_list(TIER_1_RARITIES)}")
         embed.add_field(name=f"Tier 2 - {TIER_DROP_RATES[2]}%".ljust(5, ""),
                         value=f"* {BoosterCog._formatted_tier_list(TIER_2_RARITIES)}")
-        embed.add_field(name=f"Tier 3 - {TIER_DROP_RATES[3]}%".ljust(5, ""), value=f"* {BoosterCog._formatted_tier_list(TIER_3_RARITIES)}")
-        embed.add_field(name=f"Tier 4 - {TIER_DROP_RATES[4]}%".ljust(5, ""), value=f"* {BoosterCog._formatted_tier_list(TIER_4_RARITIES)}")
+        embed.add_field(name=f"Tier 3 - {TIER_DROP_RATES[3]}%".ljust(5, ""),
+                        value=f"* {BoosterCog._formatted_tier_list(TIER_3_RARITIES)}")
+        embed.add_field(name=f"Tier 4 - {TIER_DROP_RATES[4]}%".ljust(5, ""),
+                        value=f"* {BoosterCog._formatted_tier_list(TIER_4_RARITIES)}")
 
         await interaction.response.send_message(embed=embed)

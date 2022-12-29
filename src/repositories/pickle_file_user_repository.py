@@ -15,10 +15,10 @@ class PickleFileUserRepository(UserRepository):
     @staticmethod
     def _load_pickle_file() -> dict[int, UserEntity]:
         try:
-            settings_content = pickle.load(open(PickleFileUserRepository.PICKLE_FILE_LOCATION, "rb"))
+            users_by_id = pickle.load(open(PickleFileUserRepository.PICKLE_FILE_LOCATION, "rb"))
         except EOFError:
-            settings_content = {}
-        return settings_content
+            users_by_id = {}
+        return users_by_id
 
     @staticmethod
     def _save_pickle_file(content: dict[int, UserEntity]) -> None:
