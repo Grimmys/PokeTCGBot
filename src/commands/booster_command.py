@@ -75,12 +75,14 @@ class BoosterCog(commands.Cog):
             return ""
         return f"[{self.type_service.get_type(card.types[0].lower()).emoji}]"
 
-    def _display_card_in_embed(self, card: Card, embed: Embed):
+    def _display_card_in_embed(self, card: Card, embed: Embed, is_new: bool):
+        emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
         rarity_emoji = "" if (rarity := self.rarity_service.get_rarity(
             card.rarity.lower())) is None else rarity.emoji
         type_emoji = self._get_card_type_display(card)
-        embed.add_field(name=card.id,
-                        value=f"{card.name} {type_emoji}\n `{card.rarity} {rarity_emoji}`\n ~ {card.set.name} ~")
+        is_new_label = emojis["new"] if is_new else ""
+        embed.add_field(name=f"{card.name} {is_new_label}",
+                        value=f"{card.id} {type_emoji}\n `{card.rarity} {rarity_emoji}`\n ~ {card.set.name} ~")
 
     def _draw_rare_card(self) -> Card:
         card_tier = random.choices(["tier_0", "tier_1", "tier_2", "tier_3", "tier_4"], weights=TIER_DROP_RATES)[0]
@@ -90,14 +92,14 @@ class BoosterCog(commands.Cog):
     def _formatted_tier_list(rarity_tier: set[str]) -> str:
         return "\n* ".join(rarity_tier)
 
-    def _generate_booster_cards(self, embed) -> list[Card]:
+    def _generate_booster_cards(self, embed, already_own_cards: list[str]) -> list[Card]:
         drawn_cards = []
 
         # Draw the 5 common cards
         for _ in range(5):
             card = random.choice(self.cards_by_rarity["common"])
             drawn_cards.append(card)
-            self._display_card_in_embed(card, embed)
+            self._display_card_in_embed(card, embed, card.id not in already_own_cards)
 
         # Draw the 3 uncommon cards
         uncommon_upgrade_triggered = False
@@ -108,23 +110,23 @@ class BoosterCog(commands.Cog):
             else:
                 card = random.choice(self.cards_by_rarity["uncommon"])
             drawn_cards.append(card)
-            self._display_card_in_embed(card, embed)
+            self._display_card_in_embed(card, embed, card.id not in already_own_cards)
 
         # Draw the rare or higher card
         card = self._draw_rare_card()
         drawn_cards.append(card)
-        self._display_card_in_embed(card, embed)
+        self._display_card_in_embed(card, embed, card.id not in already_own_cards)
 
         return drawn_cards
 
-    def _generate_promo_booster_cards(self, embed) -> list[Card]:
+    def _generate_promo_booster_cards(self, embed, already_own_cards: list[str]) -> list[Card]:
         drawn_cards = []
 
         # Draw the 3 Promo cards
         for _ in range(3):
             card = random.choice(self.cards_by_rarity["promo"])
             drawn_cards.append(card)
-            self._display_card_in_embed(card, embed)
+            self._display_card_in_embed(card, embed, card.id not in already_own_cards)
 
         return drawn_cards
 
@@ -144,7 +146,7 @@ class BoosterCog(commands.Cog):
                 color=GREEN)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-            drawn_cards = self._generate_booster_cards(embed)
+            drawn_cards = self._generate_booster_cards(embed, user.cards.keys())
 
             self.user_service.add_cards_to_collection(user.id, list(map(lambda card: card.id, drawn_cards)))
 
@@ -166,7 +168,7 @@ class BoosterCog(commands.Cog):
                 color=RED)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-            drawn_cards = self._generate_promo_booster_cards(embed)
+            drawn_cards = self._generate_promo_booster_cards(embed, user.cards.keys())
 
             self.user_service.add_cards_to_collection(user.id, list(map(lambda card: card.id, drawn_cards)))
 
