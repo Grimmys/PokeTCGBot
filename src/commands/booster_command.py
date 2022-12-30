@@ -129,7 +129,6 @@ class BoosterCog(commands.Cog):
             self.user_service.reset_basic_booster_cooldown(user.id)
             embed = Embed(
                 title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
-                description=self.t(user_language_id, 'booster_cmd.description'),
                 color=GREEN)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
