@@ -69,5 +69,8 @@
   },
   "search_cmd": {
     "not_found": "No result for search `{1}`."
+  },
+  "collection_cmd": {
+    "empty": "You don't have any card in your collection yet."
   }
 }
