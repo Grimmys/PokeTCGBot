@@ -26,3 +26,7 @@ class InMemoryUserRepository(UserRepository):
     def change_basic_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
         # TODO: implementation
         pass
+
+    def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> None:
+        # TODO: implementation
+        pass

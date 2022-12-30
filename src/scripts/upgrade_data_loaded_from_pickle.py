@@ -9,7 +9,7 @@ users_by_id = pickle.load(open(PICKLE_FILE_LOCATION, "rb"))
 new_users_by_id = {}
 
 for user in users_by_id.values():
-    new_users_by_id[user.id] = UserEntity(user.id, user.money, user.boosters_quantity, user.settings)
+    new_users_by_id[user.id] = UserEntity(user.id, money=user.money, boosters_quantity=user.boosters_quantity, user_settings_entity=user.settings, user_cooldowns_entity=user.cooldowns)
 
 pickle.dump(new_users_by_id, open(PICKLE_FILE_LOCATION, "wb"))
 

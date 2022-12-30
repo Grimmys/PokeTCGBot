@@ -89,22 +89,31 @@ class BoosterCog(commands.Cog):
     def _formatted_tier_list(rarity_tier: set[str]) -> str:
         return "\n* ".join(rarity_tier)
 
-    def _generate_booster_cards(self, embed):
+    def _generate_booster_cards(self, embed) -> list[Card]:
+        drawn_cards = []
+
         # Draw the 5 common cards
         for _ in range(5):
-            self._display_card_in_embed(random.choice(self.cards_by_rarity["common"]), embed)
+            card = random.choice(self.cards_by_rarity["common"])
+            drawn_cards.append(card)
+            self._display_card_in_embed(card, embed)
 
         # Draw the 3 uncommon cards
         uncommon_upgrade_triggered = False
         for _ in range(3):
             if not uncommon_upgrade_triggered and random.random() < config.UNCOMMON_UPGRADE_RATE:
                 uncommon_upgrade_triggered = True
-                self._display_card_in_embed(self._draw_rare_card(), embed)
+                card = self._draw_rare_card()
             else:
-                self._display_card_in_embed(random.choice(self.cards_by_rarity["uncommon"]), embed)
+                card = random.choice(self.cards_by_rarity["uncommon"])
+            drawn_cards.append(card)
+            self._display_card_in_embed(card, embed)
 
         # Draw the rare or higher card
+        drawn_cards.append(card)
         self._display_card_in_embed(self._draw_rare_card(), embed)
+
+        return drawn_cards
 
     @app_commands.command(name="booster", description="Open a basic booster")
     async def booster_command(self, interaction: discord.Interaction) -> None:
@@ -123,7 +132,9 @@ class BoosterCog(commands.Cog):
                 color=GREEN)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-            self._generate_booster_cards(embed)
+            drawn_cards = self._generate_booster_cards(embed)
+
+            self.user_service.add_cards_to_collection(user.id, list(map(lambda card: card.id, drawn_cards)))
 
             await interaction.response.send_message(embed=embed)
 

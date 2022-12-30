@@ -27,8 +27,8 @@ class UserInfoCog(commands.Cog):
 
         embed.add_field(name=f"{self.t(user_language_id, 'common.pokedollar')}s",
                         value=f"{emojis['pokedollar']} {user.money}")
-        embed.add_field(name=self.t(user_language_id, 'common.collection').capitalize(), value=f"{emojis['card']} 0")
         embed.add_field(name=f"{self.t(user_language_id, 'common.booster')}s".capitalize(),
                         value=f"{emojis['booster']} {user.boosters_quantity}")
+        embed.add_field(name=self.t(user_language_id, 'common.collection').capitalize(), value=f"{emojis['card']} {len(user.cards)}") 
 
         await interaction.response.send_message(embed=embed)
