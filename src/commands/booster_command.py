@@ -110,8 +110,9 @@ class BoosterCog(commands.Cog):
             self._display_card_in_embed(card, embed)
 
         # Draw the rare or higher card
+        card = self._draw_rare_card()
         drawn_cards.append(card)
-        self._display_card_in_embed(self._draw_rare_card(), embed)
+        self._display_card_in_embed(card, embed)
 
         return drawn_cards
 
