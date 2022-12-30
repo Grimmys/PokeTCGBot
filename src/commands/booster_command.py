@@ -11,7 +11,7 @@ import config
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
-from src.colors import GREEN
+from src.colors import GREEN, RED
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
 
@@ -66,7 +66,8 @@ class BoosterCog(commands.Cog):
             "tier_1": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_1_RARITIES),
             "tier_2": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_2_RARITIES),
             "tier_3": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_3_RARITIES),
-            "tier_4": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_4_RARITIES)
+            "tier_4": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_4_RARITIES),
+            "promo": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"Promo"})
         }
 
     def _get_card_type_display(self, card: Card) -> str:
@@ -116,6 +117,17 @@ class BoosterCog(commands.Cog):
 
         return drawn_cards
 
+    def _generate_promo_booster_cards(self, embed) -> list[Card]:
+        drawn_cards = []
+
+        # Draw the 3 Promo cards
+        for _ in range(3):
+            card = random.choice(self.cards_by_rarity["promo"])
+            drawn_cards.append(card)
+            self._display_card_in_embed(card, embed)
+
+        return drawn_cards
+
     @app_commands.command(name="booster", description="Open a basic booster")
     async def booster_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_user(interaction.user.id)
@@ -133,6 +145,28 @@ class BoosterCog(commands.Cog):
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
             drawn_cards = self._generate_booster_cards(embed)
+
+            self.user_service.add_cards_to_collection(user.id, list(map(lambda card: card.id, drawn_cards)))
+
+            await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="promo_booster", description="Open a Promo booster")
+    async def promo_booster_command(self, interaction: discord.Interaction) -> None:
+        user = self.user_service.get_user(interaction.user.id)
+        user_language_id = user.settings.language_id
+
+        if user.cooldowns.timestamp_for_next_promo_booster > time.time():
+            discord_formatted_timestamp = f"<t:{user.cooldowns.timestamp_for_next_promo_booster}:R>"
+            await interaction.response.send_message(
+                f"{self.t(user_language_id, 'promo_booster_cmd.cooldown')} {discord_formatted_timestamp}")
+        else:
+            self.user_service.reset_promo_booster_cooldown(user.id)
+            embed = Embed(
+                title=f"---------- {self.t(user_language_id, 'promo_booster_cmd.title')} ----------",
+                color=RED)
+            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+
+            drawn_cards = self._generate_promo_booster_cards(embed)
 
             self.user_service.add_cards_to_collection(user.id, list(map(lambda card: card.id, drawn_cards)))
 

@@ -24,6 +24,10 @@
     "title": "Booster",
     "cooldown": "Prochain booster gratuit :"
   },
+  "promo_booster_cmd": {
+    "title": "Booster Promo",
+    "cooldown": "Prochain booster Promo gratuit :"
+  },
   "drop_rates_cmd": {
     "title": "Taux de drop",
     "description": "Taux pour la dernière carte d'un booster de base"

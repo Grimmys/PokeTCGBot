@@ -4,7 +4,7 @@ from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
 
 DEFAULT_BASIC_BOOSTER_COOLDOWN = 60 * 15
-DEFAULT_PROMO_BOOSTER_COOLDOWN = 60 * 30
+DEFAULT_PROMO_BOOSTER_COOLDOWN = 60 * 60
 
 
 class UserService:
@@ -20,6 +20,9 @@ class UserService:
 
     def reset_basic_booster_cooldown(self, user_id: int):
         self._user_repository.change_basic_booster_cooldown(user_id, int(time.time()) + DEFAULT_BASIC_BOOSTER_COOLDOWN)
+
+    def reset_promo_booster_cooldown(self, user_id: int):
+        self._user_repository.change_promo_booster_cooldown(user_id, int(time.time()) + DEFAULT_PROMO_BOOSTER_COOLDOWN)
 
     def add_cards_to_collection(self, user_id: int, drawn_cards: list[str]):
         self._user_repository.add_cards_to_collection(user_id, drawn_cards)

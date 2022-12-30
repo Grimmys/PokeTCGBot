@@ -52,6 +52,14 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
+    def change_promo_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].cooldowns.timestamp_for_next_promo_booster = updated_timestamp_for_cooldown
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
     def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> None:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         user = users_by_id[user_id]
