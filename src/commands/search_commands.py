@@ -31,18 +31,17 @@ class SearchCog(commands.Cog):
         return {card.id: card for card in cards}
 
     @app_commands.command(name="search", description="Search card with several parameters")
-    async def search_command(self, interaction: discord.Interaction, content: str) -> None:
+    async def search_command(self, interaction: discord.Interaction, content: str, image_mode: bool = False) -> None:
         user_language_id = self.settings_service.get_user_language_id(
             interaction.user.id)
-        all_cards = [{"name": card.id, "value": card.name}
+        all_cards = [{"name": card.id, "value": card.name, "image": card.images.large if card.images.large else card.images.small}
                      for card in Card.where(q=f"name:*{content}*")]
 
         if len(all_cards) == 0:
-            await interaction.response.send_message(
-                self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
+            await interaction.response.send_message(self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
             return
 
-        embed = PaginatedEmbed(all_cards, SEARCH_PAGE_SIZE)
+        embed = PaginatedEmbed(all_cards, image_mode, 1 if image_mode else SEARCH_PAGE_SIZE)
         view = View()
 
         async def change_page_callback(click_interaction: discord.Interaction, forward):
