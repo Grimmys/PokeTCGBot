@@ -18,7 +18,7 @@ class UserInfoCog(commands.Cog):
         self.t = localization_service.get_string
 
     @app_commands.command(name="profile", description="Check user profile")
-    async def profile_command(self, interaction: discord.Interaction, member: discord.Member = None) -> None:
+    async def profile_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
         user = self.user_service.get_user(interaction.user.id)
         discord_user = interaction.user
         user_language_id = user.settings.language_id
