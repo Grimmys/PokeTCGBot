@@ -2,7 +2,10 @@
   "common": {
     "pokedollar": "Pokédollar",
     "collection": "collection",
-    "booster": "booster"
+    "booster": "booster",
+    "booster_cooldown": "Prochain booster gratuit :",
+    "promo_booster_cooldown": "Prochain booster Promo gratuit :",
+    "minutes": "minutes"
   },
   "ping_cmd": {
     "response_msg": "Mon ping est de"
@@ -21,12 +24,10 @@
     "description": "Liste des commandes disponibles"
   },
   "booster_cmd": {
-    "title": "Booster",
-    "cooldown": "Prochain booster gratuit :"
+    "title": "Booster"
   },
   "promo_booster_cmd": {
-    "title": "Booster Promo",
-    "cooldown": "Prochain booster Promo gratuit :"
+    "title": "Booster Promo"
   },
   "drop_rates_cmd": {
     "title": "Taux de drop",
@@ -34,6 +35,11 @@
   },
   "profile_cmd": {
     "title": "Profil"
+  },
+  "cooldowns_cmd": {
+    "title": "Temps d'attente des commandes",
+    "time_between_cmds": "Temps de récupération de base : ",
+    "available": "Disponible"
   },
   "joke_cmd": {
     "title": "Blague Pokémon",

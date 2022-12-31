@@ -2,7 +2,10 @@
   "common": {
     "pokedollar": "Pokémon Dollar",
     "collection": "collection",
-    "booster": "booster"
+    "booster": "booster",
+    "booster_cooldown": "Next free booster:",
+    "promo_booster_cooldown": "Next free Promo booster:",
+    "minutes": "minutes"
   },
   "ping_cmd": {
     "response_msg": "My ping is"
@@ -21,12 +24,10 @@
     "description": "List of available commands"
   },
   "booster_cmd": {
-    "title": "Booster",
-    "cooldown": "Next free booster:"
+    "title": "Booster"
   },
   "promo_booster_cmd": {
-    "title": "Promo Booster",
-    "cooldown": "Next free Promo booster:"
+    "title": "Promo Booster"
   },
   "drop_rates_cmd": {
     "title": "Drop rates",
@@ -34,6 +35,11 @@
   },
   "profile_cmd": {
     "title": "Profile"
+  },
+  "cooldowns_cmd": {
+    "title": "Commands' cooldown",
+    "time_between_cmds": "Default timeout: ",
+    "available": "Available"
   },
   "joke_cmd": {
     "title": "Pokémon Joke",

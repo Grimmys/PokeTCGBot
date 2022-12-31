@@ -14,6 +14,7 @@ from src.services.settings_service import SettingsService
 from src.colors import GREEN, RED
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
+from src.utils import discord_tools
 
 TIER_0_RARITIES = {"Rare"}
 TIER_1_RARITIES = {"Rare Holo"}
@@ -138,7 +139,7 @@ class BoosterCog(commands.Cog):
         if user.cooldowns.timestamp_for_next_basic_booster > time.time():
             discord_formatted_timestamp = f"<t:{user.cooldowns.timestamp_for_next_basic_booster}:R>"
             await interaction.response.send_message(
-                f"{self.t(user_language_id, 'booster_cmd.cooldown')} {discord_formatted_timestamp}")
+                f"{self.t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
         else:
             self.user_service.reset_basic_booster_cooldown(user.id)
             embed = Embed(
@@ -158,9 +159,9 @@ class BoosterCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_promo_booster > time.time():
-            discord_formatted_timestamp = f"<t:{user.cooldowns.timestamp_for_next_promo_booster}:R>"
+            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(user.cooldowns.timestamp_for_next_promo_booster)
             await interaction.response.send_message(
-                f"{self.t(user_language_id, 'promo_booster_cmd.cooldown')} {discord_formatted_timestamp}")
+                f"{self.t(user_language_id, 'common.promo_booster_cooldown')} {discord_formatted_timestamp}")
         else:
             self.user_service.reset_promo_booster_cooldown(user.id)
             embed = Embed(
