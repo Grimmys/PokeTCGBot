@@ -5,18 +5,21 @@ from src.entities.type_entity import TypeEntity
 
 class TypeService:
     def __init__(self):
+        self._types: dict[str, TypeEntity] = {}
+
+    def load_emojis(self, emojis):
         self._types: dict[str, TypeEntity] = {
-            "colorless": TypeEntity("colorless", "⚪"),
-            "darkness": TypeEntity("darkness", "🌑"),
-            "dragon": TypeEntity("dragon", "🐉"),
-            "fairy": TypeEntity("fairy", "🧚"),
-            "fighting": TypeEntity("fighting", "✊"),
-            "fire": TypeEntity("fire", "🔥"),
-            "grass": TypeEntity("grass", "🌱"),
-            "lightning": TypeEntity("lightning", "⚡"),
-            "metal": TypeEntity("metal", "⚙️"),
-            "psychic": TypeEntity("psychic", "🔮"),
-            "water": TypeEntity("water", "💧"),
+            "colorless": TypeEntity("colorless", emojis["colorless_type"]),
+            "darkness": TypeEntity("darkness", emojis["darkness_type"]),
+            "dragon": TypeEntity("dragon", emojis["dragon_type"]),
+            "fairy": TypeEntity("fairy", emojis["fairy_type"]),
+            "fighting": TypeEntity("fighting", emojis["fighting_type"]),
+            "fire": TypeEntity("fire", emojis["fire_type"]),
+            "grass": TypeEntity("grass", emojis["grass_type"]),
+            "lightning": TypeEntity("lightning", emojis["lightning_type"]),
+            "metal": TypeEntity("metal", emojis["metal_type"]),
+            "psychic": TypeEntity("psychic", emojis["psychic_type"]),
+            "water": TypeEntity("water", emojis["water_type"]),
         }
 
     def get_type(self, type_name: str) -> Optional[TypeEntity]:
