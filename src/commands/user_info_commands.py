@@ -17,16 +17,22 @@ class UserInfoCog(commands.Cog):
         self.user_service = user_service
         self.t = localization_service.get_string
 
-    @app_commands.command(name="profile", description="Check your own user profile")
-    async def profile_command(self, interaction: discord.Interaction) -> None:
+    @app_commands.command(name="profile", description="Check user profile")
+    async def profile_command(self, interaction: discord.Interaction, member: discord.Member = None) -> None:
         user = self.user_service.get_user(interaction.user.id)
+        discord_user = interaction.user
         user_language_id = user.settings.language_id
+
+        if member is not None:
+            user = self.user_service.get_user(member.id)
+            discord_user = member
+
         emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
 
         embed = Embed(
             title=f"---------- {self.t(user_language_id, 'profile_cmd.title')} ----------",
             color=YELLOW)
-        embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+        embed.set_author(name=discord_user.display_name, icon_url=discord_user.display_avatar.url)
 
         embed.add_field(name=f"{self.t(user_language_id, 'common.pokedollar')}s",
                         value=f"{emojis['pokedollar']} {user.money}")
