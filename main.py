@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import random
+import uuid
 from os import environ as env
 
 import discord
@@ -9,23 +10,23 @@ from discord.ext.commands import Bot
 from pokemontcgsdk import Card, PokemonTcgException
 
 import config
+from src.colors import GREEN, BLUE
 from src.commands.booster_command import BoosterCog
 from src.commands.mini_game_commands import MiniGamesCog
+from src.commands.search_commands import SearchCog
 from src.commands.settings_command import SettingsCog
 from src.commands.user_info_commands import UserInfoCog
-from src.commands.search_commands import SearchCog
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
-from src.colors import GREEN, BLUE
 
 intents = Intents.default()
 intents.message_content = True
 
-bot = Bot(intents=intents, command_prefix="")
+bot = Bot(intents=intents, command_prefix=uuid.uuid1())
 
 
 @bot.tree.command(name="ping", description="Get bot latency")
