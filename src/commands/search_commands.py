@@ -66,9 +66,15 @@ class SearchCog(commands.Cog):
         await interaction.response.send_message(embed=embed.embed, view=view)
 
     @app_commands.command(name="collection", description="Search cards in your own collection")
-    async def collection_command(self, interaction: discord.Interaction, with_image: bool = False) -> None:
+    async def collection_command(self, interaction: discord.Interaction, with_image: bool = False,
+                                 member: discord.User = None) -> None:
         user = self.user_service.get_user(interaction.user.id)
+        discord_user = interaction.user
         user_language_id = user.settings.language_id
+
+        if member is not None:
+            user = self.user_service.get_user(member.id)
+            discord_user = member
 
         own_cards = []
         for card_id, quantity in user.cards.items():
@@ -91,7 +97,7 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'collection_cmd.empty'))
             return
 
-        embed = PaginatedEmbed(own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE)
+        embed = PaginatedEmbed(own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE, title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------", discord_user=discord_user)
         view = View()
 
         async def change_page_callback(click_interaction: discord.Interaction, forward):

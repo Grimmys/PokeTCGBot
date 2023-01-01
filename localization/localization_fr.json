@@ -82,6 +82,7 @@
     "not_found": "Aucun résultat ne correspond à la recherche `{1}`."
   },
   "collection_cmd": {
+    "title": "Collection",
     "empty": "Vous n'avez pas encore de carte dans votre collection."
   }
 }

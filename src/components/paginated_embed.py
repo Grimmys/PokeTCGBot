@@ -1,10 +1,14 @@
-from discord import Embed
+from discord import Embed, User
 
 
 class PaginatedEmbed:
-    def __init__(self, content: list[dict[str, str]], image_mode: bool, page_size: int = 1, inline: bool = False) -> None:
+    def __init__(self, content: list[dict[str, str]], image_mode: bool, page_size: int = 1, inline: bool = False, title: str = None, discord_user: User = None) -> None:
         self.current_page = 0
         self.embed = Embed()
+        if title is not None:
+            self.embed.title = title
+        if discord_user is not None:
+            self.embed.set_author(name=discord_user.display_name, icon_url=discord_user.display_avatar.url)
         self.content = content
         self.image_mode = image_mode
         self.page_size = page_size if not image_mode else 1
