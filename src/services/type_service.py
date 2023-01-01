@@ -25,4 +25,6 @@ class TypeService:
     def get_type(self, type_name: str) -> Optional[TypeEntity]:
         if type_name in self._types:
             return self._types[type_name]
+        else:
+            print(f"Unrecognized type: {type_name}")
         return None
