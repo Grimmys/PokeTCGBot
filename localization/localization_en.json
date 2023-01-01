@@ -3,6 +3,8 @@
     "pokedollar": "Pokémon Dollar",
     "collection": "collection",
     "booster": "booster",
+    "rarity": "rarity",
+    "quantity": "quantity",
     "booster_cooldown": "Next free booster:",
     "promo_booster_cooldown": "Next free Promo booster:",
     "minutes": "minutes"

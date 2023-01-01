@@ -34,11 +34,13 @@ class SearchCog(commands.Cog):
     async def search_command(self, interaction: discord.Interaction, content: str, image_mode: bool = False) -> None:
         user_language_id = self.settings_service.get_user_language_id(
             interaction.user.id)
-        all_cards = [{"name": card.id, "value": card.name, "image": card.images.large if card.images.large else card.images.small}
+        all_cards = [{"name": card.id, "value": card.name,
+                      "image": card.images.large if card.images.large else card.images.small}
                      for card in Card.where(q=f"name:*{content}*")]
 
         if len(all_cards) == 0:
-            await interaction.response.send_message(self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
+            await interaction.response.send_message(
+                self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
             return
 
         embed = PaginatedEmbed(all_cards, image_mode, 1 if image_mode else SEARCH_PAGE_SIZE)
@@ -63,18 +65,32 @@ class SearchCog(commands.Cog):
         await interaction.response.send_message(embed=embed.embed, view=view)
 
     @app_commands.command(name="collection", description="Search cards in your own collection")
-    async def collection_command(self, interaction: discord.Interaction) -> None:
+    async def collection_command(self, interaction: discord.Interaction, image_mode: bool = False) -> None:
         user = self.user_service.get_user(interaction.user.id)
         user_language_id = user.settings.language_id
-        own_cards = [{"name": card_id, "value": quantity}
-                     for card_id, quantity in user.cards.items()]
+
+        own_cards = []
+        for card_id, quantity in user.cards.items():
+            card = self.cards_by_id[card_id]
+            entry_card = {
+                "name": card.name,
+            }
+            formatted_id = f"**ID**: {card_id}"
+            formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
+            if image_mode:
+                formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
+                entry_card["value"] = f"{formatted_id}\n{formatted_rarity}\n{formatted_quantity}"
+                entry_card["image"] = card.images.large if card.images.large else card.images.small
+            else:
+                entry_card["value"] = f"{formatted_id} / {formatted_quantity}"
+            own_cards.append(entry_card)
 
         if len(own_cards) == 0:
             await interaction.response.send_message(
                 self.t(user_language_id, 'collection_cmd.empty'))
             return
 
-        embed = PaginatedEmbed(own_cards, SEARCH_PAGE_SIZE)
+        embed = PaginatedEmbed(own_cards, image_mode, 1 if image_mode else SEARCH_PAGE_SIZE)
         view = View()
 
         async def change_page_callback(click_interaction: discord.Interaction, forward):
