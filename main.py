@@ -36,19 +36,6 @@ async def ping_command(interaction: discord.Interaction) -> None:
         f"{t(user_language_id, 'ping_cmd.response_msg')} **{round(bot.latency * 1000)}ms**")
 
 
-@bot.tree.command(name="card", description="Get a card with its id")
-async def get_card_command(interaction: discord.Interaction, card_id: str) -> None:
-    user_language_id = settings_service.get_user_language_id(interaction.user.id)
-    try:
-        card = Card.find(card_id)
-        embed = Embed(title=card.name, description=card_id, color=GREEN)
-        embed.set_image(url=card.images.large if card.images.large else card.images.small)
-        await interaction.response.send_message(embed=embed)
-    except PokemonTcgException:
-        await interaction.response.send_message(
-            t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
-
-
 @bot.tree.command(name="help", description="Display the list of available commands")
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user.id)

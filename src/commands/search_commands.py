@@ -2,11 +2,12 @@ import pickle
 from typing import Literal
 
 import discord
-from discord import app_commands
+from discord import app_commands, Embed
 from discord.ext import commands
 from discord.ui import View, Button
-from pokemontcgsdk import Card
+from pokemontcgsdk import Card, PokemonTcgException
 
+from src.colors import GREEN, ORANGE
 from src.components.paginated_embed import PaginatedEmbed
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
@@ -31,11 +32,25 @@ class SearchCog(commands.Cog):
         cards: list[Card] = pickle.load(open(SearchCog.CARDS_PICKLE_FILE_LOCATION, "rb"))
         return {card.id: card for card in cards}
 
+    @app_commands.command(name="card", description="Get a card with its id")
+    async def get_card_command(self, interaction: discord.Interaction, card_id: str) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        try:
+            card = Card.find(card_id)
+            formatted_id = f"**ID**: {card_id}"
+            formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
+            embed = Embed(title=card.name, description=f"{formatted_id}\n{formatted_rarity}", color=ORANGE)
+            embed.set_image(url=card.images.large if card.images.large else card.images.small)
+            await interaction.response.send_message(embed=embed)
+        except PokemonTcgException:
+            await interaction.response.send_message(
+                self.t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
+
     @app_commands.command(name="search", description="Search card with several parameters")
     async def search_command(self, interaction: discord.Interaction, content: str, with_image: bool = False) -> None:
         user_language_id = self.settings_service.get_user_language_id(
             interaction.user.id)
-        all_cards = [{"name": card.id, "value": card.name,
+        all_cards = [{"name": card.name, "value": card.id,
                       "image": card.images.large if card.images.large else card.images.small}
                      for card in Card.where(q=f"name:*{content}*")]
 

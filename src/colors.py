@@ -4,3 +4,5 @@ MAGENTA = 0xa020f0
 RED = 0xff0000
 GRAY = 0x808080
 YELLOW = 0xffff00
+ORANGE = 0xff7f00
+
