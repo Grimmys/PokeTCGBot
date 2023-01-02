@@ -1,4 +1,5 @@
 import pickle
+from typing import Literal
 
 import discord
 from discord import app_commands, Embed
@@ -13,7 +14,7 @@ from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
 
 SEARCH_PAGE_SIZE = 10
-
+NO_RESULT_VALUE = ""
 
 class SearchCog(commands.Cog):
     CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
@@ -46,12 +47,25 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
 
     @app_commands.command(name="search", description="Search card with several parameters")
-    async def search_command(self, interaction: discord.Interaction, content: str, with_image: bool = False) -> None:
+    async def search_command(self, interaction: discord.Interaction, content: str, search_mode: Literal["card_name", "card_id", "set_name", "set_id", "rarity"], with_image: bool = False) -> None:
         user_language_id = self.settings_service.get_user_language_id(
             interaction.user.id)
+
+        match search_mode:
+            case "card_id":
+                get_search_attribute = lambda card: card.id
+            case "set_name":
+                get_search_attribute = lambda card: card.set.name if card.set else NO_RESULT_VALUE
+            case "set_id":
+                get_search_attribute = lambda card: card.set.id if card.set else NO_RESULT_VALUE
+            case "rarity":
+                get_search_attribute = lambda card: card.rarity if card.rarity else NO_RESULT_VALUE
+            case _:
+                get_search_attribute = lambda card: card.name if card.name else NO_RESULT_VALUE
+
         all_cards = [{"name": card.name, "value": card.id,
                       "image": card.images.large if card.images.large else card.images.small}
-                     for card in self.cards_by_id.values() if content.lower() in card.name.lower()]
+                     for card in self.cards_by_id.values() if content.lower() in get_search_attribute(card).lower()]
 
         if len(all_cards) == 0:
             await interaction.response.send_message(
