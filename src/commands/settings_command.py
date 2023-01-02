@@ -36,6 +36,9 @@ class SettingsCog(commands.Cog):
                         inline=False)
 
         async def change_language_callback(language_interaction: discord.Interaction):
+            if language_interaction.user != interaction.user:
+                return
+
             selected_index = int(select.values[0])
             new_user_language = LocalizationService.supported_languages[selected_index]
 

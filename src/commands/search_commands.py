@@ -1,5 +1,4 @@
 import pickle
-from typing import Literal
 
 import discord
 from discord import app_commands, Embed
@@ -7,7 +6,7 @@ from discord.ext import commands
 from discord.ui import View, Button
 from pokemontcgsdk import Card, PokemonTcgException
 
-from src.colors import GREEN, ORANGE
+from src.colors import ORANGE
 from src.components.paginated_embed import PaginatedEmbed
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
@@ -63,6 +62,8 @@ class SearchCog(commands.Cog):
         view = View()
 
         async def change_page_callback(click_interaction: discord.Interaction, forward):
+            if click_interaction.user != interaction.user:
+                return
             embed.change_page(forward)
             await interaction.edit_original_response(embed=embed.embed)
             await click_interaction.response.defer()
@@ -112,10 +113,14 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'collection_cmd.empty'))
             return
 
-        embed = PaginatedEmbed(own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE, title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------", discord_user=discord_user)
+        embed = PaginatedEmbed(own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE,
+                               title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
+                               discord_user=discord_user)
         view = View()
 
         async def change_page_callback(click_interaction: discord.Interaction, forward):
+            if click_interaction.user != interaction.user:
+                return
             embed.change_page(forward)
             await interaction.edit_original_response(embed=embed.embed)
             await click_interaction.response.defer()
