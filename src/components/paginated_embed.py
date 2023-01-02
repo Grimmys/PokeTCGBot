@@ -1,3 +1,4 @@
+import math
 from discord import Embed, User
 
 
@@ -36,4 +37,8 @@ class PaginatedEmbed:
                 name=element["name"], value=element["value"], inline=self.inline)
             if self.image_mode:
                 self.embed.set_image(url=element["image"])
+        footer_text = f'{self.current_page + 1}/{ math.ceil(len(self.content) / self.page_size) }'
+        if not self.image_mode:
+            footer_text += f'   ({self.current_page * self.page_size + 1}-{min((self.current_page + 1) * self.page_size, len(self.content))}/{len(self.content)})'
+        self.embed.set_footer(text=footer_text)
 
