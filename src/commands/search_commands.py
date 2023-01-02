@@ -37,9 +37,8 @@ class SearchCog(commands.Cog):
         user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
         try:
             card = Card.find(card_id)
-            formatted_id = f"**ID**: {card_id}"
-            formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
-            embed = Embed(title=card.name, description=f"{formatted_id}\n{formatted_rarity}", color=ORANGE)
+            formatted_card = self._format_card_for_embed(card, True, user_language_id)
+            embed = Embed(title=formatted_card["name"], description=formatted_card["value"], color=ORANGE)
             embed.set_image(url=card.images.large if card.images.large else card.images.small)
             await interaction.response.send_message(embed=embed)
         except PokemonTcgException:
@@ -63,8 +62,7 @@ class SearchCog(commands.Cog):
             case _:
                 get_search_attribute = lambda card: card.name if card.name else NO_RESULT_VALUE
 
-        all_cards = [{"name": card.name, "value": card.id,
-                      "image": card.images.large if card.images.large else card.images.small}
+        all_cards = [ self._format_card_for_embed(card, with_image, user_language_id)
                      for card in self.cards_by_id.values() if content.lower() in get_search_attribute(card).lower()]
 
         if len(all_cards) == 0:
@@ -109,18 +107,7 @@ class SearchCog(commands.Cog):
         own_cards = []
         for card_id, quantity in user.cards.items():
             card = self.cards_by_id[card_id]
-            entry_card = {
-                "name": card.name,
-            }
-            formatted_id = f"**ID**: {card_id}"
-            formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
-            if with_image:
-                formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
-                entry_card["value"] = f"{formatted_id}\n{formatted_rarity}\n{formatted_quantity}"
-                entry_card["image"] = card.images.large if card.images.large else card.images.small
-            else:
-                entry_card["value"] = f"{formatted_id} / {formatted_quantity}"
-            own_cards.append(entry_card)
+            own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity))
 
         if len(own_cards) == 0:
             await interaction.response.send_message(
@@ -151,3 +138,22 @@ class SearchCog(commands.Cog):
         view.add_item(next_button)
 
         await interaction.response.send_message(embed=embed.embed, view=view)
+
+    def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int = None):
+        entry_card = {
+            "name": card.name,
+        }
+        formatted_id = f"**ID**: {card.id}"
+        formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
+        formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
+        formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
+        if with_image:
+            entry_card["value"] = f"{formatted_id}\n{formatted_rarity}\n{formatted_set}"
+            if quantity is not None:
+                entry_card["value"] += f"\n{formatted_quantity}"
+            entry_card["image"] = card.images.large if card.images.large else card.images.small
+        else:
+            entry_card["value"] = f"{formatted_id} / {formatted_rarity} / {formatted_set}"
+            if quantity is not None:
+                entry_card["value"] += f" / {formatted_quantity}"
+        return entry_card
