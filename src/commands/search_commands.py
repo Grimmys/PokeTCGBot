@@ -47,7 +47,7 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
 
     @app_commands.command(name="search", description="Search card with several parameters")
-    async def search_command(self, interaction: discord.Interaction, content: str, search_mode: Literal["card_name", "card_id", "set_name", "set_id", "rarity"], with_image: bool = False) -> None:
+    async def search_command(self, interaction: discord.Interaction, content: str, search_mode: Literal["card_name", "card_id", "set_name", "set_id", "rarity"]="card_name", with_image: bool = False) -> None:
         user_language_id = self.settings_service.get_user_language_id(
             interaction.user.id)
 
