@@ -51,7 +51,7 @@ class SearchCog(commands.Cog):
             interaction.user.id)
         all_cards = [{"name": card.name, "value": card.id,
                       "image": card.images.large if card.images.large else card.images.small}
-                     for card in Card.where(q=f"name:*{content}*")]
+                     for card in self.cards_by_id.values() if content.lower() in card.name.lower()]
 
         if len(all_cards) == 0:
             await interaction.response.send_message(
