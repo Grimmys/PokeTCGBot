@@ -26,7 +26,7 @@ from src.services.user_service import UserService
 intents = Intents.default()
 intents.message_content = True
 
-bot = Bot(intents=intents, command_prefix=uuid.uuid1())
+bot = Bot(intents=intents, command_prefix=str(uuid.uuid1()))
 
 
 @bot.tree.command(name="ping", description="Get bot latency")
