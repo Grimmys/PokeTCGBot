@@ -7,10 +7,9 @@ from os import environ as env
 import discord
 from discord import Intents, Embed
 from discord.ext.commands import Bot
-from pokemontcgsdk import Card, PokemonTcgException
 
 import config
-from src.colors import GREEN, BLUE
+from src.colors import BLUE
 from src.commands.booster_command import BoosterCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.search_commands import SearchCog
