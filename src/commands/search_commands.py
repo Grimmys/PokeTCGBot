@@ -4,7 +4,6 @@ from typing import Literal
 import discord
 from discord import app_commands, Embed
 from discord.ext import commands
-from discord.ui import View, Button
 from pokemontcgsdk import Card, PokemonTcgException
 
 from src.colors import ORANGE
@@ -70,28 +69,9 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
             return
 
-        embed = PaginatedEmbed(all_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE)
-        view = View()
+        embed = PaginatedEmbed(interaction, all_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE)
 
-        async def change_page_callback(click_interaction: discord.Interaction, forward):
-            if click_interaction.user != interaction.user:
-                return
-            embed.change_page(forward)
-            await interaction.edit_original_response(embed=embed.embed)
-            await click_interaction.response.defer()
-
-        next_button = Button(emoji="➡️")
-        next_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, True)
-
-        previous_button = Button(emoji="⬅️")
-        previous_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, False)
-
-        view.add_item(previous_button)
-        view.add_item(next_button)
-
-        await interaction.response.send_message(embed=embed.embed, view=view)
+        await interaction.response.send_message(embed=embed.embed, view=embed.view)
 
     @app_commands.command(name="collection", description="Search cards in your own collection")
     async def collection_command(self, interaction: discord.Interaction, with_image: bool = False,
@@ -114,30 +94,10 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'collection_cmd.empty'))
             return
 
-        embed = PaginatedEmbed(own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE,
+        embed = PaginatedEmbed(interaction, own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE,
                                title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
                                discord_user=discord_user)
-        view = View()
-
-        async def change_page_callback(click_interaction: discord.Interaction, forward):
-            if click_interaction.user != interaction.user:
-                return
-            embed.change_page(forward)
-            await interaction.edit_original_response(embed=embed.embed)
-            await click_interaction.response.defer()
-
-        next_button = Button(emoji="➡️")
-        next_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, True)
-
-        previous_button = Button(emoji="⬅️")
-        previous_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, False)
-
-        view.add_item(previous_button)
-        view.add_item(next_button)
-
-        await interaction.response.send_message(embed=embed.embed, view=view)
+        await interaction.response.send_message(embed=embed.embed, view=embed.view)
 
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int = None):
         entry_card = {
