@@ -10,6 +10,7 @@ from discord.ext.commands import Bot
 
 import config
 from src.colors import BLUE
+from src.commands.admin_commands import AdminCog
 from src.commands.booster_command import BoosterCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.search_commands import SearchCog
@@ -60,6 +61,7 @@ def setup_logs():
 
 
 async def setup_cogs():
+    await bot.add_cog(AdminCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service))
     await bot.add_cog(BoosterCog(bot, settings_service, localization_service, user_service, rarity_service, type_service))
     await bot.add_cog(UserInfoCog(bot, user_service, localization_service))

@@ -8,10 +8,15 @@
     "quantity": "quantité",
     "booster_cooldown": "Prochain booster gratuit :",
     "promo_booster_cooldown": "Prochain booster Promo gratuit :",
-    "minutes": "minutes"
+    "minutes": "minutes",
+    "user_not_found": "L'utilisateur n'a pas été trouvé",
+    "not_allowed": "Vous ne pouvez pas utiliser cette commande"
   },
   "ping_cmd": {
     "response_msg": "Mon ping est de"
+  },
+  "give_money_cmd": {
+    "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"
   },
   "settings_cmd": {
     "title": "Préférences",

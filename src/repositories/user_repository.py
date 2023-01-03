@@ -15,6 +15,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_money(self, user_id: int, money_change: int) -> bool:
+        pass
+
+    @abstractmethod
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         pass
 

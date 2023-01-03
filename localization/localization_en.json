@@ -8,10 +8,15 @@
     "quantity": "quantity",
     "booster_cooldown": "Next free booster:",
     "promo_booster_cooldown": "Next free Promo booster:",
-    "minutes": "minutes"
+    "minutes": "minutes",
+    "user_not_found": "User not found",
+    "not_allowed": "You are not allowed to use this command"
   },
   "ping_cmd": {
     "response_msg": "My ping is"
+  },
+  "give_money_cmd": {
+    "response_msg": "User {user} received {amount} Pokémon Dollars"
   },
   "settings_cmd": {
     "title": "Settings",
