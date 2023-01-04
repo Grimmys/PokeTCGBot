@@ -21,7 +21,7 @@ TIER_1_RARITIES = {"Rare Holo"}
 TIER_2_RARITIES = {"Rare Holo EX", "Rare Holo GX", "Rare Holo V", "Rare BREAK"}
 TIER_3_RARITIES = {"Radiant Rare", "Rare Holo LV.C", "Rare Holo VMAX", "Rare ACE", "Rare Ultra", "Amazing Rare",
                    "Rare Prime", "Rare Prism Star", "Rare Shining", "Rare Shiny"}
-TIER_4_RARITIES = {"LEGEND", "Rare Holo Star", "Rare Rainbow", "Rare Secret", "Rare Shiny GX", "V-UNION",
+TIER_4_RARITIES = {"LEGEND", "Rare Holo Star", "Rare Rainbow", "Rare Secret", "Rare Shiny GX",
                    "Rare Holo VSTAR"}
 TIER_DROP_RATES = [
     40,
