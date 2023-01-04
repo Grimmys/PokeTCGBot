@@ -19,7 +19,7 @@ from src.utils import discord_tools
 TIER_0_RARITIES = {"Rare"}
 TIER_1_RARITIES = {"Rare Holo"}
 TIER_2_RARITIES = {"Rare Holo EX", "Rare Holo GX", "Rare Holo V", "Rare BREAK"}
-TIER_3_RARITIES = {"Radiant Rare", "Rare Holo LV.C", "Rare Holo VMAX", "Rare ACE", "Rare Ultra", "Amazing Rare",
+TIER_3_RARITIES = {"Radiant Rare", "Rare Holo LV.X", "Rare Holo VMAX", "Rare ACE", "Rare Ultra", "Amazing Rare",
                    "Rare Prime", "Rare Prism Star", "Rare Shining", "Rare Shiny"}
 TIER_4_RARITIES = {"LEGEND", "Rare Holo Star", "Rare Rainbow", "Rare Secret", "Rare Shiny GX",
                    "Rare Holo VSTAR"}
