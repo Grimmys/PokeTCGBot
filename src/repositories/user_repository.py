@@ -31,5 +31,5 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> None:
+    def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> bool:
         pass

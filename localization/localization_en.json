@@ -18,6 +18,9 @@
   "give_money_cmd": {
     "response_msg": "User {user} received {amount} Pokémon Dollars"
   },
+  "give_card_cmd": {
+    "response_msg": "User {user} received card {card_id}"
+  },
   "settings_cmd": {
     "title": "Settings",
     "language_field_name": "Language",

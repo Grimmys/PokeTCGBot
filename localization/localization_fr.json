@@ -18,6 +18,9 @@
   "give_money_cmd": {
     "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"
   },
+  "give_card_cmd": {
+    "response_msg": "L'utilisateur {user} a reçu la carte {card_id}"
+  },
   "settings_cmd": {
     "title": "Préférences",
     "language_field_name": "Langue",

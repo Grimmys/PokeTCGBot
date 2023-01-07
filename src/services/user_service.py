@@ -27,5 +27,5 @@ class UserService:
     def reset_promo_booster_cooldown(self, user_id: int) -> None:
         self._user_repository.change_promo_booster_cooldown(user_id, int(time.time()) + DEFAULT_PROMO_BOOSTER_COOLDOWN)
 
-    def add_cards_to_collection(self, user_id: int, drawn_cards: list[str]) -> None:
-        self._user_repository.add_cards_to_collection(user_id, drawn_cards)
+    def add_cards_to_collection(self, user_id: int, drawn_cards_ids: list[str]) -> bool:
+        return self._user_repository.add_cards_to_collection(user_id, drawn_cards_ids)
