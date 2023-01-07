@@ -38,3 +38,7 @@ class InMemoryUserRepository(UserRepository):
     def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> bool:
         # TODO: implementation
         pass
+
+    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+        # TODO: implementation
+        pass

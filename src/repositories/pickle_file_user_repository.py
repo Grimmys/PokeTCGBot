@@ -80,3 +80,15 @@ class PickleFileUserRepository(UserRepository):
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
+
+    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            user = users_by_id[user_id]
+            if card_id in user.cards:
+                user.cards[card_id] -= 1
+                if user.cards[card_id] == 0:
+                    del user.cards[card_id]
+                PickleFileUserRepository._save_pickle_file(users_by_id)
+                return True
+        return False

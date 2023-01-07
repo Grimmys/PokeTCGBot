@@ -10,6 +10,7 @@
     "promo_booster_cooldown": "Prochain booster Promo gratuit :",
     "minutes": "minutes",
     "user_not_found": "L'utilisateur n'a pas été trouvé",
+    "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",
     "not_allowed": "Vous ne pouvez pas utiliser cette commande"
   },
   "ping_cmd": {
@@ -20,6 +21,9 @@
   },
   "give_card_cmd": {
     "response_msg": "L'utilisateur {user} a reçu la carte {card_id}"
+  },
+  "remove_card_cmd": {
+    "response_msg": "L'utilisateur {user} a perdu la carte {card_id}"
   },
   "settings_cmd": {
     "title": "Préférences",

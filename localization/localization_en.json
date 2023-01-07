@@ -10,6 +10,7 @@
     "promo_booster_cooldown": "Next free Promo booster:",
     "minutes": "minutes",
     "user_not_found": "User not found",
+    "user_or_card_not_found": "User not found or they don't have the card",
     "not_allowed": "You are not allowed to use this command"
   },
   "ping_cmd": {
@@ -20,6 +21,9 @@
   },
   "give_card_cmd": {
     "response_msg": "User {user} received card {card_id}"
+  },
+  "remove_card_cmd": {
+    "response_msg": "User {user} lost card {card_id}"
   },
   "settings_cmd": {
     "title": "Settings",

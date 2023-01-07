@@ -29,3 +29,6 @@ class UserService:
 
     def add_cards_to_collection(self, user_id: int, drawn_cards_ids: list[str]) -> bool:
         return self._user_repository.add_cards_to_collection(user_id, drawn_cards_ids)
+
+    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+        return self._user_repository.remove_card_from_collection(user_id, card_id)

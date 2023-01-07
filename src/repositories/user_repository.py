@@ -33,3 +33,7 @@ class UserRepository(ABC):
     @abstractmethod
     def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> bool:
         pass
+
+    @abstractmethod
+    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+        pass

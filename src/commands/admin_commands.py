@@ -47,3 +47,19 @@ class AdminCog(commands.Cog):
         else:
             await interaction.response.send_message(
                 self.t(user_language_id, 'common.user_not_found'))
+
+    @app_commands.command(name="remove_card", description="Remove a card from the user")
+    async def remove_card_command(self, interaction: discord.Interaction, member: discord.User, card_id: str) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+
+        if interaction.user.id not in BOT_ADMIN_USER_IDS:
+            await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        if self.user_service.remove_card_from_collection(member.id, card_id):
+            await interaction.response.send_message(
+                self.t(user_language_id, 'remove_card_cmd.response_msg').format(user=f"{member.id} ({member.name})",
+                                                                                card_id=card_id))
+        else:
+            await interaction.response.send_message(
+                self.t(user_language_id, 'common.user_or_card_not_found'))
