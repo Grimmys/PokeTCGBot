@@ -54,8 +54,9 @@ async def on_ready():
 
 
 def setup_logs():
-    logger = logging.getLogger('discord')
+    logger = logging.getLogger("discord")
     logger.setLevel(logging.DEBUG)
+    logging.getLogger("discord.gateway").setLevel(logging.INFO)
     handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
