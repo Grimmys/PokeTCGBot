@@ -13,6 +13,7 @@ from src.colors import BLUE
 from src.commands.admin_commands import AdminCog
 from src.commands.booster_command import BoosterCog
 from src.commands.mini_game_commands import MiniGamesCog
+from src.commands.rankings_command import RankingCog
 from src.commands.search_commands import SearchCog
 from src.commands.settings_command import SettingsCog
 from src.commands.user_info_commands import UserInfoCog
@@ -66,6 +67,7 @@ async def setup_cogs():
     await bot.add_cog(BoosterCog(bot, settings_service, localization_service, user_service, rarity_service, type_service))
     await bot.add_cog(UserInfoCog(bot, user_service, localization_service))
     await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service))
+    await bot.add_cog(RankingCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
 
 

@@ -6,6 +6,8 @@ from src.repositories.user_repository import UserRepository
 DEFAULT_BASIC_BOOSTER_COOLDOWN = 60 * 15
 DEFAULT_PROMO_BOOSTER_COOLDOWN = 60 * 60
 
+NUMBER_TOP_USERS = 50
+
 
 class UserService:
     def __init__(self, user_repository: UserRepository):
@@ -32,3 +34,6 @@ class UserService:
 
     def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
         return self._user_repository.remove_card_from_collection(user_id, card_id)
+
+    def get_top_users_collection(self) -> list[UserEntity]:
+        return self._user_repository.get_top_users_by_cards(NUMBER_TOP_USERS)

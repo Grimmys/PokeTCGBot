@@ -92,3 +92,9 @@ class PickleFileUserRepository(UserRepository):
                 PickleFileUserRepository._save_pickle_file(users_by_id)
                 return True
         return False
+
+    def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        users: list[UserEntity] = list(users_by_id.values())
+        users.sort(key=lambda user: len(user.cards), reverse=True)
+        return users[:number]

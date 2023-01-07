@@ -97,5 +97,8 @@
   "collection_cmd": {
     "title": "Collection",
     "empty": "Vous n'avez pas encore de carte dans votre collection."
+  },
+  "ranking_cmd": {
+    "title": "Classement des joueurs par nombre de cartes"
   }
 }

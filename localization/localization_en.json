@@ -97,5 +97,8 @@
   "collection_cmd": {
     "title": "Collection",
     "empty": "You don't have any card in your collection yet."
+  },
+  "ranking_cmd": {
+    "title": "User Collection Ranking"
   }
 }
