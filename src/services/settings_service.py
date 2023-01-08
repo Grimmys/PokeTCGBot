@@ -1,3 +1,5 @@
+import discord
+
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
 from src.entities.user_settings_entity import UserSettingsEntity
@@ -7,10 +9,13 @@ class SettingsService:
     def __init__(self, user_repository: UserRepository):
         self._user_repository = user_repository
 
-    def get_user_language_id(self, user_id: int):
-        user_entity = self._user_repository.get_user(user_id)
+    def get_user_language_id(self, user: discord.User):
+        user_entity = self._user_repository.get_user(user.id)
         if user_entity is None:
-            user_entity = UserEntity(user_id)
+            user_entity = UserEntity(user_id=user.id, name_tag=str(user))
+            self._user_repository.save_user(user_entity)
+        if user_entity.name_tag != str(user):
+            user_entity.name_tag = str(user)
             self._user_repository.save_user(user_entity)
         return user_entity.settings.language_id
 

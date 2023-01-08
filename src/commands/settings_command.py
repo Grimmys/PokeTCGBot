@@ -21,7 +21,7 @@ class SettingsCog(commands.Cog):
 
     @app_commands.command(name="settings", description="Change user settings")
     async def settings_command(self, interaction: discord.Interaction) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         embed = Embed(
             title=f"---------- {self.t(user_language_id, 'settings_cmd.title')} ----------",

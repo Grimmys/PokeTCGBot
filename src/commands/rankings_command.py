@@ -29,16 +29,15 @@ class RankingCog(commands.Cog):
 
     @app_commands.command(name="rankings", description="Get the top users having the most cards")
     async def get_rankings_command(self, interaction: discord.Interaction) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         users: list[UserEntity] = self.user_service.get_top_users_collection()
 
         nb_cards_by_user = []
         rank = 0
-        discord_users = await self._fetch_discord_users_by_id(users)
         for user in users:
             rank += 1
-            nb_cards_by_user.append({"name": f"{rank}: {discord_users[user.id].name}", "value": str(len(user.cards))})
+            nb_cards_by_user.append({"name": f"{rank}: {user.name_tag}", "value": str(len(user.cards))})
 
         embed = PaginatedEmbed(nb_cards_by_user, False, SEARCH_PAGE_SIZE,
                                title=f"---------- {self.t(user_language_id, 'ranking_cmd.title')} ----------",

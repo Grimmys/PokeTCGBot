@@ -18,7 +18,7 @@ class AdminCog(commands.Cog):
 
     @app_commands.command(name="give_money", description="Give or take money to the user")
     async def give_money_command(self, interaction: discord.Interaction, member: discord.User, money: int) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
@@ -34,7 +34,7 @@ class AdminCog(commands.Cog):
 
     @app_commands.command(name="give_card", description="Give a card to the user")
     async def give_card_command(self, interaction: discord.Interaction, member: discord.User, card_id: str) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
@@ -50,7 +50,7 @@ class AdminCog(commands.Cog):
 
     @app_commands.command(name="remove_card", description="Remove a card from the user")
     async def remove_card_command(self, interaction: discord.Interaction, member: discord.User, card_id: str) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))

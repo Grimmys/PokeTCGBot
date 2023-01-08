@@ -16,6 +16,7 @@ from src.services.user_service import UserService
 SEARCH_PAGE_SIZE = 10
 NO_RESULT_VALUE = ""
 
+
 class SearchCog(commands.Cog):
     CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
 
@@ -34,7 +35,7 @@ class SearchCog(commands.Cog):
 
     @app_commands.command(name="card", description="Get a card with its id")
     async def get_card_command(self, interaction: discord.Interaction, card_id: str) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
         try:
             card = Card.find(card_id)
             formatted_card = self._format_card_for_embed(card, True, user_language_id)
@@ -46,9 +47,11 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
 
     @app_commands.command(name="search", description="Search card with several parameters")
-    async def search_command(self, interaction: discord.Interaction, content: str, search_mode: Literal["card_name", "card_id", "set_name", "set_id", "rarity"]="card_name", with_image: bool = False) -> None:
+    async def search_command(self, interaction: discord.Interaction, content: str,
+                             search_mode: Literal["card_name", "card_id", "set_name", "set_id", "rarity"] = "card_name",
+                             with_image: bool = False) -> None:
         user_language_id = self.settings_service.get_user_language_id(
-            interaction.user.id)
+            interaction.user)
 
         match search_mode:
             case "card_id":
@@ -62,7 +65,7 @@ class SearchCog(commands.Cog):
             case _:
                 get_search_attribute = lambda card: card.name if card.name else NO_RESULT_VALUE
 
-        all_cards = [ self._format_card_for_embed(card, with_image, user_language_id)
+        all_cards = [self._format_card_for_embed(card, with_image, user_language_id)
                      for card in self.cards_by_id.values() if content.lower() in get_search_attribute(card).lower()]
 
         if len(all_cards) == 0:
@@ -96,13 +99,16 @@ class SearchCog(commands.Cog):
     @app_commands.command(name="collection", description="Search cards in your own collection")
     async def collection_command(self, interaction: discord.Interaction, with_image: bool = False,
                                  member: discord.User = None) -> None:
-        user = self.user_service.get_user(interaction.user.id)
+        user = self.user_service.get_or_create_user(interaction.user)
         discord_user = interaction.user
         user_language_id = user.settings.language_id
 
         if member is not None:
-            user = self.user_service.get_user(member.id)
+            user = self.user_service.get_user(member)
             discord_user = member
+
+            if user is None:
+                await interaction.response.send_message(self.t(user_language_id, 'common.user_not_found'))
 
         own_cards = []
         for card_id, quantity in user.cards.items():

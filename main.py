@@ -32,14 +32,14 @@ bot = Bot(intents=intents, command_prefix=str(uuid.uuid1()))
 
 @bot.tree.command(name="ping", description="Get bot latency")
 async def ping_command(interaction: discord.Interaction) -> None:
-    user_language_id = settings_service.get_user_language_id(interaction.user.id)
+    user_language_id = settings_service.get_user_language_id(interaction.user)
     await interaction.response.send_message(
         f"{t(user_language_id, 'ping_cmd.response_msg')} **{round(bot.latency * 1000)}ms**")
 
 
 @bot.tree.command(name="help", description="Display the list of available commands")
 async def help_command(interaction: discord.Interaction) -> None:
-    user_language_id = settings_service.get_user_language_id(interaction.user.id)
+    user_language_id = settings_service.get_user_language_id(interaction.user)
     embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------",
                   description=t(user_language_id, 'help_cmd.description'), color=BLUE)
     for command in bot.tree.get_commands():

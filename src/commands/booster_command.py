@@ -133,7 +133,7 @@ class BoosterCog(commands.Cog):
 
     @app_commands.command(name="booster", description="Open a basic booster")
     async def booster_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_user(interaction.user.id)
+        user = self.user_service.get_or_create_user(interaction.user)
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_basic_booster > time.time():
@@ -155,7 +155,7 @@ class BoosterCog(commands.Cog):
 
     @app_commands.command(name="promo_booster", description="Open a Promo booster")
     async def promo_booster_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_user(interaction.user.id)
+        user = self.user_service.get_or_create_user(interaction.user)
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_promo_booster > time.time():
@@ -178,7 +178,7 @@ class BoosterCog(commands.Cog):
     @app_commands.command(name="drop_rates",
                           description="Get the probability for each tier of cards to be in a booster")
     async def drop_rates_command(self, interaction: discord.Interaction) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         embed = Embed(
             title=f"---------- {self.t(user_language_id, 'drop_rates_cmd.title')} ----------",
