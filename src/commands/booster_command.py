@@ -133,11 +133,11 @@ class BoosterCog(commands.Cog):
 
     @app_commands.command(name="booster", description="Open a basic booster")
     async def booster_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_or_create_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_basic_booster > time.time():
-            discord_formatted_timestamp = f"<t:{user.cooldowns.timestamp_for_next_basic_booster}:R>"
+            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(user.cooldowns.timestamp_for_next_basic_booster)
             await interaction.response.send_message(
                 f"{self.t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
         else:
@@ -155,7 +155,7 @@ class BoosterCog(commands.Cog):
 
     @app_commands.command(name="promo_booster", description="Open a Promo booster")
     async def promo_booster_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_or_create_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_promo_booster > time.time():

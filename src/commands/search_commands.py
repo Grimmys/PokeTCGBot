@@ -99,7 +99,7 @@ class SearchCog(commands.Cog):
     @app_commands.command(name="collection", description="Search cards in your own collection")
     async def collection_command(self, interaction: discord.Interaction, with_image: bool = False,
                                  member: discord.User = None) -> None:
-        user = self.user_service.get_or_create_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user)
         discord_user = interaction.user
         user_language_id = user.settings.language_id
 

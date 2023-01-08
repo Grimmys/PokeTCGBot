@@ -1,3 +1,5 @@
+import time
+
 import discord
 
 from src.entities.user_entity import UserEntity
@@ -14,8 +16,9 @@ class SettingsService:
         if user_entity is None:
             user_entity = UserEntity(user_id=user.id, name_tag=str(user))
             self._user_repository.save_user(user_entity)
-        if user_entity.name_tag != str(user):
+        else:
             user_entity.name_tag = str(user)
+            user_entity.last_interaction_date = int(time.time())
             self._user_repository.save_user(user_entity)
         return user_entity.settings.language_id
 

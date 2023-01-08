@@ -19,12 +19,13 @@ class UserService:
     def get_user(self, user: discord.User) -> Optional[UserEntity]:
         return self._user_repository.get_user(user.id)
 
-    def get_or_create_user(self, user: discord.User) -> UserEntity:
+    def get_and_update_user(self, user: discord.User) -> UserEntity:
         user_entity = self._user_repository.get_user(user.id)
         if user_entity is None:
             user_entity = UserEntity(user_id=user.id, name_tag=str(user))
             self._user_repository.save_user(user_entity)
-        if user_entity.name_tag != str(user):
+        else:
+            user_entity.last_interaction_date = int(time.time())
             user_entity.name_tag = str(user)
             self._user_repository.save_user(user_entity)
         return user_entity
