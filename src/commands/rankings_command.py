@@ -1,7 +1,7 @@
 import asyncio
 
 import discord
-from discord import app_commands, Client
+from discord import app_commands
 from discord.ext import commands
 from discord.ui import View, Button
 
@@ -11,7 +11,7 @@ from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
 
-SEARCH_PAGE_SIZE = 10
+RANKING_PAGE_SIZE = 12
 
 
 class RankingCog(commands.Cog):
@@ -39,7 +39,7 @@ class RankingCog(commands.Cog):
             rank += 1
             nb_cards_by_user.append({"name": f"{rank}: {user.name_tag}", "value": str(len(user.cards))})
 
-        embed = PaginatedEmbed(nb_cards_by_user, False, SEARCH_PAGE_SIZE,
+        paginated_embed = PaginatedEmbed(nb_cards_by_user, False, RANKING_PAGE_SIZE,
                                title=f"---------- {self.t(user_language_id, 'ranking_cmd.title')} ----------",
                                inline=True)
 
@@ -48,8 +48,8 @@ class RankingCog(commands.Cog):
         async def change_page_callback(click_interaction: discord.Interaction, forward):
             if click_interaction.user != interaction.user:
                 return
-            embed.change_page(forward)
-            await interaction.edit_original_response(embed=embed.embed)
+            paginated_embed.change_page(forward)
+            await interaction.edit_original_response(embed=paginated_embed.embed)
             await click_interaction.response.defer()
 
         next_button = Button(emoji="➡️")
@@ -63,4 +63,4 @@ class RankingCog(commands.Cog):
         view.add_item(previous_button)
         view.add_item(next_button)
 
-        await interaction.response.send_message(embed=embed.embed, view=view)
+        await interaction.response.send_message(embed=paginated_embed.embed, view=view)
