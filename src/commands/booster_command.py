@@ -180,6 +180,8 @@ class BoosterCog(commands.Cog):
             await interaction.response.send_message(
                 f"{self.t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
         else:
+            self.user_service.reset_basic_booster_cooldown(user.id)
+
             drawn_cards = self._generate_booster_cards()
 
             self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
@@ -192,7 +194,6 @@ class BoosterCog(commands.Cog):
 
                 await interaction.response.send_message(embed=paginated_embed.embed, view=view)
             else:
-                self.user_service.reset_basic_booster_cooldown(user.id)
                 embed = Embed(
                     title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
                     color=GREEN)
@@ -215,10 +216,6 @@ class BoosterCog(commands.Cog):
                 f"{self.t(user_language_id, 'common.promo_booster_cooldown')} {discord_formatted_timestamp}")
         else:
             self.user_service.reset_promo_booster_cooldown(user.id)
-            embed = Embed(
-                title=f"---------- {self.t(user_language_id, 'promo_booster_cmd.title')} ----------",
-                color=RED)
-            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
             drawn_cards = self._generate_promo_booster_cards()
 
@@ -232,6 +229,11 @@ class BoosterCog(commands.Cog):
 
                 await interaction.response.send_message(embed=paginated_embed.embed, view=view)
             else:
+                embed = Embed(
+                    title=f"---------- {self.t(user_language_id, 'promo_booster_cmd.title')} ----------",
+                    color=RED)
+                embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+
                 for card in drawn_cards:
                     self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
 
