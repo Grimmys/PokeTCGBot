@@ -5,9 +5,11 @@ import time
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
+from discord.ui import View, Button
 from pokemontcgsdk import Card, Set
 
 import config
+from src.components.paginated_embed import PaginatedEmbed
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
@@ -76,7 +78,7 @@ class BoosterCog(commands.Cog):
             return ""
         return f"[{self.type_service.get_type(card.types[0].lower()).emoji}]"
 
-    def _display_card_in_embed(self, card: Card, embed: Embed, is_new: bool):
+    def _display_full_booster_in_embed(self, card: Card, embed: Embed, is_new: bool):
         emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
         rarity_emoji = "" if (rarity := self.rarity_service.get_rarity(
             card.rarity.lower())) is None else rarity.emoji
@@ -84,6 +86,20 @@ class BoosterCog(commands.Cog):
         is_new_label = emojis["new"] if is_new else ""
         embed.add_field(name=f"{card.name} {is_new_label}",
                         value=f"{card.id} {type_emoji}\n `{card.rarity} {rarity_emoji}`\n ~ {card.set.name} ~")
+
+    def _format_card_for_embed(self, card: Card, user_language_id: int, is_new: bool):
+        emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
+        formatted_id = f"**ID**: {card.id}"
+        formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
+        formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
+        entry_card = {
+            "name": card.name,
+            "value": f"{formatted_id}\n{formatted_rarity}\n{formatted_set}",
+            "image": card.images.large if card.images.large else card.images.small
+        }
+        if is_new:
+            entry_card["value"] += f"\n{emojis['new']}"
+        return entry_card
 
     def _draw_rare_card(self) -> Card:
         card_tier = random.choices(["tier_0", "tier_1", "tier_2", "tier_3", "tier_4"], weights=TIER_DROP_RATES)[0]
@@ -127,8 +143,34 @@ class BoosterCog(commands.Cog):
 
         return drawn_cards
 
+    def _build_paginated_booster(self, formatted_cards, user_language_id, interaction):
+        paginated_embed = PaginatedEmbed(formatted_cards, True, 1,
+                                         title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                                         discord_user=interaction.user)
+        view = View()
+
+        async def change_page_callback(click_interaction: discord.Interaction, forward):
+            if click_interaction.user != interaction.user:
+                return
+            paginated_embed.change_page(forward)
+            await interaction.edit_original_response(embed=paginated_embed.embed)
+            await click_interaction.response.defer()
+
+        next_button = Button(emoji="➡️")
+        next_button.callback = lambda click_interaction: change_page_callback(
+            click_interaction, True)
+
+        previous_button = Button(emoji="⬅️")
+        previous_button.callback = lambda click_interaction: change_page_callback(
+            click_interaction, False)
+
+        view.add_item(previous_button)
+        view.add_item(next_button)
+
+        return paginated_embed, view
+
     @app_commands.command(name="booster", description="Open a basic booster")
-    async def booster_command(self, interaction: discord.Interaction) -> None:
+    async def booster_command(self, interaction: discord.Interaction, with_image: bool = True) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
@@ -138,23 +180,31 @@ class BoosterCog(commands.Cog):
             await interaction.response.send_message(
                 f"{self.t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
         else:
-            self.user_service.reset_basic_booster_cooldown(user.id)
-            embed = Embed(
-                title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
-                color=GREEN)
-            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
-
             drawn_cards = self._generate_booster_cards()
 
             self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
 
-            for card in drawn_cards:
-                self._display_card_in_embed(card, embed, card.id not in user.cards.keys())
+            if with_image:
+                formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
+                                   for card in drawn_cards]
 
-            await interaction.response.send_message(embed=embed)
+                paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
+
+                await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+            else:
+                self.user_service.reset_basic_booster_cooldown(user.id)
+                embed = Embed(
+                    title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                    color=GREEN)
+                embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+
+                for card in drawn_cards:
+                    self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
+
+                await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="promo_booster", description="Open a Promo booster")
-    async def promo_booster_command(self, interaction: discord.Interaction) -> None:
+    async def promo_booster_command(self, interaction: discord.Interaction, with_image: bool = True) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
@@ -174,10 +224,18 @@ class BoosterCog(commands.Cog):
 
             self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
 
-            for card in drawn_cards:
-                self._display_card_in_embed(card, embed, card.id not in user.cards.keys())
+            if with_image:
+                formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
+                                   for card in drawn_cards]
 
-            await interaction.response.send_message(embed=embed)
+                paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
+
+                await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+            else:
+                for card in drawn_cards:
+                    self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
+
+                await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="drop_rates",
                           description="Get the probability for each tier of cards to be in a booster")
