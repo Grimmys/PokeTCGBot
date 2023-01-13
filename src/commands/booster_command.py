@@ -93,14 +93,13 @@ class BoosterCog(commands.Cog):
     def _formatted_tier_list(rarity_tier: set[str]) -> str:
         return "\n* ".join(rarity_tier)
 
-    def _generate_booster_cards(self, embed, already_own_cards: list[str]) -> list[Card]:
+    def _generate_booster_cards(self) -> list[Card]:
         drawn_cards = []
 
         # Draw the 5 common cards
         for _ in range(5):
             card = random.choice(self.cards_by_rarity["common"])
             drawn_cards.append(card)
-            self._display_card_in_embed(card, embed, card.id not in already_own_cards)
 
         # Draw the 3 uncommon cards
         uncommon_upgrade_triggered = False
@@ -111,23 +110,20 @@ class BoosterCog(commands.Cog):
             else:
                 card = random.choice(self.cards_by_rarity["uncommon"])
             drawn_cards.append(card)
-            self._display_card_in_embed(card, embed, card.id not in already_own_cards)
 
         # Draw the rare or higher card
         card = self._draw_rare_card()
         drawn_cards.append(card)
-        self._display_card_in_embed(card, embed, card.id not in already_own_cards)
 
         return drawn_cards
 
-    def _generate_promo_booster_cards(self, embed, already_own_cards: list[str]) -> list[Card]:
+    def _generate_promo_booster_cards(self) -> list[Card]:
         drawn_cards = []
 
         # Draw the 3 Promo cards
         for _ in range(3):
             card = random.choice(self.cards_by_rarity["promo"])
             drawn_cards.append(card)
-            self._display_card_in_embed(card, embed, card.id not in already_own_cards)
 
         return drawn_cards
 
@@ -137,7 +133,8 @@ class BoosterCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_basic_booster > time.time():
-            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(user.cooldowns.timestamp_for_next_basic_booster)
+            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
+                user.cooldowns.timestamp_for_next_basic_booster)
             await interaction.response.send_message(
                 f"{self.t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
         else:
@@ -147,9 +144,12 @@ class BoosterCog(commands.Cog):
                 color=GREEN)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-            drawn_cards = self._generate_booster_cards(embed, user.cards.keys())
+            drawn_cards = self._generate_booster_cards()
 
-            self.user_service.add_cards_to_collection(user.id, list(map(lambda card: card.id, drawn_cards)))
+            self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
+
+            for card in drawn_cards:
+                self._display_card_in_embed(card, embed, card.id not in user.cards.keys())
 
             await interaction.response.send_message(embed=embed)
 
@@ -159,7 +159,8 @@ class BoosterCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_promo_booster > time.time():
-            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(user.cooldowns.timestamp_for_next_promo_booster)
+            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
+                user.cooldowns.timestamp_for_next_promo_booster)
             await interaction.response.send_message(
                 f"{self.t(user_language_id, 'common.promo_booster_cooldown')} {discord_formatted_timestamp}")
         else:
@@ -169,9 +170,12 @@ class BoosterCog(commands.Cog):
                 color=RED)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-            drawn_cards = self._generate_promo_booster_cards(embed, user.cards.keys())
+            drawn_cards = self._generate_promo_booster_cards()
 
-            self.user_service.add_cards_to_collection(user.id, list(map(lambda card: card.id, drawn_cards)))
+            self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
+
+            for card in drawn_cards:
+                self._display_card_in_embed(card, embed, card.id not in user.cards.keys())
 
             await interaction.response.send_message(embed=embed)
 
