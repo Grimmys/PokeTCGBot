@@ -23,6 +23,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_booster_opening_with_image_by_default(self, user_id, new_booster_opening_with_image_value):
+        pass
+
+    @abstractmethod
     def change_basic_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
         pass
 

@@ -1,6 +1,7 @@
 import pickle
 import random
 import time
+from typing import Optional
 
 import discord
 from discord import Embed, app_commands
@@ -170,7 +171,7 @@ class BoosterCog(commands.Cog):
         return paginated_embed, view
 
     @app_commands.command(name="booster", description="Open a basic booster")
-    async def booster_command(self, interaction: discord.Interaction, with_image: bool = True) -> None:
+    async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
@@ -186,6 +187,8 @@ class BoosterCog(commands.Cog):
 
             self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
 
+            if with_image is None:
+                with_image = user.settings.booster_opening_with_image
             if with_image:
                 formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
                                    for card in drawn_cards]
@@ -205,7 +208,7 @@ class BoosterCog(commands.Cog):
                 await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="promo_booster", description="Open a Promo booster")
-    async def promo_booster_command(self, interaction: discord.Interaction, with_image: bool = True) -> None:
+    async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
@@ -221,6 +224,8 @@ class BoosterCog(commands.Cog):
 
             self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
 
+            if with_image is None:
+                with_image = user.settings.booster_opening_with_image
             if with_image:
                 formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
                                    for card in drawn_cards]

@@ -29,8 +29,11 @@
   "settings_cmd": {
     "title": "Préférences",
     "language_field_name": "Langue",
+    "booster_opening_with_image_field_name": "Image des cartes affichées lors de l'ouverture d'un booster",
+    "booster_opening_with_image_response_msg": "Mode d'ouverture d'un booster changé",
     "language_changed_response_msg": "Nouvelle langue configurée :",
-    "select_language_placeholder": "Changer la langue"
+    "select_language_placeholder": "Changer la langue",
+    "switch_booster_opening_label": "Changer le mode d'ouverture d'un booster"
   },
   "get_card_cmd": {
     "card_not_found": "La carte {1} n'existe pas."

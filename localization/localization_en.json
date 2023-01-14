@@ -29,8 +29,11 @@
   "settings_cmd": {
     "title": "Settings",
     "language_field_name": "Language",
+    "booster_opening_with_image_field_name": "Booster opened with card images by default",
     "language_changed_response_msg": "Language changed to:",
-    "select_language_placeholder": "Change language"
+    "booster_opening_with_image_response_msg": "Booster opening mode switched",
+    "select_language_placeholder": "Change language",
+    "switch_booster_opening_label": "Switch booster opening value"
   },
   "get_card_cmd": {
     "card_not_found": "Card {1} does not exist."

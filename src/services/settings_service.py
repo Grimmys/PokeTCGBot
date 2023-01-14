@@ -28,3 +28,7 @@ class SettingsService:
             self._user_repository.save_user(initial_user_entity)
         else:
             self._user_repository.change_user_language(user_id, new_language_id)
+
+    def update_booster_opening_with_image(self, user_id: int, new_booster_opening_with_image_value: bool):
+        self._user_repository.change_booster_opening_with_image_by_default(user_id,
+                                                                           new_booster_opening_with_image_value)

@@ -52,6 +52,14 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
+    def change_booster_opening_with_image_by_default(self, user_id, new_booster_opening_with_image_value):
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].settings.booster_opening_with_image = new_booster_opening_with_image_value
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
     def change_basic_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
