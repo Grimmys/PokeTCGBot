@@ -21,6 +21,10 @@ class SettingsCog(commands.Cog):
         self.t = localization_service.get_string
         self.user_service = user_service
 
+    @staticmethod
+    def _get_button_color(feature_enabled: bool):
+        return discord.ButtonStyle.green if feature_enabled else discord.ButtonStyle.red
+
     @app_commands.command(name="settings", description="Change user settings")
     async def settings_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_user(interaction.user)
@@ -70,6 +74,7 @@ class SettingsCog(commands.Cog):
             embed.set_field_at(booster_opening_field_id, name=embed.fields[booster_opening_field_id].name,
                                value=f"{user.settings.booster_opening_with_image}",
                                inline=False)
+            switch_opening_booster_mode_button.style = self._get_button_color(user.settings.booster_opening_with_image)
             await interaction.edit_original_response(embed=embed, view=view)
             await opening_booster_mode_interaction.response.send_message(
                 f"{self.t(user_language_id, 'settings_cmd.booster_opening_with_image_response_msg')}",
@@ -82,7 +87,8 @@ class SettingsCog(commands.Cog):
         select_language.callback = change_language_callback
 
         switch_opening_booster_mode_button = Button(
-            label=self.t(user_language_id, 'settings_cmd.switch_booster_opening_label'))
+            label=self.t(user_language_id, 'settings_cmd.switch_booster_opening_label'),
+            style=self._get_button_color(user.settings.booster_opening_with_image))
         switch_opening_booster_mode_button.callback = switch_opening_booster_mode_callback
 
         view = View()
