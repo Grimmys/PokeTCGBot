@@ -22,6 +22,10 @@ class SettingsCog(commands.Cog):
         self.user_service = user_service
 
     @staticmethod
+    def _format_booster_opening_with_images_option_value(option_value: bool):
+        return "✅" if option_value else "❌"
+
+    @staticmethod
     def _get_button_color(feature_enabled: bool):
         return discord.ButtonStyle.green if feature_enabled else discord.ButtonStyle.red
 
@@ -41,9 +45,11 @@ class SettingsCog(commands.Cog):
         embed.add_field(name=self.t(user_language_id, 'settings_cmd.language_field_name'),
                         value=f"{current_user_language.emoji} {current_user_language.label}",
                         inline=False)
+
         booster_opening_field_id = 1
         embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_opening_with_image_field_name'),
-                        value=f"{user.settings.booster_opening_with_image}",
+                        value=self._format_booster_opening_with_images_option_value(
+                            user.settings.booster_opening_with_image),
                         inline=False)
 
         async def change_language_callback(language_interaction: discord.Interaction):
@@ -72,7 +78,8 @@ class SettingsCog(commands.Cog):
             self.settings_service.update_booster_opening_with_image(user.id, user.settings.booster_opening_with_image)
 
             embed.set_field_at(booster_opening_field_id, name=embed.fields[booster_opening_field_id].name,
-                               value=f"{user.settings.booster_opening_with_image}",
+                               value=self._format_booster_opening_with_images_option_value(
+                                   user.settings.booster_opening_with_image),
                                inline=False)
             switch_opening_booster_mode_button.style = self._get_button_color(user.settings.booster_opening_with_image)
             await interaction.edit_original_response(embed=embed, view=view)
