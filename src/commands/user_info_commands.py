@@ -19,13 +19,16 @@ class UserInfoCog(commands.Cog):
 
     @app_commands.command(name="profile", description="Check user profile")
     async def profile_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
-        user = self.user_service.get_user(interaction.user.id)
+        user = self.user_service.get_and_update_user(interaction.user)
         discord_user = interaction.user
         user_language_id = user.settings.language_id
 
         if member is not None:
-            user = self.user_service.get_user(member.id)
+            user = self.user_service.get_user(member)
             discord_user = member
+
+            if user is None:
+                await interaction.response.send_message(self.t(user_language_id, 'common.user_not_found'))
 
         emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
 
@@ -40,12 +43,14 @@ class UserInfoCog(commands.Cog):
                         value=f"{emojis['booster']} {user.boosters_quantity}")
         embed.add_field(name=self.t(user_language_id, 'common.collection').capitalize(),
                         value=f"{emojis['card']} {len(user.cards)}")
+        embed.add_field(name=self.t(user_language_id, 'common.last_interaction'),
+                        value=discord_tools.timestamp_to_relative_time_format(user.last_interaction_date), inline=False)
 
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="cooldowns", description="Check the time you still have to wait for your next commands")
     async def cooldowns_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_user(interaction.user.id)
+        user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
         embed = Embed(

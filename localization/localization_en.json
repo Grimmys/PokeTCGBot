@@ -8,16 +8,32 @@
     "quantity": "quantity",
     "booster_cooldown": "Next free booster:",
     "promo_booster_cooldown": "Next free Promo booster:",
-    "minutes": "minutes"
+    "minutes": "minutes",
+    "last_interaction": "Last interaction done date",
+    "user_not_found": "User not found",
+    "user_or_card_not_found": "User not found or they don't have the card",
+    "not_allowed": "You are not allowed to use this command"
   },
   "ping_cmd": {
     "response_msg": "My ping is"
   },
+  "give_money_cmd": {
+    "response_msg": "User {user} received {amount} Pokémon Dollars"
+  },
+  "give_card_cmd": {
+    "response_msg": "User {user} received card {card_id}"
+  },
+  "remove_card_cmd": {
+    "response_msg": "User {user} lost card {card_id}"
+  },
   "settings_cmd": {
     "title": "Settings",
     "language_field_name": "Language",
+    "booster_opening_with_image_field_name": "Booster opened with card images by default",
     "language_changed_response_msg": "Language changed to:",
-    "select_language_placeholder": "Change language"
+    "booster_opening_with_image_response_msg": "Booster opening mode switched",
+    "select_language_placeholder": "Change language",
+    "switch_booster_opening_label": "Switch booster opening value"
   },
   "get_card_cmd": {
     "card_not_found": "Card {1} does not exist."
@@ -85,5 +101,8 @@
   "collection_cmd": {
     "title": "Collection",
     "empty": "You don't have any card in your collection yet."
+  },
+  "ranking_cmd": {
+    "title": "User Collection Ranking"
   }
 }

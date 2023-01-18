@@ -20,7 +20,7 @@ class MiniGamesCog(commands.Cog):
 
     @app_commands.command(name="joke", description="Get a (bad) Pokémon joke")
     async def joke_command(self, interaction: discord.Interaction) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user.id)
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         joke_id = f"joke_cmd.joke_{random.randint(1, MiniGamesCog.NUMBER_OF_JOKES)}"
 
