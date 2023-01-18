@@ -1,3 +1,4 @@
+from datetime import date, datetime, timedelta
 import time
 from typing import Optional
 
@@ -15,6 +16,10 @@ NUMBER_TOP_USERS = 50
 class UserService:
     def __init__(self, user_repository: UserRepository):
         self._user_repository = user_repository
+
+    @staticmethod
+    def _compute_next_midnight():
+        return int(datetime.timestamp(datetime.combine(date.today() + timedelta(days=1), datetime.min.time())))
 
     def get_user(self, user: discord.User) -> Optional[UserEntity]:
         return self._user_repository.get_user(user.id)
@@ -38,6 +43,9 @@ class UserService:
 
     def reset_promo_booster_cooldown(self, user_id: int) -> None:
         self._user_repository.change_promo_booster_cooldown(user_id, int(time.time()) + DEFAULT_PROMO_BOOSTER_COOLDOWN)
+
+    def reset_daily_cooldown(self, user_id: int) -> None:
+        self._user_repository.change_daily_cooldown(user_id, self._compute_next_midnight())
 
     def add_cards_to_collection(self, user_id: int, drawn_cards_ids: list[str]) -> bool:
         return self._user_repository.add_cards_to_collection(user_id, drawn_cards_ids)

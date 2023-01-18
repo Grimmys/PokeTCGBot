@@ -35,13 +35,17 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_daily_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        pass
+
+    @abstractmethod
     def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> bool:
         pass
 
     @abstractmethod
     def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
         pass
-
+    
     @abstractmethod
     def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
         pass

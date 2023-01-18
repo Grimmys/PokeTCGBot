@@ -8,6 +8,7 @@
     "quantity": "quantity",
     "booster_cooldown": "Next free booster:",
     "promo_booster_cooldown": "Next free Promo booster:",
+    "daily_cooldown": "Next daily:",
     "minutes": "minutes",
     "last_interaction": "Last interaction done date",
     "user_not_found": "User not found",
@@ -41,6 +42,9 @@
   "help_cmd": {
     "title": "Help",
     "description": "List of available commands"
+  },
+  "daily_cmd": {
+    "response_msg": "You earned {amount} Pokémon Dollars"
   },
   "booster_cmd": {
     "title": "Booster"
