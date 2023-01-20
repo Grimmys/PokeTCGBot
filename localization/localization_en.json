@@ -3,6 +3,8 @@
     "pokedollar": "Pokémon Dollar",
     "collection": "collection",
     "booster": "booster",
+    "basic_booster": "Basic Booster",
+    "promo_booster": "Promo Booster",
     "rarity": "rarity",
     "set": "set",
     "quantity": "quantity",
@@ -51,6 +53,9 @@
   },
   "promo_booster_cmd": {
     "title": "Promo Booster"
+  },
+  "market_booster_cmd": {
+    "title": "Booster Market"
   },
   "drop_rates_cmd": {
     "title": "Drop rates",
