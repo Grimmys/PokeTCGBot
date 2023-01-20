@@ -21,6 +21,14 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
+    def change_basic_boosters_quantity(self, user_id: int, quantity: int) -> bool:
+        # TODO: implementation
+        pass
+
+    def change_promo_boosters_quantity(self, user_id: int, quantity: int) -> bool:
+        # TODO: implementation
+        pass
+
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         if user_id in self._user_entities_by_id:
             self._user_entities_by_id[user_id].settings.language_id = new_language_id
@@ -36,6 +44,10 @@ class InMemoryUserRepository(UserRepository):
         pass
 
     def change_promo_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        # TODO: implementation
+        pass
+
+    def change_daily_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
         # TODO: implementation
         pass
 

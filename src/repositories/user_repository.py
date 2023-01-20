@@ -19,6 +19,14 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_basic_boosters_quantity(self, user_id: int, quantity: int) -> bool:
+        pass
+
+    @abstractmethod
+    def change_promo_boosters_quantity(self, user_id: int, quantity: int) -> bool:
+        pass
+
+    @abstractmethod
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         pass
 
@@ -45,7 +53,7 @@ class UserRepository(ABC):
     @abstractmethod
     def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
         pass
-    
+
     @abstractmethod
     def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
         pass

@@ -1,14 +1,17 @@
-import time
 from typing import Literal
 
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
 
+from src.colors import BLUE
 from src.services.localization_service import LocalizationService
-from src.services.user_service import UserService, DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
-from src.colors import YELLOW, BLUE
-from src.utils import discord_tools
+from src.services.user_service import UserService
+
+BOOSTERS_PRICE = {
+    "Basic": 100,
+    "Promo": 300
+}
 
 
 class ShoppingCog(commands.Cog):
@@ -31,8 +34,27 @@ class ShoppingCog(commands.Cog):
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
         embed.add_field(name=f"{emojis['booster']} {self.t(user_language_id, 'common.basic_booster')}",
-                        value=f"{emojis['pokedollar']} 100", )
+                        value=f"{emojis['pokedollar']} {BOOSTERS_PRICE['Basic']}")
         embed.add_field(name=f"{emojis['booster']} {self.t(user_language_id, 'common.promo_booster')}",
-                        value=f"{emojis['pokedollar']} 300", )
+                        value=f"{emojis['pokedollar']} {BOOSTERS_PRICE['Promo']}")
 
         await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="buy_boosters", description="Buy some boosters from market")
+    async def buy_boosters_command(self, interaction: discord.Interaction, kind: Literal["Basic", "Promo"],
+                                   quantity: int) -> None:
+        user = self.user_service.get_and_update_user(interaction.user)
+        user_language_id = user.settings.language_id
+
+        if quantity <= 0:
+            await interaction.response.send_message(self.t(user_language_id, 'buy_boosters_cmd.negative_quantity'))
+            return
+
+        total_price = BOOSTERS_PRICE[kind] * quantity
+        if user.money < total_price:
+            await interaction.response.send_message(self.t(user_language_id, 'buy_boosters_cmd.not_enough_money'))
+            return
+
+        self.user_service.give_money(user.id, - total_price)
+        self.user_service.give_boosters(user.id, kind, quantity)
+        await interaction.response.send_message(self.t(user_language_id, 'buy_boosters_cmd.success_buy'))

@@ -57,6 +57,11 @@
   "market_booster_cmd": {
     "title": "Booster Market"
   },
+  "buy_boosters_cmd": {
+    "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your boosters!",
+    "not_enough_money": "You're too poor to buy these boosters",
+    "success_buy": "Congratulations on your purchases"
+  },
   "drop_rates_cmd": {
     "title": "Drop rates",
     "description": "Drop for the last card of a basic booster"

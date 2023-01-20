@@ -44,6 +44,22 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
+    def change_basic_boosters_quantity(self, user_id: int, quantity: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].boosters_quantity += quantity
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
+    def change_promo_boosters_quantity(self, user_id: int, quantity: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].promo_boosters_quantity += quantity
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:

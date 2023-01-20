@@ -57,6 +57,11 @@
   "market_booster_cmd": {
     "title": "Échoppe à Boosters"
   },
+  "buy_boosters_cmd": {
+    "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter vos boosters !",
+    "not_enough_money": "Vous êtes trop pauvre pour cet achat",
+    "success_buy": "Félicitations pour vos achats"
+  },
   "drop_rates_cmd": {
     "title": "Taux de drop",
     "description": "Taux pour la dernière carte d'un booster de base"
