@@ -176,36 +176,40 @@ class BoosterCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_basic_booster > time.time():
-            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
-                user.cooldowns.timestamp_for_next_basic_booster)
-            await interaction.response.send_message(
-                f"{self.t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
+            if user.boosters_quantity > 0:
+                self.user_service.consume_booster(user.id, "Basic")
+            else:
+                discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
+                    user.cooldowns.timestamp_for_next_basic_booster)
+                await interaction.response.send_message(
+                    f"{self.t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
+                return
         else:
             self.user_service.reset_basic_booster_cooldown(user.id)
 
-            drawn_cards = self._generate_booster_cards()
+        drawn_cards = self._generate_booster_cards()
 
-            self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
+        self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
 
-            if with_image is None:
-                with_image = user.settings.booster_opening_with_image
-            if with_image:
-                formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
-                                   for card in drawn_cards]
+        if with_image is None:
+            with_image = user.settings.booster_opening_with_image
+        if with_image:
+            formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
+                               for card in drawn_cards]
 
-                paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
+            paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
 
-                await interaction.response.send_message(embed=paginated_embed.embed, view=view)
-            else:
-                embed = Embed(
-                    title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
-                    color=GREEN)
-                embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+            await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+        else:
+            embed = Embed(
+                title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                color=GREEN)
+            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-                for card in drawn_cards:
-                    self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
+            for card in drawn_cards:
+                self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
 
-                await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="promo_booster", description="Open a Promo booster")
     async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None) -> None:
@@ -213,36 +217,40 @@ class BoosterCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_promo_booster > time.time():
-            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
-                user.cooldowns.timestamp_for_next_promo_booster)
-            await interaction.response.send_message(
-                f"{self.t(user_language_id, 'common.promo_booster_cooldown')} {discord_formatted_timestamp}")
+            if user.promo_boosters_quantity > 0:
+                self.user_service.consume_booster(user.id, "Promo")
+            else:
+                discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
+                    user.cooldowns.timestamp_for_next_promo_booster)
+                await interaction.response.send_message(
+                    f"{self.t(user_language_id, 'common.promo_booster_cooldown')} {discord_formatted_timestamp}")
+                return
         else:
             self.user_service.reset_promo_booster_cooldown(user.id)
 
-            drawn_cards = self._generate_promo_booster_cards()
+        drawn_cards = self._generate_promo_booster_cards()
 
-            self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
+        self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
 
-            if with_image is None:
-                with_image = user.settings.booster_opening_with_image
-            if with_image:
-                formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
-                                   for card in drawn_cards]
+        if with_image is None:
+            with_image = user.settings.booster_opening_with_image
+        if with_image:
+            formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
+                               for card in drawn_cards]
 
-                paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
+            paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
 
-                await interaction.response.send_message(embed=paginated_embed.embed, view=view)
-            else:
-                embed = Embed(
-                    title=f"---------- {self.t(user_language_id, 'promo_booster_cmd.title')} ----------",
-                    color=RED)
-                embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+            await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+        else:
+            embed = Embed(
+                title=f"---------- {self.t(user_language_id, 'promo_booster_cmd.title')} ----------",
+                color=RED)
+            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-                for card in drawn_cards:
-                    self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
+            for card in drawn_cards:
+                self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
 
-                await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="drop_rates",
                           description="Get the probability for each tier of cards to be in a booster")

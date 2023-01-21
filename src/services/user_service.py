@@ -44,6 +44,12 @@ class UserService:
         elif kind == "Promo":
             return self._user_repository.change_promo_boosters_quantity(user_id, quantity)
 
+    def consume_booster(self, user_id: int, kind: str) -> bool:
+        if kind == "Basic":
+            return self._user_repository.change_basic_boosters_quantity(user_id, -1)
+        elif kind == "Promo":
+            return self._user_repository.change_promo_boosters_quantity(user_id, -1)
+
     def reset_basic_booster_cooldown(self, user_id: int) -> None:
         self._user_repository.change_basic_booster_cooldown(user_id, int(time.time()) + DEFAULT_BASIC_BOOSTER_COOLDOWN)
 
