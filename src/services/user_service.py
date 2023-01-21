@@ -73,3 +73,12 @@ class UserService:
             self._user_repository.add_cards_to_collection(receiver_id, card_ids_list)
             return True
         return False
+
+    def transfer_money(self, sender_id: int, receiver_id: int, amount: int) -> bool:
+        sender = self._user_repository.get_user(sender_id)
+        if sender.money < amount:
+            return False
+
+        self._user_repository.change_money(sender_id, - amount)
+        self._user_repository.change_money(receiver_id, amount)
+        return True

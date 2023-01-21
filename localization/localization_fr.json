@@ -67,6 +67,11 @@
     "missing_cards": "Vous ne possédez pas toutes les cartes, le transfert est annulé",
     "cards_transferred": "Cartes envoyées à {user}"
   },
+  "send_money_cmd": {
+    "same_user": "Vous ne pouvez pas envoyer des Pokédollars à... vous-même",
+    "not_enough_money": "Vous ne possédez pas autant de Pokédollars",
+    "money_transferred": "{amount} Pokédollars ont été envoyé à {user}"
+  },
   "drop_rates_cmd": {
     "title": "Taux de drop",
     "description": "Taux pour la dernière carte d'un booster de base"

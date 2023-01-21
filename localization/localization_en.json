@@ -67,6 +67,11 @@
     "missing_cards": "You do not own some of the cards you provided, transfer cancelled",
     "cards_transferred": "Cards have been sent to {user}"
   },
+  "send_money_cmd": {
+    "same_user": "You can't send money to... yourself",
+    "not_enough_money": "You don't have that much Pokémon Dollars",
+    "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
+  },
   "drop_rates_cmd": {
     "title": "Drop rates",
     "description": "Drop for the last card of a basic booster"
