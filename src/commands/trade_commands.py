@@ -53,6 +53,10 @@ class TradingCog(commands.Cog):
             await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.same_user'))
             return
 
+        if amount <= 0:
+            await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.negative_amount'))
+            return
+
         success_transfer = self.user_service.transfer_money(user.id, other_user.id, amount)
         if not success_transfer:
             await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.not_enough_money'))

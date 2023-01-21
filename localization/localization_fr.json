@@ -69,6 +69,7 @@
   },
   "send_money_cmd": {
     "same_user": "Vous ne pouvez pas envoyer des Pokédollars à... vous-même",
+    "negative_amount": "Non, vous ne pouvez pas voler les Pokédollars de quelqu'un d'autre",
     "not_enough_money": "Vous ne possédez pas autant de Pokédollars",
     "money_transferred": "{amount} Pokédollars ont été envoyé à {user}"
   },

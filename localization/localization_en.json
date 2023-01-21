@@ -69,6 +69,7 @@
   },
   "send_money_cmd": {
     "same_user": "You can't send money to... yourself",
+    "negative_amount": "No, you can't steal someone else Pokémon Dollars",
     "not_enough_money": "You don't have that much Pokémon Dollars",
     "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
   },
