@@ -62,6 +62,11 @@
     "not_enough_money": "Vous êtes trop pauvre pour cet achat",
     "success_buy": "Félicitations pour vos achats"
   },
+  "send_cards_cmd": {
+    "same_user": "Vous ne pouvez pas envoyer des cartes à... vous-même",
+    "missing_cards": "Vous ne possédez pas toutes les cartes, le transfert est annulé",
+    "cards_transferred": "Cartes envoyées à {user}"
+  },
   "drop_rates_cmd": {
     "title": "Taux de drop",
     "description": "Taux pour la dernière carte d'un booster de base"

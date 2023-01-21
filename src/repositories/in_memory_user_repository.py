@@ -59,6 +59,10 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
+    def remove_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+        # TODO: implementation
+        pass
+
     def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
         # TODO: implementation
         pass

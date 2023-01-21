@@ -125,6 +125,21 @@ class PickleFileUserRepository(UserRepository):
                 return True
         return False
 
+    def remove_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            user = users_by_id[user_id]
+            for card_id in card_ids:
+                if card_id in user.cards:
+                    user.cards[card_id] -= 1
+                    if user.cards[card_id] == 0:
+                        del user.cards[card_id]
+                else:
+                    return False
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
     def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         users: list[UserEntity] = list(users_by_id.values())

@@ -55,5 +55,9 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def remove_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+        pass
+
+    @abstractmethod
     def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
         pass

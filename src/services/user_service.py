@@ -67,3 +67,9 @@ class UserService:
 
     def get_top_users_collection(self) -> list[UserEntity]:
         return self._user_repository.get_top_users_by_cards(NUMBER_TOP_USERS)
+
+    def transfer_cards(self, sender_id: int, receiver_id: int, card_ids_list: list[str]) -> bool:
+        if self._user_repository.remove_cards_from_collection(sender_id, card_ids_list):
+            self._user_repository.add_cards_to_collection(receiver_id, card_ids_list)
+            return True
+        return False
