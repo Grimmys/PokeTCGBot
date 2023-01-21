@@ -100,11 +100,11 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> bool:
+    def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            for card_id in cards_id:
+            for card_id in card_ids:
                 if card_id in user.cards:
                     user.cards[card_id] += 1
                 else:

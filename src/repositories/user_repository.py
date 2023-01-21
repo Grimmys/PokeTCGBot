@@ -47,7 +47,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def add_cards_to_collection(self, user_id: int, cards_id: list[str]) -> bool:
+    def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
         pass
 
     @abstractmethod
