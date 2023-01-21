@@ -35,7 +35,7 @@ class ShoppingCog(commands.Cog):
 
         embed.add_field(name=f"{emojis['booster']} {self.t(user_language_id, 'common.basic_booster')}",
                         value=f"{emojis['pokedollar']} {BOOSTERS_PRICE['Basic']}")
-        embed.add_field(name=f"{emojis['booster']} {self.t(user_language_id, 'common.promo_booster')}",
+        embed.add_field(name=f"{emojis['booster_promo']} {self.t(user_language_id, 'common.promo_booster')}",
                         value=f"{emojis['pokedollar']} {BOOSTERS_PRICE['Promo']}")
 
         await interaction.response.send_message(embed=embed)
