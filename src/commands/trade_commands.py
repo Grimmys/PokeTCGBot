@@ -11,7 +11,7 @@ class TradingCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService,
                  localization_service: LocalizationService) -> None:
         self.bot = bot
-        self._log_channel = bot.get_channel(LOG_CHANNEL_ID)
+        self._log_channel = None
         self.user_service = user_service
         self.t = localization_service.get_string
 

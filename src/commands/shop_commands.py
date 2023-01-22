@@ -4,6 +4,7 @@ import discord
 from discord import Embed, app_commands
 from discord.ext import commands
 
+from config import LOG_CHANNEL_ID
 from src.colors import BLUE
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
@@ -18,8 +19,15 @@ class ShoppingCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService,
                  localization_service: LocalizationService) -> None:
         self.bot = bot
+        self._log_channel = None
         self.user_service = user_service
         self.t = localization_service.get_string
+
+    @property
+    def log_channel(self):
+        if self._log_channel is None:
+            self._log_channel = self.bot.get_channel(LOG_CHANNEL_ID)
+        return self._log_channel
 
     @app_commands.command(name="market_booster", description="Check available boosters with their prices")
     async def market_booster_command(self, interaction: discord.Interaction) -> None:
@@ -57,4 +65,5 @@ class ShoppingCog(commands.Cog):
 
         self.user_service.give_money(user.id, - total_price)
         self.user_service.give_boosters(user.id, kind, quantity)
+        await self.log_channel.send(f"{user.id} ({user.name_tag}) bought {quantity} {kind} booster(s) for {total_price} Pokémon Dollars")
         await interaction.response.send_message(self.t(user_language_id, 'buy_boosters_cmd.success_buy'))
