@@ -26,6 +26,9 @@
   "give_card_cmd": {
     "response_msg": "L'utilisateur {user} a reçu la carte {card_id}"
   },
+  "give_boosters_cmd": {
+    "response_msg": "L'utilisateur {user} a reçu {quantity} booster(s) {kind}"
+  },
   "remove_card_cmd": {
     "response_msg": "L'utilisateur {user} a perdu la carte {card_id}"
   },
