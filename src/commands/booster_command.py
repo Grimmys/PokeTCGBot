@@ -195,10 +195,12 @@ class BoosterCog(commands.Cog):
             self.user_service.reset_basic_booster_cooldown(user.id)
 
         drawn_cards = self._generate_booster_cards()
+        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id, drawn_cards))
 
-        self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
-        
-        await self.log_channel.send(f"{user.id} ({user.name_tag}) opened a basic booster containing {list(map(lambda drawn_card: drawn_card.id, drawn_cards))}")
+        self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
+
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) opened a basic booster containing {drawn_card_ids}")
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
         if with_image:
@@ -237,10 +239,12 @@ class BoosterCog(commands.Cog):
             self.user_service.reset_promo_booster_cooldown(user.id)
 
         drawn_cards = self._generate_promo_booster_cards()
+        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id, drawn_cards))
 
-        self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
+        self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 
-        await self.log_channel.send(f"{user.id} ({user.name_tag}) opened a Promo booster containing {list(map(lambda drawn_card: drawn_card.id, drawn_cards))}")
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) opened a Promo booster containing {drawn_card_ids}")
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
         if with_image:
