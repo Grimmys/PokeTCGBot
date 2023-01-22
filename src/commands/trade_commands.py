@@ -11,8 +11,15 @@ class TradingCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService,
                  localization_service: LocalizationService) -> None:
         self.bot = bot
+        self._log_channel = bot.get_channel(LOG_CHANNEL_ID)
         self.user_service = user_service
         self.t = localization_service.get_string
+
+    @property
+    def log_channel(self):
+        if self._log_channel is None:
+            self._log_channel = self.bot.get_channel(LOG_CHANNEL_ID)
+        return self._log_channel
 
     @app_commands.command(name="send_cards", description="Send card(s) to another player")
     async def send_cards_command(self, interaction: discord.Interaction, member: discord.User, card_ids: str) -> None:
@@ -36,6 +43,8 @@ class TradingCog(commands.Cog):
             await interaction.response.send_message(self.t(user_language_id, 'send_cards_cmd.missing_cards'))
             return
 
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) sent '{card_ids}' card(s) to {other_user.id} ({other_user.name_tag})")
         await interaction.response.send_message(self.t(user_language_id, 'send_cards_cmd.cards_transferred')
                                                 .format(user=other_user.name_tag))
 
@@ -63,7 +72,7 @@ class TradingCog(commands.Cog):
             await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.not_enough_money'))
             return
 
-        channel = self.bot.get_channel(LOG_CHANNEL_ID)
-        await channel.send(f"{user.id} ({user.name_tag}) sent {amount} Pokémon Dollars to {other_user.id} ({other_user.name_tag})")
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) sent {amount} Pokémon Dollars to {other_user.id} ({other_user.name_tag})")
         await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.money_transferred')
                                                 .format(user=other_user.name_tag, amount=amount))
