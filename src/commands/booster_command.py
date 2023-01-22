@@ -42,6 +42,7 @@ class BoosterCog(commands.Cog):
                  localization_service: LocalizationService, user_service: UserService, rarity_service: RarityService,
                  type_service: TypeService) -> None:
         self.bot = bot
+        self._log_channel = None
         self.settings_service = settings_service
         self.t = localization_service.get_string
         self.user_service = user_service
@@ -49,6 +50,12 @@ class BoosterCog(commands.Cog):
         self.type_service = type_service
         self.sets: list[Set] = Set.all()
         self.cards_by_rarity: dict[str, list[Card]] = BoosterCog._compute_all_cards()
+
+    @property
+    def log_channel(self):
+        if self._log_channel is None:
+            self._log_channel = self.bot.get_channel(config.LOG_CHANNEL_ID)
+        return self._log_channel
 
     @staticmethod
     def _filter_cards_for_rarities(cards: list[Card], rarities: set[str]) -> list[Card]:
@@ -190,7 +197,8 @@ class BoosterCog(commands.Cog):
         drawn_cards = self._generate_booster_cards()
 
         self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
-
+        
+        await self.log_channel.send(f"{user.id} ({user.name_tag}) opened a basic booster containing {list(map(lambda drawn_card: drawn_card.id, drawn_cards))}")
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
         if with_image:
@@ -232,6 +240,7 @@ class BoosterCog(commands.Cog):
 
         self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
 
+        await self.log_channel.send(f"{user.id} ({user.name_tag}) opened a Promo booster containing {list(map(lambda drawn_card: drawn_card.id, drawn_cards))}")
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
         if with_image:
