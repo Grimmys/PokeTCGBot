@@ -6,5 +6,6 @@ DISCORD_TOKEN = None
 
 # Required config parameters to replace
 
-UNCOMMON_UPGRADE_RATE: int = None
+UNCOMMON_UPGRADE_RATE: float = None
+LOG_CHANNEL_ID: int = None
 BOT_ADMIN_USER_IDS: List[int] = []
