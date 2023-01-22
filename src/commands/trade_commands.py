@@ -2,6 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from config import LOG_CHANNEL_ID
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
 
@@ -62,5 +63,7 @@ class TradingCog(commands.Cog):
             await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.not_enough_money'))
             return
 
+        channel = self.bot.get_channel(LOG_CHANNEL_ID)
+        await channel.send(f"{user.id} ({user.name_tag}) sent {amount} Pokémon Dollars to {other_user.id} ({other_user.name_tag})")
         await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.money_transferred')
                                                 .format(user=other_user.name_tag, amount=amount))
