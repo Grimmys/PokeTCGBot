@@ -55,6 +55,11 @@
     "title": "Aide", 
     "description": "Liste des commandes disponibles"
   },
+  "support_cmd": {
+    "title": "Support", 
+    "description": "Pour toute demande de support, par rapport à une commande ne fonctionnant pas correctement, une suggestion ou autre problème quelconque lié au bot, nous vous invitons à rejoindre le serveur Discord officiel du bot, et envoyer un message dans #support",
+    "discord_server_invitation": "Lien d'invitation au serveur Discord"
+  },
   "daily_cmd": {
     "response_msg": "Vous récupérez {amount} Pokédollars"
   },

@@ -50,6 +50,16 @@ async def help_command(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(embed=embed)
 
 
+@bot.tree.command(name="support", description="Information about how to join support in case of any issue")
+async def support_command(interaction: discord.Interaction) -> None:
+    user_language_id = settings_service.get_user_language_id(interaction.user)
+    embed = Embed(title=f"---------- {t(user_language_id, 'support_cmd.title')} ----------",
+                  description=t(user_language_id, 'support_cmd.description'), color=BLUE)
+    embed.add_field(name=t(user_language_id, 'support_cmd.discord_server_invitation'),
+                    value="https://discord.gg/66dPeCnkVy")
+    await interaction.response.send_message(embed=embed)
+
+
 @bot.event
 async def on_ready():
     type_service.load_emojis({emoji.name: str(emoji) for emoji in bot.emojis})
@@ -69,7 +79,8 @@ async def setup_cogs():
     await bot.add_cog(AdminCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(DailyCog(bot, localization_service, user_service))
-    await bot.add_cog(BoosterCog(bot, settings_service, localization_service, user_service, rarity_service, type_service))
+    await bot.add_cog(
+        BoosterCog(bot, settings_service, localization_service, user_service, rarity_service, type_service))
     await bot.add_cog(ShoppingCog(bot, user_service, localization_service))
     await bot.add_cog(TradingCog(bot, user_service, localization_service))
     await bot.add_cog(UserInfoCog(bot, user_service, localization_service))

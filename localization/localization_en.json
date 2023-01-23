@@ -55,6 +55,11 @@
     "title": "Help",
     "description": "List of available commands"
   },
+  "support_cmd": {
+    "title": "Support", 
+    "description": "For any kind of support request, whether it is about a malfunctioning command, a feature request or any other issue related to the bot, we invite you to send a message on the #support channel of the official Discord server",
+    "discord_server_invitation": "Discord server invitation link"
+  },
   "daily_cmd": {
     "response_msg": "You earned {amount} Pokémon Dollars"
   },
