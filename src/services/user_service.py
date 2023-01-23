@@ -47,6 +47,12 @@ class UserService:
         elif kind == "Promo":
             return self._user_repository.change_promo_boosters_quantity(user_id, quantity)
 
+    def give_all_boosters(self, kind: str, quantity: int) -> bool:
+        if kind == "Basic":
+            return self._user_repository.change_all_basic_boosters_quantity(quantity)
+        elif kind == "Promo":
+            return self._user_repository.change_all_promo_boosters_quantity(quantity)
+
     def consume_booster(self, user_id: int, kind: str) -> bool:
         if kind == "Basic":
             return self._user_repository.change_basic_boosters_quantity(user_id, -1)

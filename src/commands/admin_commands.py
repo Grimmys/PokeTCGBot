@@ -98,3 +98,20 @@ class AdminCog(commands.Cog):
         else:
             await interaction.response.send_message(
                 self.t(user_language_id, 'common.user_not_found'))
+
+    @app_commands.command(name="give_all_boosters", description="Give some boosters to every users")
+    async def give_all_boosters_command(self, interaction: discord.Interaction,
+                                        kind: Literal["Basic", "Promo"],
+                                        quantity: int) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
+
+        if interaction.user.id not in BOT_ADMIN_USER_IDS:
+            await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        if self.user_service.give_all_boosters(kind, quantity):
+            await interaction.response.send_message(
+                self.t(user_language_id, 'give_all_boosters_cmd.response_msg').format(kind=kind, quantity=quantity))
+        else:
+            await interaction.response.send_message(
+                self.t(user_language_id, 'common.unknown_issue'))

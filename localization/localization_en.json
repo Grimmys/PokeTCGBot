@@ -33,6 +33,9 @@
   "give_boosters_cmd": {
     "response_msg": "User {user} received {quantity} {kind} booster(s)"
   },
+  "give_all_boosters_cmd": {
+    "response_msg": "All users received {quantity} {kind} booster(s)"
+  },
   "remove_card_cmd": {
     "response_msg": "User {user} lost card {card_id}"
   },
