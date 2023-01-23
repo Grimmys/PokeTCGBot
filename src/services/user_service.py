@@ -38,6 +38,9 @@ class UserService:
     def give_money(self, user_id: int, amount: int) -> bool:
         return self._user_repository.change_money(user_id, amount)
 
+    def give_all_money(self, amount: int) -> bool:
+        return self._user_repository.change_all_money(amount)
+
     def give_boosters(self, user_id: int, kind: str, quantity: int) -> bool:
         if kind == "Basic":
             return self._user_repository.change_basic_boosters_quantity(user_id, quantity)

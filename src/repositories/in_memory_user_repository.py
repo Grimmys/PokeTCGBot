@@ -21,6 +21,10 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
+    def change_all_money(self, money_change: int) -> bool:
+        # TODO: implementation
+        pass
+
     def change_basic_boosters_quantity(self, user_id: int, quantity: int) -> bool:
         # TODO: implementation
         pass

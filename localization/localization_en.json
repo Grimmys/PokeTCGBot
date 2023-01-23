@@ -15,13 +15,17 @@
     "last_interaction": "Last interaction done date",
     "user_not_found": "User not found",
     "user_or_card_not_found": "User not found or they don't have the card",
-    "not_allowed": "You are not allowed to use this command"
+    "not_allowed": "You are not allowed to use this command",
+    "unknown_issue": "An unknown issue occurred during the process of the command"
   },
   "ping_cmd": {
     "response_msg": "My ping is"
   },
   "give_money_cmd": {
     "response_msg": "User {user} received {amount} Pokémon Dollars"
+  },
+  "give_all_money_cmd": {
+    "response_msg": "All users received {amount} Pokémon Dollars"
   },
   "give_card_cmd": {
     "response_msg": "User {user} received card {card_id}"

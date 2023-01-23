@@ -15,13 +15,17 @@
     "last_interaction": "Date de la dernière interaction",
     "user_not_found": "L'utilisateur n'a pas été trouvé",
     "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",
-    "not_allowed": "Vous ne pouvez pas utiliser cette commande"
+    "not_allowed": "Vous ne pouvez pas utiliser cette commande",
+    "unknown_issue": "Une erreur inconnue a eu lieu durant l'exécution de la commande"
   },
   "ping_cmd": {
     "response_msg": "Mon ping est de"
   },
   "give_money_cmd": {
     "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"
+  },
+  "give_all_money_cmd": {
+    "response_msg": "Tous les utilisateurs ont reçu {amount} Pokédollars"
   },
   "give_card_cmd": {
     "response_msg": "L'utilisateur {user} a reçu la carte {card_id}"

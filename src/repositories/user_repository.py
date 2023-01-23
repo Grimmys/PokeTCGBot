@@ -19,6 +19,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_all_money(self, money_change: int) -> bool:
+        pass
+
+    @abstractmethod
     def change_basic_boosters_quantity(self, user_id: int, quantity: int) -> bool:
         pass
 

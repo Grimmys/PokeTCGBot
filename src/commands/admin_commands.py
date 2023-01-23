@@ -34,6 +34,21 @@ class AdminCog(commands.Cog):
             await interaction.response.send_message(
                 self.t(user_language_id, 'common.user_not_found'))
 
+    @app_commands.command(name="give_all_money", description="Give or take money to every users")
+    async def give_all_money_command(self, interaction: discord.Interaction, money: int) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
+
+        if interaction.user.id not in BOT_ADMIN_USER_IDS:
+            await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        if self.user_service.give_all_money(money):
+            await interaction.response.send_message(
+                self.t(user_language_id, 'give_all_money_cmd.response_msg').format(amount=money))
+        else:
+            await interaction.response.send_message(
+                self.t(user_language_id, 'common.unknown_issue'))
+
     @app_commands.command(name="give_card", description="Give a card to the user")
     async def give_card_command(self, interaction: discord.Interaction, member: discord.User, card_id: str) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
