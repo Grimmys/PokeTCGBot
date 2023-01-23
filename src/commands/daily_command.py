@@ -4,11 +4,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from config import DAILY_MONEY_GIFT_AMOUNT
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
 from src.utils import discord_tools
-
-DAILY_MONEY_GIFT_AMOUNT = 100
 
 
 class DailyCog(commands.Cog):

@@ -12,6 +12,7 @@
     "promo_booster_cooldown": "Prochain booster Promo gratuit :",
     "daily_cooldown": "Prochain daily:",
     "minutes": "minutes",
+    "hours": "heures",
     "last_interaction": "Date de la dernière interaction",
     "user_not_found": "L'utilisateur n'a pas été trouvé",
     "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",

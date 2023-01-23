@@ -68,7 +68,7 @@ class UserInfoCog(commands.Cog):
         else:
             basic_booster_cooldown = available_message
         embed.add_field(name=f"{self.t(user_language_id, 'common.booster_cooldown')}",
-                        value=f"{basic_booster_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.time_between_cmds')} {DEFAULT_BASIC_BOOSTER_COOLDOWN // 60} {self.t(user_language_id, 'common.minutes')}]",
+                        value=f"{basic_booster_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.time_between_cmds')} {DEFAULT_BASIC_BOOSTER_COOLDOWN // (60 * 60)} {self.t(user_language_id, 'common.hours')}]",
                         inline=False)
 
         if time.time() < user.cooldowns.timestamp_for_next_promo_booster:
@@ -77,7 +77,7 @@ class UserInfoCog(commands.Cog):
         else:
             promo_booster_cooldown = available_message
         embed.add_field(name=f"{self.t(user_language_id, 'common.promo_booster_cooldown')}",
-                        value=f"{promo_booster_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.time_between_cmds')} {DEFAULT_PROMO_BOOSTER_COOLDOWN // 60} {self.t(user_language_id, 'common.minutes')}]",
+                        value=f"{promo_booster_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.time_between_cmds')} {DEFAULT_PROMO_BOOSTER_COOLDOWN // (60 * 60)} {self.t(user_language_id, 'common.hours')}]",
                         inline=False)
 
         await interaction.response.send_message(embed=embed)

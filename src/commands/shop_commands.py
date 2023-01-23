@@ -4,15 +4,10 @@ import discord
 from discord import Embed, app_commands
 from discord.ext import commands
 
-from config import LOG_CHANNEL_ID
+from config import LOG_CHANNEL_ID, BOOSTERS_PRICE
 from src.colors import BLUE
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
-
-BOOSTERS_PRICE = {
-    "Basic": 100,
-    "Promo": 300
-}
 
 
 class ShoppingCog(commands.Cog):

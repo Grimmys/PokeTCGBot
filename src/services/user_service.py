@@ -4,11 +4,9 @@ from typing import Optional
 
 import discord
 
+from config import DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
-
-DEFAULT_BASIC_BOOSTER_COOLDOWN = 60 * 15
-DEFAULT_PROMO_BOOSTER_COOLDOWN = 60 * 60
 
 NUMBER_TOP_USERS = 50
 
