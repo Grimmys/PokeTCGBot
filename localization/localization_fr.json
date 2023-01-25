@@ -10,7 +10,7 @@
     "quantity": "quantité",
     "booster_cooldown": "Prochain booster gratuit :",
     "promo_booster_cooldown": "Prochain booster Promo gratuit :",
-    "daily_cooldown": "Prochain daily:",
+    "daily_cooldown": "Prochain daily :",
     "minutes": "minutes",
     "hours": "heures",
     "last_interaction": "Date de la dernière interaction",
@@ -99,6 +99,7 @@
   "cooldowns_cmd": {
     "title": "Temps d'attente des commandes",
     "time_between_cmds": "Temps de récupération de base : ",
+    "midnight_reset": "Récupération à minuit",
     "available": "Disponible"
   },
   "joke_cmd": {

@@ -80,4 +80,13 @@ class UserInfoCog(commands.Cog):
                         value=f"{promo_booster_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.time_between_cmds')} {DEFAULT_PROMO_BOOSTER_COOLDOWN // (60 * 60)} {self.t(user_language_id, 'common.hours')}]",
                         inline=False)
 
+        if time.time() < user.cooldowns.timestamp_for_next_daily:
+            daily_cooldown = discord_tools.timestamp_to_relative_time_format(
+                user.cooldowns.timestamp_for_next_daily)
+        else:
+            daily_cooldown = available_message
+        embed.add_field(name=f"{self.t(user_language_id, 'common.daily_cooldown')}",
+                        value=f"{daily_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.midnight_reset')}]",
+                        inline=False)
+
         await interaction.response.send_message(embed=embed)

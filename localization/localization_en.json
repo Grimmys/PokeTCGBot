@@ -99,6 +99,7 @@
   "cooldowns_cmd": {
     "title": "Commands' cooldown",
     "time_between_cmds": "Default timeout: ",
+    "midnight_reset": "Daily reset at midnight",
     "available": "Available"
   },
   "joke_cmd": {
