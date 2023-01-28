@@ -39,28 +39,8 @@ class RankingCog(commands.Cog):
             rank += 1
             nb_cards_by_user.append({"name": f"{rank}: {user.name_tag}", "value": str(len(user.cards))})
 
-        paginated_embed = PaginatedEmbed(nb_cards_by_user, False, RANKING_PAGE_SIZE,
-                               title=f"---------- {self.t(user_language_id, 'ranking_cmd.title')} ----------",
-                               inline=True)
+        paginated_embed = PaginatedEmbed(interaction, nb_cards_by_user, False, RANKING_PAGE_SIZE,
+                                         title=f"---------- {self.t(user_language_id, 'ranking_cmd.title')} ----------",
+                                         inline=True)
 
-        view = View()
-
-        async def change_page_callback(click_interaction: discord.Interaction, forward):
-            if click_interaction.user != interaction.user:
-                return
-            paginated_embed.change_page(forward)
-            await interaction.edit_original_response(embed=paginated_embed.embed)
-            await click_interaction.response.defer()
-
-        next_button = Button(emoji="➡️")
-        next_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, True)
-
-        previous_button = Button(emoji="⬅️")
-        previous_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, False)
-
-        view.add_item(previous_button)
-        view.add_item(next_button)
-
-        await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+        await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)

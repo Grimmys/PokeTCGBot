@@ -71,7 +71,7 @@ class SearchCog(commands.Cog):
             await interaction.response.send_message(
                 self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
             return
-            
+
         paginated_embed = PaginatedEmbed(interaction, all_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE)
 
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
@@ -101,8 +101,8 @@ class SearchCog(commands.Cog):
             return
 
         paginated_embed = PaginatedEmbed(interaction, own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE,
-                               title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
-                               discord_user=discord_user)
+                                         title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
+                                         discord_user=discord_user)
         await interaction.response.send_message(embed=paginated_embed.embed, paginated_embed=embed.view)
 
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int = None):

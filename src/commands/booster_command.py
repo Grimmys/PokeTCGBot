@@ -152,30 +152,10 @@ class BoosterCog(commands.Cog):
         return drawn_cards
 
     def _build_paginated_booster(self, formatted_cards, user_language_id, interaction):
-        paginated_embed = PaginatedEmbed(formatted_cards, True, 1,
+        paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, 1,
                                          title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
                                          discord_user=interaction.user)
-        view = View()
-
-        async def change_page_callback(click_interaction: discord.Interaction, forward):
-            if click_interaction.user != interaction.user:
-                return
-            paginated_embed.change_page(forward)
-            await interaction.edit_original_response(embed=paginated_embed.embed)
-            await click_interaction.response.defer()
-
-        next_button = Button(emoji="➡️")
-        next_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, True)
-
-        previous_button = Button(emoji="⬅️")
-        previous_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, False)
-
-        view.add_item(previous_button)
-        view.add_item(next_button)
-
-        return paginated_embed, view
+        return paginated_embed
 
     @app_commands.command(name="booster", description="Open a basic booster")
     async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None) -> None:
@@ -207,9 +187,10 @@ class BoosterCog(commands.Cog):
             formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
                                for card in drawn_cards]
 
-            paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
-
-            await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+            paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, 1,
+                                             title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                                             discord_user=interaction.user)
+            await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
                 title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
@@ -251,9 +232,11 @@ class BoosterCog(commands.Cog):
             formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
                                for card in drawn_cards]
 
-            paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
+            paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, 1,
+                                             title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                                             discord_user=interaction.user)
 
-            await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+            await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
                 title=f"---------- {self.t(user_language_id, 'promo_booster_cmd.title')} ----------",
