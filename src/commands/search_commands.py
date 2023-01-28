@@ -103,7 +103,7 @@ class SearchCog(commands.Cog):
         paginated_embed = PaginatedEmbed(interaction, own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE,
                                          title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
                                          discord_user=discord_user)
-        await interaction.response.send_message(embed=paginated_embed.embed, paginated_embed=embed.view)
+        await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
 
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int = None):
         entry_card = {
