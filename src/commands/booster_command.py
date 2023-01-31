@@ -158,13 +158,16 @@ class BoosterCog(commands.Cog):
         return paginated_embed
 
     @app_commands.command(name="booster", description="Open a basic booster")
-    async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None) -> None:
+    async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None, use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
-        if user.cooldowns.timestamp_for_next_basic_booster > time.time():
+        if use_booster_stock or user.cooldowns.timestamp_for_next_basic_booster > time.time():
             if user.boosters_quantity > 0:
                 self.user_service.consume_booster(user.id, "Basic")
+            elif use_booster_stock:
+                await interaction.response.send_message(self.t(user_language_id, 'booster_cmd.no_boosters_in_stock'))
+                return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_basic_booster)
@@ -203,13 +206,16 @@ class BoosterCog(commands.Cog):
             await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="promo_booster", description="Open a Promo booster")
-    async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None) -> None:
+    async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None, use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
-        if user.cooldowns.timestamp_for_next_promo_booster > time.time():
+        if use_booster_stock or user.cooldowns.timestamp_for_next_promo_booster > time.time():
             if user.promo_boosters_quantity > 0:
                 self.user_service.consume_booster(user.id, "Promo")
+            elif use_booster_stock:
+                await interaction.response.send_message(self.t(user_language_id, 'promo_booster_cmd.no_boosters_in_stock'))
+                return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_promo_booster)

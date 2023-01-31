@@ -65,10 +65,12 @@
     "response_msg": "You earned {amount} Pokémon Dollars"
   },
   "booster_cmd": {
-    "title": "Booster"
+    "title": "Booster",
+    "no_boosters_in_stock": "You have no boosters in stock"
   },
   "promo_booster_cmd": {
-    "title": "Promo Booster"
+    "title": "Promo Booster",
+    "no_boosters_in_stock": "You have no promo boosters in stock"
   },
   "market_booster_cmd": {
     "title": "Booster Market"

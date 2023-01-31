@@ -65,10 +65,12 @@
     "response_msg": "Vous récupérez {amount} Pokédollars"
   },
   "booster_cmd": {
-    "title": "Booster"
+    "title": "Booster",
+    "no_boosters_in_stock": "Vous n'avez aucun booster en stock."
   },
   "promo_booster_cmd": {
-    "title": "Booster Promo"
+    "title": "Booster Promo",
+    "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock."
   },
   "market_booster_cmd": {
     "title": "Échoppe à Boosters"
