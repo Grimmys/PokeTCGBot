@@ -97,6 +97,14 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
+    def change_only_use_booster_stock_with_option(self, user_id, new_only_use_booster_stock_with_option_value):
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].settings.only_use_booster_stock_with_option = new_only_use_booster_stock_with_option_value
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
     def change_basic_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:

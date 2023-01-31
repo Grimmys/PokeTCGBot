@@ -22,7 +22,7 @@ class SettingsCog(commands.Cog):
         self.user_service = user_service
 
     @staticmethod
-    def _format_booster_opening_with_images_option_value(option_value: bool):
+    def _format_boolean_option_value(option_value: bool):
         return "✅" if option_value else "❌"
 
     @staticmethod
@@ -48,8 +48,13 @@ class SettingsCog(commands.Cog):
 
         booster_opening_field_id = 1
         embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_opening_with_image_field_name'),
-                        value=self._format_booster_opening_with_images_option_value(
+                        value=self._format_boolean_option_value(
                             user.settings.booster_opening_with_image),
+                        inline=False)
+        
+        booster_stock_use_id = 2
+        embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_stock_use_field_name'),
+                        value=self._format_boolean_option_value(user.settings.only_use_booster_stock_with_option),
                         inline=False)
 
         async def change_language_callback(language_interaction: discord.Interaction):
@@ -78,7 +83,7 @@ class SettingsCog(commands.Cog):
             self.settings_service.update_booster_opening_with_image(user.id, user.settings.booster_opening_with_image)
 
             embed.set_field_at(booster_opening_field_id, name=embed.fields[booster_opening_field_id].name,
-                               value=self._format_booster_opening_with_images_option_value(
+                               value=self._format_boolean_option_value(
                                    user.settings.booster_opening_with_image),
                                inline=False)
             switch_opening_booster_mode_button.style = self._get_button_color(user.settings.booster_opening_with_image)
@@ -86,6 +91,25 @@ class SettingsCog(commands.Cog):
             await opening_booster_mode_interaction.response.send_message(
                 f"{self.t(user_language_id, 'settings_cmd.booster_opening_with_image_response_msg')}",
                 delete_after=2)
+        
+        async def switch_booster_stock_use_callback(booster_stock_use_interaction: discord.Interaction):
+            if booster_stock_use_interaction.user != interaction.user:
+                return
+
+            user.settings.only_use_booster_stock_with_option = not user.settings.only_use_booster_stock_with_option
+
+            self.settings_service.update_only_use_booster_stock_with_option(user.id, user.settings.only_use_booster_stock_with_option)
+
+            embed.set_field_at(booster_stock_use_id, name=embed.fields[booster_stock_use_id].name,
+                value=self._format_boolean_option_value(user.settings.only_use_booster_stock_with_option),
+                inline=False)
+            switch_booster_stock_use_button.style = self._get_button_color(user.settings.only_use_booster_stock_with_option)
+            await interaction.edit_original_response(embed=embed, view=view)
+            await booster_stock_use_interaction.response.send_message(
+                self.t(user_language_id, "settings_cmd.booster_stock_use_response_msg"),
+                delete_after=2
+            )
+
 
         select_language = Select(
             placeholder=self.t(user_language_id, 'settings_cmd.select_language_placeholder'),
@@ -98,8 +122,15 @@ class SettingsCog(commands.Cog):
             style=self._get_button_color(user.settings.booster_opening_with_image))
         switch_opening_booster_mode_button.callback = switch_opening_booster_mode_callback
 
+        switch_booster_stock_use_button = Button(
+            label=self.t(user_language_id, 'settings_cmd.booster_stock_use_label'),
+            style=self._get_button_color(user.settings.only_use_booster_stock_with_option)
+        )
+        switch_booster_stock_use_button.callback = switch_booster_stock_use_callback
+
         view = View()
         view.add_item(select_language)
         view.add_item(switch_opening_booster_mode_button)
+        view.add_item(switch_booster_stock_use_button)
 
         await interaction.response.send_message(embed=embed, view=view)

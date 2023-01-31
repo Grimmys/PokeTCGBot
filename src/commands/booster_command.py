@@ -163,7 +163,7 @@ class BoosterCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         if use_booster_stock or user.cooldowns.timestamp_for_next_basic_booster > time.time():
-            if user.boosters_quantity > 0:
+            if user.boosters_quantity > 0 and ((not user.settings.only_use_booster_stock_with_option) or use_booster_stock):
                 self.user_service.consume_booster(user.id, "Basic")
             elif use_booster_stock:
                 await interaction.response.send_message(self.t(user_language_id, 'booster_cmd.no_boosters_in_stock'))
@@ -211,7 +211,7 @@ class BoosterCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         if use_booster_stock or user.cooldowns.timestamp_for_next_promo_booster > time.time():
-            if user.promo_boosters_quantity > 0:
+            if user.promo_boosters_quantity > 0 and ((not user.settings.only_use_booster_stock_with_option) or use_booster_stock):
                 self.user_service.consume_booster(user.id, "Promo")
             elif use_booster_stock:
                 await interaction.response.send_message(self.t(user_language_id, 'promo_booster_cmd.no_boosters_in_stock'))

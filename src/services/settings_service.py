@@ -32,3 +32,6 @@ class SettingsService:
     def update_booster_opening_with_image(self, user_id: int, new_booster_opening_with_image_value: bool):
         self._user_repository.change_booster_opening_with_image_by_default(user_id,
                                                                            new_booster_opening_with_image_value)
+
+    def update_only_use_booster_stock_with_option(self, user_id: int, new_only_use_booster_stock_with_option_value: bool):
+        self._user_repository.change_only_use_booster_stock_with_option(user_id, new_only_use_booster_stock_with_option_value)
