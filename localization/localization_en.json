@@ -46,6 +46,9 @@
     "booster_opening_with_image_field_name": "Booster opened with card images by default",
     "language_changed_response_msg": "Language changed to:",
     "booster_opening_with_image_response_msg": "Booster opening mode switched",
+    "booster_stock_use_field_name": "Only use stock boosters when called with option",
+    "booster_stock_use_response_msg": "Booster stock use changed",
+    "booster_stock_use_label": "Require option to use booster stock",
     "select_language_placeholder": "Change language",
     "switch_booster_opening_label": "Switch booster opening value"
   },
@@ -65,10 +68,12 @@
     "response_msg": "You earned {amount} Pokémon Dollars"
   },
   "booster_cmd": {
-    "title": "Booster"
+    "title": "Booster",
+    "no_boosters_in_stock": "You have no boosters in stock"
   },
   "promo_booster_cmd": {
-    "title": "Promo Booster"
+    "title": "Promo Booster",
+    "no_boosters_in_stock": "You have no promo boosters in stock"
   },
   "market_booster_cmd": {
     "title": "Booster Market"

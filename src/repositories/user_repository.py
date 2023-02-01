@@ -47,6 +47,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_only_use_booster_stock_with_option(self, user_id, new_only_use_booster_stock_with_option_value):
+        pass
+
+    @abstractmethod
     def change_basic_booster_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
         pass
 
