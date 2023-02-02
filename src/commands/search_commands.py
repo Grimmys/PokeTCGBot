@@ -1,5 +1,5 @@
 import pickle
-from typing import Literal
+from typing import Literal, Optional
 
 import discord
 from discord import app_commands, Embed
@@ -8,6 +8,7 @@ from pokemontcgsdk import Card, PokemonTcgException
 
 from src.colors import ORANGE
 from src.components.paginated_embed import PaginatedEmbed
+from src.entities.user_entity import UserEntity
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
@@ -28,16 +29,59 @@ class SearchCog(commands.Cog):
         self.cards_by_id = SearchCog._compute_all_cards()
 
     @staticmethod
+    def _format_boolean_option_value(option_value: bool):
+        return "✅" if option_value else "❌"
+
+    @staticmethod
     def _compute_all_cards() -> dict[str, Card]:
         cards: list[Card] = pickle.load(open(SearchCog.CARDS_PICKLE_FILE_LOCATION, "rb"))
         return {card.id: card for card in cards}
 
+    @staticmethod
+    def _get_quantity_own_by_user(card_id: str, user: UserEntity) -> int:
+        if card_id not in user.cards:
+            return 0
+        return user.cards[card_id]
+
+    def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int,
+                               owned_flag: bool = False, viewer_quantity: Optional[int] = None):
+        entry_card = {
+            "name": card.name,
+        }
+        formatted_id = f"**ID**: {card.id}"
+        formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
+        formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
+        formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
+
+        owned_quantity = viewer_quantity if viewer_quantity is not None else quantity
+        owned_value = f"{SearchCog._format_boolean_option_value(True)} ({owned_quantity})" if owned_quantity > 0 else SearchCog._format_boolean_option_value(
+            False)
+        formatted_own = f"**{self.t(user_language_id, 'common.card_is_owned').capitalize()}**: {owned_value}"
+
+        spliter_chain = "\n" if with_image else " / "
+
+        entry_card["value"] = f"{formatted_id}{spliter_chain}{formatted_rarity}{spliter_chain}{formatted_set}"
+
+        if not owned_flag or viewer_quantity is not None:
+            entry_card["value"] += f"{spliter_chain}{formatted_quantity}"
+        if owned_flag:
+            entry_card["value"] += f"{spliter_chain}{formatted_own}"
+
+        if with_image:
+            entry_card["image"] = card.images.large if card.images.large else card.images.small
+
+        return entry_card
+
     @app_commands.command(name="card", description="Get a card with its id")
     async def get_card_command(self, interaction: discord.Interaction, card_id: str) -> None:
-        user_language_id = self.settings_service.get_user_language_id(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user)
+        user_language_id = user.settings.language_id
+
         try:
             card = Card.find(card_id)
-            formatted_card = self._format_card_for_embed(card, True, user_language_id)
+            formatted_card = self._format_card_for_embed(card, True, user_language_id,
+                                                         SearchCog._get_quantity_own_by_user(card_id, user),
+                                                         owned_flag=True)
             embed = Embed(title=formatted_card["name"], description=formatted_card["value"], color=ORANGE)
             embed.set_image(url=card.images.large if card.images.large else card.images.small)
             await interaction.response.send_message(embed=embed)
@@ -49,8 +93,8 @@ class SearchCog(commands.Cog):
     async def search_command(self, interaction: discord.Interaction, content: str,
                              search_mode: Literal["card_name", "card_id", "set_name", "set_id", "rarity"] = "card_name",
                              with_image: bool = False) -> None:
-        user_language_id = self.settings_service.get_user_language_id(
-            interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user)
+        user_language_id = user.settings.language_id
 
         match search_mode:
             case "card_id":
@@ -64,7 +108,8 @@ class SearchCog(commands.Cog):
             case _:
                 get_search_attribute = lambda card: card.name if card.name else NO_RESULT_VALUE
 
-        all_cards = [self._format_card_for_embed(card, with_image, user_language_id)
+        all_cards = [self._format_card_for_embed(card, with_image, user_language_id,
+                                                 SearchCog._get_quantity_own_by_user(card.id, user), owned_flag=True)
                      for card in self.cards_by_id.values() if content.lower() in get_search_attribute(card).lower()]
 
         if len(all_cards) == 0:
@@ -80,20 +125,25 @@ class SearchCog(commands.Cog):
     async def collection_command(self, interaction: discord.Interaction, with_image: bool = False,
                                  member: discord.User = None) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
+        collection_user = user
         discord_user = interaction.user
         user_language_id = user.settings.language_id
+        someone_else_collection = member is not None
 
-        if member is not None:
-            user = self.user_service.get_user(member)
+        if someone_else_collection:
+            collection_user = self.user_service.get_user(member)
             discord_user = member
 
-            if user is None:
+            if collection_user is None:
                 await interaction.response.send_message(self.t(user_language_id, 'common.user_not_found'))
 
         own_cards = []
-        for card_id, quantity in user.cards.items():
+        for card_id, quantity in collection_user.cards.items():
             card = self.cards_by_id[card_id]
-            own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity))
+            viewer_quantity = SearchCog._get_quantity_own_by_user(card_id, user) if someone_else_collection else None
+            own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
+                                                         owned_flag=someone_else_collection,
+                                                         viewer_quantity=viewer_quantity))
 
         if len(own_cards) == 0:
             await interaction.response.send_message(
@@ -104,22 +154,3 @@ class SearchCog(commands.Cog):
                                          title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
                                          discord_user=discord_user)
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
-
-    def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int = None):
-        entry_card = {
-            "name": card.name,
-        }
-        formatted_id = f"**ID**: {card.id}"
-        formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
-        formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
-        formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
-        if with_image:
-            entry_card["value"] = f"{formatted_id}\n{formatted_rarity}\n{formatted_set}"
-            if quantity is not None:
-                entry_card["value"] += f"\n{formatted_quantity}"
-            entry_card["image"] = card.images.large if card.images.large else card.images.small
-        else:
-            entry_card["value"] = f"{formatted_id} / {formatted_rarity} / {formatted_set}"
-            if quantity is not None:
-                entry_card["value"] += f" / {formatted_quantity}"
-        return entry_card

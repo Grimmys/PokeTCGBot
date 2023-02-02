@@ -8,6 +8,7 @@
     "rarity": "rareté",
     "set": "série",
     "quantity": "quantité",
+    "card_is_owned": "possédée",
     "booster_cooldown": "Prochain booster gratuit :",
     "promo_booster_cooldown": "Prochain booster Promo gratuit :",
     "daily_cooldown": "Prochain daily :",
