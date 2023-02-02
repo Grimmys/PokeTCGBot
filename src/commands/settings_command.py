@@ -51,7 +51,7 @@ class SettingsCog(commands.Cog):
                         value=self._format_boolean_option_value(
                             user.settings.booster_opening_with_image),
                         inline=False)
-        
+
         booster_stock_use_id = 2
         embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_stock_use_field_name'),
                         value=self._format_boolean_option_value(user.settings.only_use_booster_stock_with_option),
@@ -91,25 +91,27 @@ class SettingsCog(commands.Cog):
             await opening_booster_mode_interaction.response.send_message(
                 f"{self.t(user_language_id, 'settings_cmd.booster_opening_with_image_response_msg')}",
                 delete_after=2)
-        
+
         async def switch_booster_stock_use_callback(booster_stock_use_interaction: discord.Interaction):
             if booster_stock_use_interaction.user != interaction.user:
                 return
 
             user.settings.only_use_booster_stock_with_option = not user.settings.only_use_booster_stock_with_option
 
-            self.settings_service.update_only_use_booster_stock_with_option(user.id, user.settings.only_use_booster_stock_with_option)
+            self.settings_service.update_only_use_booster_stock_with_option(user.id,
+                                                                            user.settings.only_use_booster_stock_with_option)
 
             embed.set_field_at(booster_stock_use_id, name=embed.fields[booster_stock_use_id].name,
-                value=self._format_boolean_option_value(user.settings.only_use_booster_stock_with_option),
-                inline=False)
-            switch_booster_stock_use_button.style = self._get_button_color(user.settings.only_use_booster_stock_with_option)
+                               value=self._format_boolean_option_value(
+                                   user.settings.only_use_booster_stock_with_option),
+                               inline=False)
+            switch_booster_stock_use_button.style = self._get_button_color(
+                user.settings.only_use_booster_stock_with_option)
             await interaction.edit_original_response(embed=embed, view=view)
             await booster_stock_use_interaction.response.send_message(
                 self.t(user_language_id, "settings_cmd.booster_stock_use_response_msg"),
                 delete_after=2
             )
-
 
         select_language = Select(
             placeholder=self.t(user_language_id, 'settings_cmd.select_language_placeholder'),
