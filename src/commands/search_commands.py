@@ -1,11 +1,16 @@
+import os
 import pickle
+import random
 from typing import Literal, Optional
 
 import discord
-from discord import app_commands, Embed
+import requests as requests
+from PIL import Image, ImageFilter, ImageEnhance
+from discord import app_commands, Embed, File
 from discord.ext import commands
 from pokemontcgsdk import Card, PokemonTcgException
 
+from config import BOT_ADMIN_USER_IDS
 from src.colors import ORANGE
 from src.components.paginated_embed import PaginatedEmbed
 from src.entities.user_entity import UserEntity
@@ -154,3 +159,40 @@ class SearchCog(commands.Cog):
                                          title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
                                          discord_user=discord_user)
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
+
+    @app_commands.command(name="random_graded_card", description="Generate a card with some alteration")
+    async def random_graded_card(self, interaction: discord.Interaction) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
+
+        if interaction.user.id not in BOT_ADMIN_USER_IDS:
+            await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        random_card: Card = random.choice(list(self.cards_by_id.values()))
+        original_image_url = random_card.images.large if random_card.images.large else random_card.images.small
+        altered_image_path = f"assets/altered_cards/{random_card.id}.png"
+
+        color_shift_factor = None
+        mode_filter_factor = None
+        blurr_factor = None
+        if not os.path.isfile(altered_image_path):
+            altered_image = Image.open(requests.get(original_image_url, stream=True).raw)
+
+            color_shift_factor = random.uniform(0, 4)
+            altered_image = ImageEnhance.Color(altered_image).enhance(color_shift_factor)
+
+            mode_filter_factor = random.randint(0, 20)
+            altered_image = altered_image.filter(ImageFilter.ModeFilter(mode_filter_factor))
+
+            blurr_factor = random.randint(0, 8)
+            altered_image = altered_image.filter(ImageFilter.BoxBlur(blurr_factor))
+
+            altered_image.save(altered_image_path)
+
+        discord_attachment = File(altered_image_path)
+        embed = Embed(title=random_card.id)
+        embed.set_image(url=f"attachment://{random_card.id}.png")
+        embed.add_field(name="Coloration factor", value=f"{color_shift_factor:.2f}")
+        embed.add_field(name="Mode filter factor", value=mode_filter_factor)
+        embed.add_field(name="Blurr factor", value=blurr_factor)
+        await interaction.response.send_message(embed=embed, file=discord_attachment)
