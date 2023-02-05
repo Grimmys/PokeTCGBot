@@ -24,6 +24,10 @@
   "ping_cmd": {
     "response_msg": "My ping is"
   },
+  "bot_infos_cmd": {
+    "title": "Bot metadata",
+    "count_servers": "Number of servers using the Bot"
+  },
   "give_money_cmd": {
     "response_msg": "User {user} received {amount} Pokémon Dollars"
   },

@@ -40,6 +40,14 @@ async def ping_command(interaction: discord.Interaction) -> None:
         f"{t(user_language_id, 'ping_cmd.response_msg')} **{round(bot.latency * 1000)}ms**")
 
 
+@bot.tree.command(name="bot_infos", description="Get various statistics about the bot")
+async def bot_infos_command(interaction: discord.Interaction) -> None:
+    user_language_id = settings_service.get_user_language_id(interaction.user)
+    embed = Embed(title=f"---------- {t(user_language_id, 'bot_infos_cmd.title')} ----------", )
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.count_servers'), value=len(bot.guilds))
+    await interaction.response.send_message(embed=embed)
+
+
 @bot.tree.command(name="help", description="Display the list of available commands")
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
