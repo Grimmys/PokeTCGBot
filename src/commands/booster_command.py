@@ -6,15 +6,14 @@ from typing import Optional
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
-from discord.ui import View, Button
 from pokemontcgsdk import Card, Set
 
 import config
+from src.colors import GREEN, RED
 from src.components.paginated_embed import PaginatedEmbed
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
-from src.colors import GREEN, RED
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
 from src.utils import discord_tools
@@ -158,12 +157,14 @@ class BoosterCog(commands.Cog):
         return paginated_embed
 
     @app_commands.command(name="booster", description="Open a basic booster")
-    async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None, use_booster_stock: Optional[bool] = False) -> None:
+    async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,
+                              use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
         if use_booster_stock or user.cooldowns.timestamp_for_next_basic_booster > time.time():
-            if user.boosters_quantity > 0 and ((not user.settings.only_use_booster_stock_with_option) or use_booster_stock):
+            if user.boosters_quantity > 0 and (not user.settings.only_use_booster_stock_with_option 
+                                               or use_booster_stock):
                 self.user_service.consume_booster(user.id, "Basic")
             elif use_booster_stock:
                 await interaction.response.send_message(self.t(user_language_id, 'booster_cmd.no_boosters_in_stock'))
@@ -206,15 +207,18 @@ class BoosterCog(commands.Cog):
             await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="promo_booster", description="Open a Promo booster")
-    async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None, use_booster_stock: Optional[bool] = False) -> None:
+    async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,
+                                    use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
         if use_booster_stock or user.cooldowns.timestamp_for_next_promo_booster > time.time():
-            if user.promo_boosters_quantity > 0 and ((not user.settings.only_use_booster_stock_with_option) or use_booster_stock):
+            if user.promo_boosters_quantity > 0 and (not user.settings.only_use_booster_stock_with_option or 
+                                                     use_booster_stock):
                 self.user_service.consume_booster(user.id, "Promo")
             elif use_booster_stock:
-                await interaction.response.send_message(self.t(user_language_id, 'promo_booster_cmd.no_boosters_in_stock'))
+                await interaction.response.send_message(
+                    self.t(user_language_id, 'promo_booster_cmd.no_boosters_in_stock'))
                 return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
