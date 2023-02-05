@@ -1,5 +1,6 @@
 {
   "common": {
+    "loading": "Loading...",
     "pokedollar": "Pokémon Dollar",
     "collection": "collection",
     "booster": "booster",

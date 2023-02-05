@@ -167,6 +167,7 @@ class SearchCog(commands.Cog):
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
             return
+        await interaction.response.send_message(self.t(user_language_id, 'common.loading'))
 
         random_card: Card = random.choice(list(self.cards_by_id.values()))
         original_image_url = random_card.images.large if random_card.images.large else random_card.images.small
@@ -195,4 +196,4 @@ class SearchCog(commands.Cog):
         embed.add_field(name="Coloration factor", value=f"{color_shift_factor:.2f}")
         embed.add_field(name="Mode filter factor", value=mode_filter_factor)
         embed.add_field(name="Blurr factor", value=blurr_factor)
-        await interaction.response.send_message(embed=embed, file=discord_attachment)
+        await interaction.edit_original_response(content="", embed=embed, attachments=[discord_attachment])
