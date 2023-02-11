@@ -18,8 +18,11 @@ class SearchCardsEmbed(PaginatedEmbed):
         toggle_own_cards_button.callback = lambda click_interaction: self.filter_on_cards_owned_action(
             click_interaction)
         toggle_own_cards_button.disabled = own_cards_filter_disabled
-
         self.view.add_item(toggle_own_cards_button)
+
+        reset_filters_button = Button(emoji="♻️")
+        reset_filters_button.callback = lambda click_interaction: self.reset_filters_action(click_interaction)
+        self.view.add_item(reset_filters_button)
 
     async def filter_on_cards_owned_action(self, interaction: Interaction):
         if interaction.user != self.original_interaction.user:
@@ -28,6 +31,18 @@ class SearchCardsEmbed(PaginatedEmbed):
         self.current_page = 0
         filter_method = self._is_card_owned if self.are_owned_cards_displayed else self._is_not_card_owned
         self.content = list(filter(filter_method, self.full_content))
+        displayed = self.content[self.current_page * self.page_size:(self.current_page + 1) * self.page_size]
+        self.embed.clear_fields()
+        self.display_list(displayed)
+        await self.original_interaction.edit_original_response(embed=self.embed)
+        await interaction.response.defer()
+
+    async def reset_filters_action(self, interaction: Interaction):
+        if interaction.user != self.original_interaction.user:
+            return
+        self.are_owned_cards_displayed = False
+        self.current_page = 0
+        self.content = self.full_content
         displayed = self.content[self.current_page * self.page_size:(self.current_page + 1) * self.page_size]
         self.embed.clear_fields()
         self.display_list(displayed)
