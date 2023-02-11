@@ -155,6 +155,10 @@
     "title": "Collection",
     "empty": "Vous n'avez pas encore de carte dans votre collection."
   },
+  "search_cards_embed": {
+    "filter_by_name_label": "Filtrer par nom",
+    "card_name_input": "Nom de carte"
+  },
   "ranking_cmd": {
     "title": "Classement des joueurs par nombre de cartes"
   }

@@ -155,6 +155,10 @@
     "title": "Collection",
     "empty": "You don't have any card in your collection yet."
   },
+  "search_cards_embed": {
+    "filter_by_name_label": "Filter by name",
+    "card_name_input": "Card name"
+  },
   "ranking_cmd": {
     "title": "User Collection Ranking"
   }

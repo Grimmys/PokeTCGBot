@@ -12,7 +12,6 @@ from pokemontcgsdk import Card, PokemonTcgException
 
 from config import BOT_ADMIN_USER_IDS
 from src.colors import ORANGE
-from src.components.paginated_embed import PaginatedEmbed
 from src.components.search_cards_embed import SearchCardsEmbed
 from src.entities.user_entity import UserEntity
 from src.services.localization_service import LocalizationService
@@ -125,7 +124,8 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
             return
 
-        paginated_embed = SearchCardsEmbed(interaction, all_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE)
+        paginated_embed = SearchCardsEmbed(interaction, all_cards, with_image, user_language_id,
+                                           1 if with_image else SEARCH_PAGE_SIZE)
 
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
 
@@ -158,7 +158,8 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'collection_cmd.empty'))
             return
 
-        paginated_embed = SearchCardsEmbed(interaction, own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE,
+        paginated_embed = SearchCardsEmbed(interaction, own_cards, with_image, user_language_id,
+                                           1 if with_image else SEARCH_PAGE_SIZE,
                                            title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
                                            discord_user=discord_user,
                                            own_cards_filter_disabled=not someone_else_collection)
