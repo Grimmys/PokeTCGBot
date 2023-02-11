@@ -13,6 +13,7 @@ from pokemontcgsdk import Card, PokemonTcgException
 from config import BOT_ADMIN_USER_IDS
 from src.colors import ORANGE
 from src.components.paginated_embed import PaginatedEmbed
+from src.components.search_cards_embed import SearchCardsEmbed
 from src.entities.user_entity import UserEntity
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
@@ -51,6 +52,8 @@ class SearchCog(commands.Cog):
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int,
                                owned_flag: bool = False, viewer_quantity: Optional[int] = None):
         entry_card = {
+            "card": card,
+            "owned_quantity": viewer_quantity if viewer_quantity is not None else quantity,
             "name": card.name,
         }
         formatted_id = f"**ID**: {card.id}"
@@ -58,7 +61,7 @@ class SearchCog(commands.Cog):
         formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
         formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
 
-        owned_quantity = viewer_quantity if viewer_quantity is not None else quantity
+        owned_quantity = entry_card["owned_quantity"]
         owned_value = f"{SearchCog._format_boolean_option_value(True)} ({owned_quantity})" if owned_quantity > 0 else SearchCog._format_boolean_option_value(
             False)
         formatted_own = f"**{self.t(user_language_id, 'common.card_is_owned').capitalize()}**: {owned_value}"
@@ -122,7 +125,7 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'search_cmd.not_found').replace("{1}", content))
             return
 
-        paginated_embed = PaginatedEmbed(interaction, all_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE)
+        paginated_embed = SearchCardsEmbed(interaction, all_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE)
 
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
 
