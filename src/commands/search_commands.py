@@ -158,9 +158,10 @@ class SearchCog(commands.Cog):
                 self.t(user_language_id, 'collection_cmd.empty'))
             return
 
-        paginated_embed = PaginatedEmbed(interaction, own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE,
-                                         title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
-                                         discord_user=discord_user)
+        paginated_embed = SearchCardsEmbed(interaction, own_cards, with_image, 1 if with_image else SEARCH_PAGE_SIZE,
+                                           title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
+                                           discord_user=discord_user,
+                                           own_cards_filter_disabled=not someone_else_collection)
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
 
     @app_commands.command(name="random_graded_card", description="Generate a card with some alteration")
