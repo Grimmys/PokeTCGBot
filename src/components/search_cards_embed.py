@@ -8,7 +8,8 @@ from src.components.paginated_embed import PaginatedEmbed
 
 class SearchCardsEmbed(PaginatedEmbed):
     def __init__(self, original_interaction: Interaction, content: list[dict[str, str]], image_mode: bool,
-                 page_size: int = 1, inline: bool = False, title: str = None, discord_user: User = None) -> None:
+                 page_size: int = 1, inline: bool = False, title: str = None, discord_user: User = None,
+                 own_cards_filter_disabled=False) -> None:
         super().__init__(original_interaction, content, image_mode, page_size, inline, title, discord_user)
         self.full_content = content
         self.are_owned_cards_displayed = False
@@ -16,6 +17,7 @@ class SearchCardsEmbed(PaginatedEmbed):
         toggle_own_cards_button = Button(emoji="🔮")
         toggle_own_cards_button.callback = lambda click_interaction: self.filter_on_cards_owned_action(
             click_interaction)
+        toggle_own_cards_button.disabled = own_cards_filter_disabled
 
         self.view.add_item(toggle_own_cards_button)
 
