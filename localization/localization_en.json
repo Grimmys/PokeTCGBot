@@ -18,6 +18,7 @@
     "last_interaction": "Last interaction done date",
     "user_not_found": "User not found",
     "user_or_card_not_found": "User not found or they don't have the card",
+    "no_results": "No results found",
     "not_allowed": "You are not allowed to use this command",
     "unknown_issue": "An unknown issue occurred during the process of the command"
   },

@@ -1,11 +1,21 @@
 import math
+from typing import Union, Optional, Callable
+
 from discord import Embed, Interaction, User
 from discord.ui import Button, View
 
 
 class PaginatedEmbed:
-    def __init__(self, original_interaction: Interaction, content: list[dict[str, str]], image_mode: bool,
-                 page_size: int = 1, inline: bool = False, title: str = None, discord_user: User = None) -> None:
+    t: Optional[Callable] = None
+
+    @staticmethod
+    def setup_class(get_localized_string_method: Callable):
+        PaginatedEmbed.t = get_localized_string_method
+
+    def __init__(self, original_interaction: Interaction, content: list[dict[str, Union[int, str]]], image_mode: bool,
+                 user_language_id: int, page_size: int = 1, inline: bool = False, title: str = None,
+                 discord_user: User = None) -> None:
+        self.user_language_id = user_language_id
         self.current_page = 0
         self.embed = Embed()
         if title is not None:
@@ -40,15 +50,23 @@ class PaginatedEmbed:
             self.current_page = 0
         elif self.current_page < 0:
             self.current_page = len(self.content) // self.page_size
-            if (self.current_page * self.page_size == len(self.content)):
+            if self.current_page * self.page_size == len(self.content):
                 self.current_page -= 1
-        displayed = self.content[self.current_page * self.page_size:(self.current_page + 1) * self.page_size]
-        self.embed.clear_fields()
-        self.display_list(displayed)
+        self.refresh_page()
         await self.original_interaction.edit_original_response(embed=self.embed)
         await click_interaction.response.defer()
 
-    def display_list(self, displayed):
+    def refresh_page(self):
+        self.embed.clear_fields()
+        self.embed.set_image(url="")
+        self.embed.set_footer(text="")
+        displayed = self.content[self.current_page * self.page_size:(self.current_page + 1) * self.page_size]
+        if len(displayed) == 0:
+            self.embed.add_field(name=PaginatedEmbed.t(self.user_language_id, 'common.no_results'), value="")
+        else:
+            self.display_list(displayed)
+
+    def display_list(self, displayed: list[dict[str, Union[int, str]]]):
         for element in displayed:
             self.embed.add_field(
                 name=element["name"], value=element["value"], inline=self.inline)

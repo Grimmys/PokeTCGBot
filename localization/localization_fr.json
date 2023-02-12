@@ -18,6 +18,7 @@
     "last_interaction": "Date de la dernière interaction",
     "user_not_found": "L'utilisateur n'a pas été trouvé",
     "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",
+    "no_results": "Aucun résultat",
     "not_allowed": "Vous ne pouvez pas utiliser cette commande",
     "unknown_issue": "Une erreur inconnue a eu lieu durant l'exécution de la commande"
   },

@@ -39,7 +39,7 @@ class RankingCog(commands.Cog):
             rank += 1
             nb_cards_by_user.append({"name": f"{rank}: {user.name_tag}", "value": str(len(user.cards))})
 
-        paginated_embed = PaginatedEmbed(interaction, nb_cards_by_user, False, RANKING_PAGE_SIZE,
+        paginated_embed = PaginatedEmbed(interaction, nb_cards_by_user, False, user_language_id, RANKING_PAGE_SIZE,
                                          title=f"---------- {self.t(user_language_id, 'ranking_cmd.title')} ----------",
                                          inline=True)
 

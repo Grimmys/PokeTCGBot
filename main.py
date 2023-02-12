@@ -20,7 +20,7 @@ from src.commands.settings_command import SettingsCog
 from src.commands.shop_commands import ShoppingCog
 from src.commands.trade_commands import TradingCog
 from src.commands.user_info_commands import UserInfoCog
-from src.components import search_cards_embed
+from src.components.paginated_embed import PaginatedEmbed
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
@@ -120,6 +120,6 @@ if __name__ == "__main__":
     type_service = TypeService()
     localization_service = LocalizationService()
     t = localization_service.get_string
-    search_cards_embed.setup_class(t)
+    PaginatedEmbed.setup_class(t)
 
     asyncio.run(main())
