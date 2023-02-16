@@ -27,7 +27,9 @@
   },
   "bot_infos_cmd": {
     "title": "Métadonnées du bot",
-    "count_servers": "Nombre de serveurs utilisant le Bot"
+    "count_servers": "Nombre de serveurs utilisants le Bot",
+    "total_users": "Total de joueurs",
+    "total_money_in_circulation": "Total de Pokédollars en circulation"
   },
   "give_money_cmd": {
     "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"

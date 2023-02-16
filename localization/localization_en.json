@@ -27,7 +27,9 @@
   },
   "bot_infos_cmd": {
     "title": "Bot metadata",
-    "count_servers": "Number of servers using the Bot"
+    "count_servers": "Number of servers using the Bot",
+    "total_users": "Total players",
+    "total_money_in_circulation": "All Pokémon Dollars in circulation"
   },
   "give_money_cmd": {
     "response_msg": "User {user} received {amount} Pokémon Dollars"

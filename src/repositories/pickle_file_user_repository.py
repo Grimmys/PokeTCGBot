@@ -1,6 +1,6 @@
 import pickle
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
@@ -23,6 +23,10 @@ class PickleFileUserRepository(UserRepository):
     @staticmethod
     def _save_pickle_file(content: dict[int, UserEntity]) -> None:
         pickle.dump(content, open(PickleFileUserRepository.PICKLE_FILE_LOCATION, "wb"))
+
+    def get_all(self) -> Sequence[UserEntity]:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        return list(users_by_id.values())
 
     def get_user(self, user_id: int) -> Optional[UserEntity]:
         users_by_id = PickleFileUserRepository._load_pickle_file()
@@ -100,7 +104,8 @@ class PickleFileUserRepository(UserRepository):
     def change_only_use_booster_stock_with_option(self, user_id, new_only_use_booster_stock_with_option_value):
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
-            users_by_id[user_id].settings.only_use_booster_stock_with_option = new_only_use_booster_stock_with_option_value
+            users_by_id[
+                user_id].settings.only_use_booster_stock_with_option = new_only_use_booster_stock_with_option_value
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False

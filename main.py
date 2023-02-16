@@ -44,8 +44,15 @@ async def ping_command(interaction: discord.Interaction) -> None:
 @bot.tree.command(name="bot_infos", description="Get various statistics about the bot")
 async def bot_infos_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
+
+    emojis = {emoji.name: str(emoji) for emoji in bot.emojis}
+
     embed = Embed(title=f"---------- {t(user_language_id, 'bot_infos_cmd.title')} ----------", )
-    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.count_servers'), value=len(bot.guilds))
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.count_servers'), value=f"🗃️ {len(bot.guilds)}", inline=False)
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.total_users'),
+                    value=f"👥 {user_service.get_number_users()}", inline=False)
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.total_money_in_circulation'),
+                    value=f"{emojis['pokedollar']} {user_service.get_sum_money_all_users()}", inline=False)
     await interaction.response.send_message(embed=embed)
 
 

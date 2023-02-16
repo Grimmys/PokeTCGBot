@@ -89,3 +89,10 @@ class UserService:
         self._user_repository.change_money(sender_id, - amount)
         self._user_repository.change_money(receiver_id, amount)
         return True
+
+    def get_number_users(self):
+        return len(self._user_repository.get_all())
+
+    def get_sum_money_all_users(self):
+        user_entities = self._user_repository.get_all()
+        return sum(user.money for user in user_entities)

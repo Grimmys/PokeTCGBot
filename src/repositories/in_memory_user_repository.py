@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
@@ -7,6 +7,9 @@ from src.repositories.user_repository import UserRepository
 class InMemoryUserRepository(UserRepository):
     def __init__(self):
         self._user_entities_by_id: dict[int, UserEntity] = {}
+
+    def get_all(self) -> Sequence[UserEntity]:
+        return list(self._user_entities_by_id.values())
 
     def get_user(self, user_id: int) -> Optional[UserEntity]:
         if user_id in self._user_entities_by_id:

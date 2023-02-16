@@ -1,10 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
 
 
 class UserRepository(ABC):
+
+    @abstractmethod
+    def get_all(self) -> Sequence[UserEntity]:
+        pass
 
     @abstractmethod
     def get_user(self, user_id: int) -> Optional[UserEntity]:
