@@ -32,6 +32,12 @@ class SearchCog(commands.Cog):
         self.t = localization_service.get_string
         self.user_service = user_service
         self.cards_by_id = SearchCog._compute_all_cards()
+        self.card_quality_filters = {
+            "poor": Image.open("assets/quality_filters/poor_card.png"),
+            "average": Image.open("assets/quality_filters/average_card.png"),
+            "good": Image.open("assets/quality_filters/good_card.png"),
+            "excellent": None
+        }
 
     @staticmethod
     def _format_boolean_option_value(option_value: bool):
@@ -183,16 +189,10 @@ class SearchCog(commands.Cog):
         if card_not_already_computed:
             altered_image = Image.open(requests.get(original_image_url, stream=True).raw)
 
-            if quality == "Poor":
-                attrition_filter = Image.open("assets/quality_filters/poor_card.png").resize(altered_image.size)
-            elif quality == "Average":
-                attrition_filter = Image.open("assets/quality_filters/average_card.png").resize(altered_image.size)
-            elif quality == "Good":
-                attrition_filter = Image.open("assets/quality_filters/good_card.png").resize(altered_image.size)
-            else:
-                attrition_filter = None
+            attrition_filter = self.card_quality_filters[quality.lower()]
 
             if attrition_filter:
+                attrition_filter = attrition_filter.resize(altered_image.size)
                 attrition_filter = attrition_filter.filter(ImageFilter.GaussianBlur(7))
                 altered_image.paste(attrition_filter, mask=attrition_filter)
 
