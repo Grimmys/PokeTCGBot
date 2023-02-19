@@ -178,6 +178,7 @@ class SearchCog(commands.Cog):
     async def random_graded_card(self, interaction: discord.Interaction,
                                  quality: Literal["Poor", "Average", "Good", "Excellent"]) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
+        quality_lower = quality.lower()
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
@@ -186,13 +187,14 @@ class SearchCog(commands.Cog):
 
         random_card: Card = random.choice(list(self.cards_by_id.values()))
         original_image_url = random_card.images.large if random_card.images.large else random_card.images.small
-        altered_image_path = f"assets/altered_cards/{random_card.id}.png"
+        card_name = f"{random_card.id}_{quality_lower}.png"
+        altered_image_path = f"assets/altered_cards/{card_name}"
         card_not_already_computed = not os.path.isfile(altered_image_path)
 
         if card_not_already_computed:
             altered_image = Image.open(requests.get(original_image_url, stream=True).raw)
 
-            possible_attrition_filters = self.card_quality_filters[quality.lower()]
+            possible_attrition_filters = self.card_quality_filters[quality_lower]
 
             if possible_attrition_filters:
                 attrition_filter = random.choice(possible_attrition_filters)\
@@ -204,5 +206,6 @@ class SearchCog(commands.Cog):
 
         discord_attachment = File(altered_image_path)
         embed = Embed(title=random_card.id)
-        embed.set_image(url=f"attachment://{random_card.id}.png")
+        embed.add_field(name="Grade", value=quality)
+        embed.set_image(url=f"attachment://{card_name}")
         await interaction.edit_original_response(content="", embed=embed, attachments=[discord_attachment])
