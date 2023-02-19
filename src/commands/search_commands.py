@@ -166,8 +166,8 @@ class SearchCog(commands.Cog):
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
 
     @app_commands.command(name="random_graded_card", description="Generate a card with some alteration")
-    async def random_graded_card(self, interaction: discord.Interaction, color_shift_factor: Optional[float] = None,
-                                 mode_filter_factor: Optional[int] = None, blurr_factor: Optional[int] = None) -> None:
+    async def random_graded_card(self, interaction: discord.Interaction,
+                                 quality: Literal["Poor", "Average", "Good", "Excellent"]) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
@@ -183,25 +183,22 @@ class SearchCog(commands.Cog):
         if card_not_already_computed:
             altered_image = Image.open(requests.get(original_image_url, stream=True).raw)
 
-            if color_shift_factor is None:
-                color_shift_factor = random.uniform(0, 4)
-            altered_image = ImageEnhance.Color(altered_image).enhance(color_shift_factor)
+            if quality == "Poor":
+                attrition_filter = Image.open("assets/quality_filters/poor_card.png").resize(altered_image.size)
+            elif quality == "Average":
+                attrition_filter = Image.open("assets/quality_filters/average_card.png").resize(altered_image.size)
+            elif quality == "Good":
+                attrition_filter = Image.open("assets/quality_filters/good_card.png").resize(altered_image.size)
+            else:
+                attrition_filter = None
 
-            if mode_filter_factor is None:
-                mode_filter_factor = random.randint(0, 20)
-            altered_image = altered_image.filter(ImageFilter.ModeFilter(mode_filter_factor))
-
-            if blurr_factor is None:
-                blurr_factor = random.randint(0, 8)
-            altered_image = altered_image.filter(ImageFilter.BoxBlur(blurr_factor))
+            if attrition_filter:
+                attrition_filter = attrition_filter.filter(ImageFilter.GaussianBlur(7))
+                altered_image.paste(attrition_filter, mask=attrition_filter)
 
             altered_image.save(altered_image_path)
 
         discord_attachment = File(altered_image_path)
         embed = Embed(title=random_card.id)
         embed.set_image(url=f"attachment://{random_card.id}.png")
-        if card_not_already_computed:
-            embed.add_field(name="Coloration factor", value=f"{color_shift_factor:.2f}")
-            embed.add_field(name="Mode filter factor", value=mode_filter_factor)
-            embed.add_field(name="Blurr factor", value=blurr_factor)
         await interaction.edit_original_response(content="", embed=embed, attachments=[discord_attachment])
