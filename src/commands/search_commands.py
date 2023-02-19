@@ -33,9 +33,12 @@ class SearchCog(commands.Cog):
         self.user_service = user_service
         self.cards_by_id = SearchCog._compute_all_cards()
         self.card_quality_filters = {
-            "poor": Image.open("assets/quality_filters/poor_card.png"),
-            "average": Image.open("assets/quality_filters/average_card.png"),
-            "good": Image.open("assets/quality_filters/good_card.png"),
+            "poor": [Image.open("assets/quality_filters/poor_card_1.png"),
+                     Image.open("assets/quality_filters/poor_card_2.png")],
+            "average": [Image.open("assets/quality_filters/average_card_1.png"),
+                        Image.open("assets/quality_filters/average_card_2.png")],
+            "good": [Image.open("assets/quality_filters/good_card_1.png"),
+                     Image.open("assets/quality_filters/good_card_2.png")],
             "excellent": None
         }
 
@@ -189,11 +192,12 @@ class SearchCog(commands.Cog):
         if card_not_already_computed:
             altered_image = Image.open(requests.get(original_image_url, stream=True).raw)
 
-            attrition_filter = self.card_quality_filters[quality.lower()]
+            possible_attrition_filters = self.card_quality_filters[quality.lower()]
 
-            if attrition_filter:
-                attrition_filter = attrition_filter.resize(altered_image.size)
-                attrition_filter = attrition_filter.filter(ImageFilter.GaussianBlur(7))
+            if possible_attrition_filters:
+                attrition_filter = random.choice(possible_attrition_filters)\
+                    .resize(altered_image.size)\
+                    .filter(ImageFilter.GaussianBlur(7))
                 altered_image.paste(attrition_filter, mask=attrition_filter)
 
             altered_image.save(altered_image_path)
