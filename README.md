@@ -4,7 +4,7 @@
 
 This project requires the following:
 
-- Python version >=3.11 (and the related ```pip``` version)
+- Python version >=3.10 (and the related ```pip``` version)
 - direnv (optional)
 
 ## Environment setup
