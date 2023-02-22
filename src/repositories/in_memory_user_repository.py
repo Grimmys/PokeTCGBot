@@ -2,9 +2,11 @@ from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
+from src.utils.card_grade import CardGrade
 
 
 class InMemoryUserRepository(UserRepository):
+
     def __init__(self):
         self._user_entities_by_id: dict[int, UserEntity] = {}
 
@@ -71,6 +73,10 @@ class InMemoryUserRepository(UserRepository):
         pass
 
     def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+        # TODO: implementation
+        pass
+
+    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
         # TODO: implementation
         pass
 

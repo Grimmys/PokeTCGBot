@@ -7,6 +7,7 @@ import discord
 from config import DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
+from src.utils.card_grade import CardGrade
 
 NUMBER_TOP_USERS = 50
 
@@ -96,3 +97,7 @@ class UserService:
     def get_sum_money_all_users(self):
         user_entities = self._user_repository.get_all()
         return sum(user.money for user in user_entities)
+
+    def grade_user_card(self, user_id: int, card_id: str, grade: CardGrade):
+        if self._user_repository.remove_cards_from_collection(user_id, [card_id]):
+            self._user_repository.add_graded_card_to_collection(user_id, card_id, grade)

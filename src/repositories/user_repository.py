@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
+from src.utils.card_grade import CardGrade
 
 
 class UserRepository(ABC):
@@ -68,6 +69,10 @@ class UserRepository(ABC):
 
     @abstractmethod
     def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+        pass
+
+    @abstractmethod
+    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
         pass
 
     @abstractmethod
