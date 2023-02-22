@@ -7,6 +7,8 @@
     "booster": "booster",
     "basic_booster": "Booster de base",
     "promo_booster": "Booster Promo",
+    "grade": "évaluation",
+    "not_graded": "non-évaluée",
     "rarity": "rareté",
     "set": "série",
     "quantity": "quantité",

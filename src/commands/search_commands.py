@@ -42,13 +42,16 @@ class SearchCog(commands.Cog):
         return user.cards[card_id]
 
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int,
-                               owned_flag: bool = False, viewer_quantity: Optional[int] = None):
+                               owned_flag: bool = False, viewer_quantity: Optional[int] = None,
+                               grade: Optional[CardGrade] = None):
         entry_card = {
             "card": card,
             "owned_quantity": viewer_quantity if viewer_quantity is not None else quantity,
             "name": card.name,
+            "grade": grade,
         }
         formatted_id = f"**ID**: {card.id}"
+        formatted_grade = f"**{self.t(user_language_id, 'common.grade').capitalize()}**: {grade.value if grade else self.t(user_language_id, 'common.not_graded').capitalize()}"
         formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
         formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
         formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
@@ -60,7 +63,8 @@ class SearchCog(commands.Cog):
 
         spliter_chain = "\n" if with_image else " / "
 
-        entry_card["value"] = f"{formatted_id}{spliter_chain}{formatted_rarity}{spliter_chain}{formatted_set}"
+        entry_card[
+            "value"] = f"{formatted_id}{spliter_chain}{formatted_grade}{spliter_chain}{formatted_rarity}{spliter_chain}{formatted_set}"
 
         if not owned_flag or viewer_quantity is not None:
             entry_card["value"] += f"{spliter_chain}{formatted_quantity}"
@@ -145,6 +149,10 @@ class SearchCog(commands.Cog):
             own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
                                                          owned_flag=someone_else_collection,
                                                          viewer_quantity=viewer_quantity))
+        for (card_id, grade), quantity in collection_user.graded_cards.items():
+            card = self.cards_by_id[card_id]
+            own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
+                                                         owned_flag=someone_else_collection, grade=grade))
 
         if len(own_cards) == 0:
             await interaction.response.send_message(
