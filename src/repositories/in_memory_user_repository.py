@@ -72,6 +72,10 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
+    def change_grading_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        # TODO: implementation
+        pass
+
     def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
         # TODO: implementation
         pass

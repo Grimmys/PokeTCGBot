@@ -4,6 +4,7 @@ import discord
 from discord import Embed, app_commands
 from discord.ext import commands
 
+from config import DEFAULT_GRADING_COOLDOWN
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService, DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
 from src.colors import YELLOW
@@ -87,6 +88,15 @@ class UserInfoCog(commands.Cog):
             daily_cooldown = available_message
         embed.add_field(name=f"{self.t(user_language_id, 'common.daily_cooldown')}",
                         value=f"{daily_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.midnight_reset')}]",
+                        inline=False)
+
+        if time.time() < user.cooldowns.timestamp_for_next_grading:
+            grading_cooldown = discord_tools.timestamp_to_relative_time_format(
+                user.cooldowns.timestamp_for_next_grading)
+        else:
+            grading_cooldown = available_message
+        embed.add_field(name=f"{self.t(user_language_id, 'common.grading_cooldown')}",
+                        value=f"{grading_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.time_between_cmds')} {DEFAULT_GRADING_COOLDOWN // (60 * 60)} {self.t(user_language_id, 'common.hours')}]",
                         inline=False)
 
         await interaction.response.send_message(embed=embed)

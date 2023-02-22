@@ -1,3 +1,5 @@
+import time
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -5,6 +7,7 @@ from discord.ext import commands
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
+from src.utils import discord_tools
 from src.utils.card_grade import CardGrade
 from src.utils.flags import is_dev_mode
 
@@ -28,10 +31,19 @@ class GradeCog(commands.Cog):
             await interaction.response.send_message(self.t(user_language_id, 'common.feature_disabled'))
             return
 
+        if user.cooldowns.timestamp_for_next_grading > time.time():
+            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
+                user.cooldowns.timestamp_for_next_grading)
+            await interaction.response.send_message(
+                f"{self.t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
+            return
+
         if card_id not in user.cards:
             await interaction.response.send_message(self.t(user_language_id, 'grade_cmd.no_available_copy'))
             return
         await interaction.response.send_message(self.t(user_language_id, 'common.loading'))
+
+        self.user_service.reset_grading_cooldown(user.id)
 
         card = self.cards_by_id.get(card_id)
         grade = CardGrade.POOR

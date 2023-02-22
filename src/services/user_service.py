@@ -4,7 +4,7 @@ from typing import Optional
 
 import discord
 
-from config import DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
+from config import DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN, DEFAULT_GRADING_COOLDOWN
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
 from src.utils.card_grade import CardGrade
@@ -66,6 +66,9 @@ class UserService:
 
     def reset_daily_cooldown(self, user_id: int) -> None:
         self._user_repository.change_daily_cooldown(user_id, self._compute_next_midnight())
+
+    def reset_grading_cooldown(self, user_id: int) -> None:
+        self._user_repository.change_grading_cooldown(user_id, int(time.time()) + DEFAULT_GRADING_COOLDOWN)
 
     def add_cards_to_collection(self, user_id: int, drawn_cards_ids: list[str]) -> bool:
         return self._user_repository.add_cards_to_collection(user_id, drawn_cards_ids)
