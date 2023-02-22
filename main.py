@@ -13,6 +13,7 @@ from src.colors import BLUE
 from src.commands.admin_commands import AdminCog
 from src.commands.booster_command import BoosterCog
 from src.commands.daily_command import DailyCog
+from src.commands.grade_command import GradeCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.rankings_command import RankingCog
 from src.commands.search_commands import SearchCog
@@ -22,6 +23,7 @@ from src.commands.trade_commands import TradingCog
 from src.commands.user_info_commands import UserInfoCog
 from src.components.paginated_embed import PaginatedEmbed
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
+from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
@@ -100,9 +102,10 @@ async def setup_cogs():
     await bot.add_cog(ShoppingCog(bot, user_service, localization_service))
     await bot.add_cog(TradingCog(bot, user_service, localization_service))
     await bot.add_cog(UserInfoCog(bot, user_service, localization_service))
-    await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service))
+    await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service, card_service))
     await bot.add_cog(RankingCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
+    await bot.add_cog(GradeCog(bot, user_service, localization_service, card_service))
 
 
 async def main():
@@ -124,6 +127,7 @@ if __name__ == "__main__":
     user_service = UserService(pickle_file_user_repository)
     settings_service = SettingsService(pickle_file_user_repository)
     rarity_service = RarityService()
+    card_service = CardService()
     type_service = TypeService()
     localization_service = LocalizationService()
     t = localization_service.get_string

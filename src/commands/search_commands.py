@@ -1,11 +1,7 @@
-import os
-import pickle
 import random
 from typing import Literal, Optional
 
 import discord
-import requests as requests
-from PIL import Image, ImageFilter, ImageEnhance
 from discord import app_commands, Embed, File
 from discord.ext import commands
 from pokemontcgsdk import Card, PokemonTcgException
@@ -14,42 +10,30 @@ from config import BOT_ADMIN_USER_IDS
 from src.colors import ORANGE
 from src.components.search_cards_embed import SearchCardsEmbed
 from src.entities.user_entity import UserEntity
+from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
+from src.utils.card_grade import CardGrade
 
 SEARCH_PAGE_SIZE = 10
 NO_RESULT_VALUE = ""
 
 
 class SearchCog(commands.Cog):
-    CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
-
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
-                 localization_service: LocalizationService, user_service: UserService) -> None:
+                 localization_service: LocalizationService, user_service: UserService,
+                 card_service: CardService) -> None:
         self.bot = bot
         self.settings_service = settings_service
         self.t = localization_service.get_string
         self.user_service = user_service
-        self.cards_by_id = SearchCog._compute_all_cards()
-        self.card_quality_filters = {
-            "poor": [Image.open("assets/quality_filters/poor_card_1.png"),
-                     Image.open("assets/quality_filters/poor_card_2.png")],
-            "average": [Image.open("assets/quality_filters/average_card_1.png"),
-                        Image.open("assets/quality_filters/average_card_2.png")],
-            "good": [Image.open("assets/quality_filters/good_card_1.png"),
-                     Image.open("assets/quality_filters/good_card_2.png")],
-            "excellent": None
-        }
+        self.card_service = card_service
+        self.cards_by_id = self.card_service.get_all_cards_by_id()
 
     @staticmethod
     def _format_boolean_option_value(option_value: bool):
         return "✅" if option_value else "❌"
-
-    @staticmethod
-    def _compute_all_cards() -> dict[str, Card]:
-        cards: list[Card] = pickle.load(open(SearchCog.CARDS_PICKLE_FILE_LOCATION, "rb"))
-        return {card.id: card for card in cards}
 
     @staticmethod
     def _get_quantity_own_by_user(card_id: str, user: UserEntity) -> int:
@@ -176,9 +160,8 @@ class SearchCog(commands.Cog):
 
     @app_commands.command(name="random_graded_card", description="Generate a card with some alteration")
     async def random_graded_card(self, interaction: discord.Interaction,
-                                 quality: Literal["Poor", "Average", "Good", "Excellent"]) -> None:
+                                 quality: CardGrade) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
-        quality_lower = quality.lower()
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
@@ -186,25 +169,10 @@ class SearchCog(commands.Cog):
         await interaction.response.send_message(self.t(user_language_id, 'common.loading'))
 
         random_card: Card = random.choice(list(self.cards_by_id.values()))
-        original_image_url = random_card.images.large if random_card.images.large else random_card.images.small
-        card_name = f"{random_card.id}_{quality_lower}.png"
-        altered_image_path = f"assets/altered_cards/{card_name}"
-        card_not_already_computed = not os.path.isfile(altered_image_path)
+        self.card_service.generate_grade_for_card(random_card, quality)
 
-        if card_not_already_computed:
-            altered_image = Image.open(requests.get(original_image_url, stream=True).raw)
-
-            possible_attrition_filters = self.card_quality_filters[quality_lower]
-
-            if possible_attrition_filters:
-                attrition_filter = random.choice(possible_attrition_filters)\
-                    .resize(altered_image.size)\
-                    .filter(ImageFilter.GaussianBlur(7))
-                altered_image.paste(attrition_filter, mask=attrition_filter)
-
-            altered_image.save(altered_image_path)
-
-        discord_attachment = File(altered_image_path)
+        card_name = f"{random_card.id}_{quality.value.lower()}.png"
+        discord_attachment = File(f"assets/altered_cards/{card_name}")
         embed = Embed(title=random_card.id)
         embed.add_field(name="Grade", value=quality)
         embed.set_image(url=f"attachment://{card_name}")

@@ -1,5 +1,6 @@
 {
   "common": {
+    "feature_disabled": "Cette fonctionnalité n'est pas disponible pour le moment.",
     "loading": "Chargement...",
     "pokedollar": "Pokédollar",
     "collection": "collection",
@@ -164,5 +165,9 @@
   },
   "ranking_cmd": {
     "title": "Classement des joueurs par nombre de cartes"
+  },
+  "grade_cmd": {
+    "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
+    "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
   }
 }
