@@ -1,2 +1,3 @@
 #!/bin/sh
 export DISCORD_TOKEN=
+export DEV_MODE="True"
