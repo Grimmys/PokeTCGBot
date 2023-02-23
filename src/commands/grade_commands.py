@@ -5,6 +5,7 @@ import discord
 from discord import app_commands, Embed
 from discord.ext import commands
 
+import config
 from src.colors import GREEN
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
@@ -29,6 +30,12 @@ class GradeCog(commands.Cog):
         self.t = localization_service.get_string
         self.card_service = card_service
         self.cards_by_id = self.card_service.get_all_cards_by_id()
+
+    @property
+    def log_channel(self):
+        if self._log_channel is None:
+            self._log_channel = self.bot.get_channel(config.LOG_CHANNEL_ID)
+        return self._log_channel
 
     @app_commands.command(name="grade", description="Grade a given card")
     async def grade_command(self, interaction: discord.Interaction, card_id: str) -> None:
@@ -56,6 +63,8 @@ class GradeCog(commands.Cog):
 
         self.user_service.grade_user_card(user.id, card_id, grade)
 
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) graded card {card.id} as '{grade.in_application_name}'")
         await interaction.edit_original_response(content=self.t(user_language_id, 'grade_cmd.card_has_been_grade')
                                                  .format(card_id=card_id,
                                                          grade=self.t(user_language_id, grade.translation_key)))
