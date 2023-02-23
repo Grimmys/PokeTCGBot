@@ -13,7 +13,7 @@ from src.colors import BLUE
 from src.commands.admin_commands import AdminCog
 from src.commands.booster_command import BoosterCog
 from src.commands.daily_command import DailyCog
-from src.commands.grade_command import GradeCog
+from src.commands.grade_commands import GradeCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.rankings_command import RankingCog
 from src.commands.search_commands import SearchCog
