@@ -172,5 +172,9 @@
   "grade_cmd": {
     "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
     "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
+  },  
+  "grade_rates_cmd": {
+    "title": "Proportions des évaluations de carte",
+    "description": "Chance d'obtenir chacune des évaluations différentes lors de l'évaluation d'une carte"
   }
 }

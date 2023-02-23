@@ -172,5 +172,9 @@
   "grade_cmd": {
     "no_available_copy": "You do not own any ungraded copy of this card.",
     "card_has_been_grade": "The card `{card_id}` has been graded as: {grade}."
+  },
+  "grade_rates_cmd": {
+    "title": "Grade rates",
+    "description": "Rates for the grade obtained after grading a card"
   }
 }

@@ -1,9 +1,10 @@
 import random
 
 import discord
-from discord import app_commands
+from discord import app_commands, Embed
 from discord.ext import commands
 
+from src.colors import GREEN
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
@@ -53,3 +54,26 @@ class GradeCog(commands.Cog):
 
         await interaction.edit_original_response(content=self.t(user_language_id, 'grade_cmd.card_has_been_grade')
                                                  .format(card_id=card_id, grade=grade.value))
+
+    @app_commands.command(name="grade_rates",
+                          description="Get the probability for each card grade")
+    async def grade_rates_command(self, interaction: discord.Interaction) -> None:
+        user = self.user_service.get_and_update_user(interaction.user)
+        user_language_id = user.settings.language_id
+
+        embed = Embed(
+            title=f"---------- {self.t(user_language_id, 'grade_rates_cmd.title')} ----------",
+            description=self.t(user_language_id, 'grade_rates_cmd.description'),
+            color=GREEN
+        )
+
+        embed.add_field(name=f"{CardGrade.POOR.value}",
+                        value=f"{GRADE_DROP_RATES[0]}%", inline=False)
+        embed.add_field(name=f"{CardGrade.AVERAGE.value}",
+                        value=f"{GRADE_DROP_RATES[1]}%", inline=False)
+        embed.add_field(name=f"{CardGrade.GOOD.value}",
+                        value=f"{GRADE_DROP_RATES[2]}%", inline=False)
+        embed.add_field(name=f"{CardGrade.EXCELLENT.value}",
+                        value=f"{GRADE_DROP_RATES[3]}%", inline=False)
+
+        await interaction.response.send_message(embed=embed)
