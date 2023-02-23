@@ -1,7 +1,7 @@
 import math
 from typing import Union, Optional, Callable
 
-from discord import Embed, Interaction, User
+from discord import Embed, Interaction, User, File
 from discord.ui import Button, View
 
 
@@ -25,6 +25,7 @@ class PaginatedEmbed:
         self.original_interaction = original_interaction
         self.content = content
         self.image_mode = image_mode
+        self.attachments: list[File] = []
         self.page_size = page_size if not image_mode else 1
         self.inline = inline
         self.display_list(content[:page_size])
@@ -53,7 +54,7 @@ class PaginatedEmbed:
             if self.current_page * self.page_size == len(self.content):
                 self.current_page -= 1
         self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed)
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
         await click_interaction.response.defer()
 
     def refresh_page(self):
@@ -67,11 +68,16 @@ class PaginatedEmbed:
             self.display_list(displayed)
 
     def display_list(self, displayed: list[dict[str, Union[int, str]]]):
+        self.attachments = []
         for element in displayed:
             self.embed.add_field(
                 name=element["name"], value=element["value"], inline=self.inline)
             if self.image_mode:
-                self.embed.set_image(url=element["image"])
+                url = element["image"]
+                if not url.startswith("http"):
+                    self.attachments.append(File(f"assets/altered_cards/{element['image']}"))
+                    url = f"attachment://{element['image']}"
+                self.embed.set_image(url=url)
         footer_text = f'{self.current_page + 1}/{math.ceil(len(self.content) / self.page_size)}'
         if not self.image_mode:
             footer_text += f'   ({self.current_page * self.page_size + 1}-{min((self.current_page + 1) * self.page_size, len(self.content))}/{len(self.content)})'

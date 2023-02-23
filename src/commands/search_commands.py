@@ -72,7 +72,10 @@ class SearchCog(commands.Cog):
             entry_card["value"] += f"{spliter_chain}{formatted_own}"
 
         if with_image:
-            entry_card["image"] = card.images.large if card.images.large else card.images.small
+            if grade is not None:
+                entry_card["image"] = f"{card.id}_{grade.value.lower()}.png"
+            else:
+                entry_card["image"] = card.images.large if card.images.large else card.images.small
 
         return entry_card
 
@@ -164,7 +167,7 @@ class SearchCog(commands.Cog):
                                            title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
                                            discord_user=discord_user,
                                            own_cards_filter_disabled=not someone_else_collection)
-        await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
+        await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view, files=paginated_embed.attachments)
 
     @app_commands.command(name="random_graded_card", description="Generate a card with some alteration")
     async def random_graded_card(self, interaction: discord.Interaction,

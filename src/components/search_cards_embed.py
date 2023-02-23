@@ -50,7 +50,7 @@ class SearchCardsEmbed(PaginatedEmbed):
         filter_method = self._is_card_owned if self.are_owned_cards_displayed else self._is_not_card_owned
         self.content = list(filter(filter_method, self.full_content))
         self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed)
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
         await interaction.response.defer()
 
     async def reset_filters_action(self, interaction: Interaction):
@@ -60,7 +60,7 @@ class SearchCardsEmbed(PaginatedEmbed):
         self.current_page = 0
         self.content = self.full_content
         self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed)
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
         await interaction.response.defer()
 
     async def open_name_filter_popup(self, interaction: Interaction):
@@ -76,7 +76,7 @@ class SearchCardsEmbed(PaginatedEmbed):
         filter_method = lambda entry_card: self._is_card_matching_name(entry_card, name_input)
         self.content = list(filter(filter_method, self.content))
         self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed)
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
         await interaction.response.defer()
 
     @staticmethod
