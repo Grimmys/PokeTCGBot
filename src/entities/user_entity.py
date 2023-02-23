@@ -2,7 +2,7 @@ import time
 
 from src.entities.user_cooldowns_entity import UserCooldownsEntity
 from src.entities.user_settings_entity import UserSettingsEntity
-from src.utils.card_grade import CardGrade
+from src.utils.card_grade import CardGrade, GRADES
 
 
 class UserEntity:
@@ -21,6 +21,15 @@ class UserEntity:
         self.graded_cards: dict[tuple[str, str], int] = graded_cards if graded_cards is not None else {}
         self.settings = user_settings_entity if user_settings_entity is not None else UserSettingsEntity()
         self.cooldowns = user_cooldowns_entity if user_cooldowns_entity is not None else UserCooldownsEntity()
+
+    def count_quantity_of_card(self, card_id: str) -> int:
+        quantity = 0
+        if card_id in self.cards:
+            quantity += self.cards[card_id]
+        for grade in GRADES:
+            if (card_id, grade.in_application_name) in self.graded_cards:
+                quantity += self.graded_cards[(card_id, grade.in_application_name)]
+        return quantity
 
     def __setstate__(self, state):
         self.id = state.get("id")

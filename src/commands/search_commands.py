@@ -9,7 +9,6 @@ from pokemontcgsdk import Card, PokemonTcgException
 from config import BOT_ADMIN_USER_IDS
 from src.colors import ORANGE
 from src.components.search_cards_embed import SearchCardsEmbed
-from src.entities.user_entity import UserEntity
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
@@ -34,12 +33,6 @@ class SearchCog(commands.Cog):
     @staticmethod
     def _format_boolean_option_value(option_value: bool):
         return "✅" if option_value else "❌"
-
-    @staticmethod
-    def _get_quantity_own_by_user(card_id: str, user: UserEntity) -> int:
-        if card_id not in user.cards:
-            return 0
-        return user.cards[card_id]
 
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int,
                                owned_flag: bool = False, viewer_quantity: Optional[int] = None,
@@ -87,7 +80,7 @@ class SearchCog(commands.Cog):
         try:
             card = Card.find(card_id)
             formatted_card = self._format_card_for_embed(card, True, user_language_id,
-                                                         SearchCog._get_quantity_own_by_user(card_id, user),
+                                                         user.count_quantity_of_card(card_id),
                                                          owned_flag=True)
             embed = Embed(title=formatted_card["name"], description=formatted_card["value"], color=ORANGE)
             embed.set_image(url=card.images.large if card.images.large else card.images.small)
@@ -116,7 +109,7 @@ class SearchCog(commands.Cog):
                 get_search_attribute = lambda card: card.name if card.name else NO_RESULT_VALUE
 
         all_cards = [self._format_card_for_embed(card, with_image, user_language_id,
-                                                 SearchCog._get_quantity_own_by_user(card.id, user), owned_flag=True)
+                                                 user.count_quantity_of_card(card.id), owned_flag=True)
                      for card in self.cards_by_id.values() if content.lower() in get_search_attribute(card).lower()]
 
         if len(all_cards) == 0:
@@ -148,7 +141,7 @@ class SearchCog(commands.Cog):
         own_cards = []
         for card_id, quantity in collection_user.cards.items():
             card = self.cards_by_id[card_id]
-            viewer_quantity = SearchCog._get_quantity_own_by_user(card_id, user) if someone_else_collection else None
+            viewer_quantity = user.count_quantity_of_card(card_id) if someone_else_collection else None
             own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
                                                          owned_flag=someone_else_collection,
                                                          viewer_quantity=viewer_quantity))
