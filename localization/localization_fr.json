@@ -169,6 +169,12 @@
   "ranking_cmd": {
     "title": "Classement des joueurs par nombre de cartes"
   },
+  "grade": {
+    "0": "Mauvaise",
+    "1": "Moyenne",
+    "2": "Bonne",
+    "3": "Excellente"
+  },
   "grade_cmd": {
     "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
     "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."

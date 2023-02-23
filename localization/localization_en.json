@@ -169,6 +169,12 @@
   "ranking_cmd": {
     "title": "User Collection Ranking"
   },
+  "grade": {
+    "0": "Poor",
+    "1": "Average",
+    "2": "Good",
+    "3": "Excellent"
+  },
   "grade_cmd": {
     "no_available_copy": "You do not own any ungraded copy of this card.",
     "card_has_been_grade": "The card `{card_id}` has been graded as: {grade}."

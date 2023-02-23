@@ -14,7 +14,7 @@ from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
-from src.utils.card_grade import CardGrade
+from src.utils.card_grade import CardGrade, CardGradeEnum, GRADES, card_grade_from
 
 SEARCH_PAGE_SIZE = 10
 NO_RESULT_VALUE = ""
@@ -51,7 +51,7 @@ class SearchCog(commands.Cog):
             "grade": grade,
         }
         formatted_id = f"**ID**: {card.id}"
-        formatted_grade = f"**{self.t(user_language_id, 'common.grade').capitalize()}**: {grade.value if grade else self.t(user_language_id, 'common.not_graded').capitalize()}"
+        formatted_grade = f"**{self.t(user_language_id, 'common.grade').capitalize()}**: {self.t(user_language_id, grade.translation_key) if grade else self.t(user_language_id, 'common.not_graded').capitalize()}"
         formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
         formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
         formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
@@ -73,7 +73,7 @@ class SearchCog(commands.Cog):
 
         if with_image:
             if grade is not None:
-                entry_card["image"] = f"{card.id}_{grade.value.lower()}.png"
+                entry_card["image"] = f"{card.id}_{grade.in_application_name}.png"
             else:
                 entry_card["image"] = card.images.large if card.images.large else card.images.small
 
@@ -152,10 +152,10 @@ class SearchCog(commands.Cog):
             own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
                                                          owned_flag=someone_else_collection,
                                                          viewer_quantity=viewer_quantity))
-        for (card_id, grade), quantity in collection_user.graded_cards.items():
+        for (card_id, grade_name), quantity in collection_user.graded_cards.items():
             card = self.cards_by_id[card_id]
             own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
-                                                         owned_flag=someone_else_collection, grade=grade))
+                                                         owned_flag=someone_else_collection, grade=card_grade_from(grade_name)))
 
         if len(own_cards) == 0:
             await interaction.response.send_message(
@@ -171,8 +171,9 @@ class SearchCog(commands.Cog):
 
     @app_commands.command(name="random_graded_card", description="Generate a card with some alteration")
     async def random_graded_card(self, interaction: discord.Interaction,
-                                 quality: CardGrade) -> None:
+                                 quality: CardGradeEnum) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
+        grade = GRADES[quality.value]
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
@@ -180,11 +181,11 @@ class SearchCog(commands.Cog):
         await interaction.response.send_message(self.t(user_language_id, 'common.loading'))
 
         random_card: Card = random.choice(list(self.cards_by_id.values()))
-        self.card_service.generate_grade_for_card(random_card, quality)
+        self.card_service.generate_grade_for_card(random_card, grade)
 
-        card_name = f"{random_card.id}_{quality.value.lower()}.png"
+        card_name = f"{random_card.id}_{grade.in_application_name}.png"
         discord_attachment = File(f"assets/altered_cards/{card_name}")
         embed = Embed(title=random_card.id)
-        embed.add_field(name="Grade", value=quality)
+        embed.add_field(name="Grade", value=self.t(user_language_id, grade.translation_key))
         embed.set_image(url=f"attachment://{card_name}")
         await interaction.edit_original_response(content="", embed=embed, attachments=[discord_attachment])

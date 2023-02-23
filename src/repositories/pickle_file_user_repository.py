@@ -160,10 +160,10 @@ class PickleFileUserRepository(UserRepository):
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            if (card_id, grade) in user.graded_cards:
-                user.graded_cards[(card_id, grade)] += 1
+            if (card_id, grade.in_application_name) in user.graded_cards:
+                user.graded_cards[(card_id, grade.in_application_name)] += 1
             else:
-                user.graded_cards[(card_id, grade)] = 1
+                user.graded_cards[(card_id, grade.in_application_name)] = 1
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False

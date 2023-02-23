@@ -18,7 +18,7 @@ class UserEntity:
         self.boosters_quantity: int = boosters_quantity
         self.promo_boosters_quantity: int = promo_boosters_quantity
         self.cards: dict[str, int] = cards_by_id if cards_by_id is not None else {}
-        self.graded_cards: dict[tuple[str, CardGrade], int] = graded_cards if graded_cards is not None else {}
+        self.graded_cards: dict[tuple[str, str], int] = graded_cards if graded_cards is not None else {}
         self.settings = user_settings_entity if user_settings_entity is not None else UserSettingsEntity()
         self.cooldowns = user_cooldowns_entity if user_cooldowns_entity is not None else UserCooldownsEntity()
 
