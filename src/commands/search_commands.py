@@ -36,7 +36,7 @@ class SearchCog(commands.Cog):
 
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int,
                                owned_flag: bool = False, viewer_quantity: Optional[int] = None,
-                               grade: Optional[CardGrade] = None):
+                               grade: Optional[CardGrade] = None, should_display_grade=False):
         entry_card = {
             "card": card,
             "owned_quantity": viewer_quantity if viewer_quantity is not None else quantity,
@@ -56,9 +56,10 @@ class SearchCog(commands.Cog):
 
         spliter_chain = "\n" if with_image else " / "
 
-        entry_card[
-            "value"] = f"{formatted_id}{spliter_chain}{formatted_grade}{spliter_chain}{formatted_rarity}{spliter_chain}{formatted_set}"
-
+        entry_card["value"] = f"{formatted_id}"
+        if should_display_grade:
+            entry_card["value"] += f"{spliter_chain}{formatted_grade}"
+        entry_card["value"] += f"{spliter_chain}{formatted_rarity}{spliter_chain}{formatted_set}"
         if not owned_flag or viewer_quantity is not None:
             entry_card["value"] += f"{spliter_chain}{formatted_quantity}"
         if owned_flag:
@@ -144,11 +145,14 @@ class SearchCog(commands.Cog):
             viewer_quantity = user.count_quantity_of_card(card_id) if someone_else_collection else None
             own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
                                                          owned_flag=someone_else_collection,
-                                                         viewer_quantity=viewer_quantity))
+                                                         viewer_quantity=viewer_quantity,
+                                                         should_display_grade=True))
         for (card_id, grade_name), quantity in collection_user.graded_cards.items():
             card = self.cards_by_id[card_id]
             own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
-                                                         owned_flag=someone_else_collection, grade=card_grade_from(grade_name)))
+                                                         owned_flag=someone_else_collection,
+                                                         grade=card_grade_from(grade_name),
+                                                         should_display_grade=True))
 
         if len(own_cards) == 0:
             await interaction.response.send_message(
@@ -160,7 +164,8 @@ class SearchCog(commands.Cog):
                                            title=f"---------- {self.t(user_language_id, 'collection_cmd.title')} ----------",
                                            discord_user=discord_user,
                                            own_cards_filter_disabled=not someone_else_collection)
-        await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view, files=paginated_embed.attachments)
+        await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view,
+                                                files=paginated_embed.attachments)
 
     @app_commands.command(name="random_graded_card", description="Generate a card with some alteration")
     async def random_graded_card(self, interaction: discord.Interaction,
