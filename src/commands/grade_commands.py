@@ -7,6 +7,7 @@ from discord.ext import commands
 
 import config
 from src.colors import GREEN
+from src.entities.quest_entity import QuestType
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
@@ -61,6 +62,7 @@ class GradeCog(commands.Cog):
                                           weights=[grade.probability for grade in GRADES])[0]
         self.card_service.generate_grade_for_card(card, grade)
 
+        self.user_service.update_progress_on_quests(user.id, QuestType.GRADE)
         self.user_service.grade_user_card(user.id, card_id, grade)
 
         await self.log_channel.send(

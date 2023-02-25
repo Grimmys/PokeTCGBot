@@ -11,6 +11,7 @@ from pokemontcgsdk import Card, Set
 import config
 from src.colors import GREEN, RED
 from src.components.paginated_embed import PaginatedEmbed
+from src.entities.quest_entity import QuestType
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
@@ -181,6 +182,7 @@ class BoosterCog(commands.Cog):
         drawn_cards = self._generate_booster_cards()
         drawn_card_ids = list(map(lambda drawn_card: drawn_card.id, drawn_cards))
 
+        self.user_service.update_progress_on_quests(user.id, QuestType.BOOSTER)
         self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 
         await self.log_channel.send(

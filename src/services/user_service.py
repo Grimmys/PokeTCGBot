@@ -142,3 +142,18 @@ class UserService:
     def grade_user_card(self, user_id: int, card_id: str, grade: CardGrade):
         if self._user_repository.remove_cards_from_collection(user_id, [card_id]):
             self._user_repository.add_graded_card_to_collection(user_id, card_id, grade)
+
+    def update_progress_on_quests(self, user_id: int, action_type: QuestType):
+        user_entity = self._user_repository.get_user(user_id)
+        for quest in user_entity.daily_quests:
+            if quest.kind == action_type and not quest.accomplished:
+                quest.increase_progress()
+                if quest.accomplished:
+                    match quest.reward_kind:
+                        case QuestReward.BASIC_BOOSTER:
+                            user_entity.boosters_quantity += quest.reward_amount
+                        case QuestReward.PROMO_BOOSTER:
+                            user_entity.promo_boosters_quantity += quest.reward_amount
+                        case QuestReward.MONEY:
+                            user_entity.money += quest.reward_amount
+        self._user_repository.save_user(user_entity)

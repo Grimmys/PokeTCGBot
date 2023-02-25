@@ -30,3 +30,8 @@ class QuestEntity:
         self.reward_kind = state.get("reward_kind")
         self.reward_amount = state.get("reward_amount")
         self.accomplished = state.get("accomplished", False)
+
+    def increase_progress(self, value: int = 1):
+        self.progress += value
+        if self.progress >= self.goal_value:
+            self.accomplished = True

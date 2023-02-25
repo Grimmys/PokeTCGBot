@@ -5,6 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from config import DAILY_MONEY_GIFT_AMOUNT
+from src.entities.quest_entity import QuestType
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
 from src.utils import discord_tools
@@ -29,6 +30,8 @@ class DailyCog(commands.Cog):
             return
 
         self.user_service.reset_daily_cooldown(user.id)
+
+        self.user_service.update_progress_on_quests(user.id, QuestType.DAILY_CLAIM)
         money_gift_amount = DAILY_MONEY_GIFT_AMOUNT
         self.user_service.give_money(user.id, money_gift_amount)
 
