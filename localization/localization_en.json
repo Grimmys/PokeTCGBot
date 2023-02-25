@@ -164,7 +164,8 @@
   },
   "search_cards_embed": {
     "filter_by_name_label": "Filter by name",
-    "card_name_input": "Card name"
+    "card_name_input": "Card name",
+    "filter_by_grade_label": "Filter by grade"
   },
   "ranking_cmd": {
     "title": "User Collection Ranking"

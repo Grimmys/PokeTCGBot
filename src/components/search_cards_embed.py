@@ -1,9 +1,11 @@
-from typing import Union
+from typing import Optional, Sequence
 
-from discord import Interaction, User, TextStyle
-from discord.ui import Button, Modal, TextInput
+from discord import Interaction, User, TextStyle, SelectOption
+from discord.ui import Button, Modal, TextInput, Select
 
 from src.components.paginated_embed import PaginatedEmbed
+from src.utils.card_grade import GRADES
+from src.utils.types import EntryCard
 
 
 class _NameFilterQueryPopup(Modal, title="Filter by name"):
@@ -21,10 +23,12 @@ class _NameFilterQueryPopup(Modal, title="Filter by name"):
 
 
 class SearchCardsEmbed(PaginatedEmbed):
-    def __init__(self, original_interaction: Interaction, content: list[dict[str, str]], image_mode: bool,
+    def __init__(self, original_interaction: Interaction, content: Sequence[EntryCard], image_mode: bool,
                  user_language_id: int, page_size: int = 1, inline: bool = False, title: str = None,
-                 discord_user: User = None, own_cards_filter_disabled=False) -> None:
-        super().__init__(original_interaction, content, image_mode, user_language_id, page_size, inline, title, discord_user)
+                 discord_user: User = None, own_cards_filter_disabled: bool = False,
+                 grade_filter_disabled: bool = False) -> None:
+        super().__init__(original_interaction, content, image_mode, user_language_id, page_size, inline, title,
+                         discord_user)
         self.full_content = content
         self.are_owned_cards_displayed = False
 
@@ -38,9 +42,19 @@ class SearchCardsEmbed(PaginatedEmbed):
         reset_filters_button.callback = lambda click_interaction: self.reset_filters_action(click_interaction)
         self.view.add_item(reset_filters_button)
 
-        open_name_filter_button = Button(label=SearchCardsEmbed.t(user_language_id, 'search_cards_embed.filter_by_name_label'))
+        open_name_filter_button = Button(
+            label=SearchCardsEmbed.t(user_language_id, 'search_cards_embed.filter_by_name_label'))
         open_name_filter_button.callback = lambda click_interaction: self.open_name_filter_popup(click_interaction)
         self.view.add_item(open_name_filter_button)
+
+        grade_filter_select = Select(
+            placeholder=SearchCardsEmbed.t(user_language_id, 'search_cards_embed.filter_by_grade_label'),
+            options=[SelectOption(label=SearchCardsEmbed.t(user_language_id, grade.translation_key),
+                                  value=grade.in_application_name) for grade in GRADES] + [SelectOption(label=SearchCardsEmbed.t(user_language_id, 'common.not_graded').capitalize(),
+                                                                                                        value="")])
+        grade_filter_select.callback = self.filter_on_cards_grade_action
+        grade_filter_select.disabled = grade_filter_disabled
+        self.view.add_item(grade_filter_select)
 
     async def filter_on_cards_owned_action(self, interaction: Interaction):
         if interaction.user != self.original_interaction.user:
@@ -79,14 +93,33 @@ class SearchCardsEmbed(PaginatedEmbed):
         await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
         await interaction.response.defer()
 
+    async def filter_on_cards_grade_action(self, interaction: Interaction):
+        if interaction.user != self.original_interaction.user:
+            return
+        self.current_page = 0
+        grade_name = interaction.data["values"][0]
+        filter_method = lambda entry_card: self._is_card_matching_rarity(entry_card, grade_name)
+        self.content = list(filter(filter_method, self.content))
+        self.refresh_page()
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
+        await interaction.response.defer()
+
     @staticmethod
-    def _is_card_owned(entry_card: dict[str, Union[str, int]]) -> bool:
+    def _is_card_owned(entry_card: EntryCard) -> bool:
         return entry_card["owned_quantity"] > 0
 
     @staticmethod
-    def _is_not_card_owned(entry_card: dict[str, Union[str, int]]) -> bool:
+    def _is_not_card_owned(entry_card: EntryCard) -> bool:
         return not SearchCardsEmbed._is_card_owned(entry_card)
 
     @staticmethod
-    def _is_card_matching_name(entry_card: dict[str, Union[str, int]], name: str) -> bool:
+    def _is_card_matching_name(entry_card: EntryCard, name: str) -> bool:
         return name.lower() in entry_card["name"].lower()
+
+    @staticmethod
+    def _is_card_matching_rarity(entry_card: EntryCard, grade_name: Optional[str]) -> bool:
+        if not grade_name:
+            return entry_card["grade"] is None
+        if entry_card["grade"] is not None:
+            return entry_card["grade"].in_application_name == grade_name
+        return False

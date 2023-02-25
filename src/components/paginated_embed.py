@@ -1,5 +1,5 @@
 import math
-from typing import Union, Optional, Callable
+from typing import Optional, Callable, Sequence
 
 from discord import Embed, Interaction, User, File
 from discord.ui import Button, View
@@ -12,7 +12,7 @@ class PaginatedEmbed:
     def setup_class(get_localized_string_method: Callable):
         PaginatedEmbed.t = get_localized_string_method
 
-    def __init__(self, original_interaction: Interaction, content: list[dict[str, Union[int, str]]], image_mode: bool,
+    def __init__(self, original_interaction: Interaction, content: Sequence[dict[str, any]], image_mode: bool,
                  user_language_id: int, page_size: int = 1, inline: bool = False, title: str = None,
                  discord_user: User = None) -> None:
         self.user_language_id = user_language_id
@@ -67,7 +67,7 @@ class PaginatedEmbed:
         else:
             self.display_list(displayed)
 
-    def display_list(self, displayed: list[dict[str, Union[int, str]]]):
+    def display_list(self, displayed: Sequence[dict[str, any]]):
         self.attachments = []
         for element in displayed:
             self.embed.add_field(

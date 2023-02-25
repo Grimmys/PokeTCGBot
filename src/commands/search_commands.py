@@ -14,6 +14,7 @@ from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
 from src.utils.card_grade import CardGrade, CardGradeEnum, GRADES, card_grade_from
+from src.utils.types import EntryCard
 
 SEARCH_PAGE_SIZE = 10
 NO_RESULT_VALUE = ""
@@ -36,7 +37,7 @@ class SearchCog(commands.Cog):
 
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int,
                                owned_flag: bool = False, viewer_quantity: Optional[int] = None,
-                               grade: Optional[CardGrade] = None, should_display_grade=False):
+                               grade: Optional[CardGrade] = None, should_display_grade=False) -> EntryCard:
         entry_card = {
             "card": card,
             "owned_quantity": viewer_quantity if viewer_quantity is not None else quantity,
@@ -119,7 +120,7 @@ class SearchCog(commands.Cog):
             return
 
         paginated_embed = SearchCardsEmbed(interaction, all_cards, with_image, user_language_id,
-                                           1 if with_image else SEARCH_PAGE_SIZE)
+                                           1 if with_image else SEARCH_PAGE_SIZE, grade_filter_disabled=True)
 
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
 
@@ -139,7 +140,7 @@ class SearchCog(commands.Cog):
             if collection_user is None:
                 await interaction.response.send_message(self.t(user_language_id, 'common.user_not_found'))
 
-        own_cards = []
+        own_cards: list[EntryCard] = []
         for card_id, quantity in collection_user.cards.items():
             card = self.cards_by_id[card_id]
             viewer_quantity = user.count_quantity_of_card(card_id) if someone_else_collection else None

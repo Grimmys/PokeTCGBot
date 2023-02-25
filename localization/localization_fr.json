@@ -164,7 +164,8 @@
   },
   "search_cards_embed": {
     "filter_by_name_label": "Filtrer par nom",
-    "card_name_input": "Nom de carte"
+    "card_name_input": "Nom de carte",
+    "filter_by_grade_label": "Filter by grade"
   },
   "ranking_cmd": {
     "title": "Classement des joueurs par nombre de cartes"
