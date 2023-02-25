@@ -120,6 +120,12 @@
     "midnight_reset": "Récupération à minuit",
     "available": "Disponible"
   },
+  "quests_cmd": {
+    "title": "Quêtes",
+    "booster_description": "Ouvrir {number} Boosters de base",
+    "grade_description": "Faire évaluer {number} cartes",
+    "daily_claim_description": "Réclamer sa récompense quotidienne"
+  },
   "joke_cmd": {
     "title": "Blague Pokémon",
     "description": "Avertissement : ce n'est pas parce que vous trouvez la blague pas drôle que ce n'est pas une blague",

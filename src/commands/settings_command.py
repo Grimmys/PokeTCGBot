@@ -7,6 +7,7 @@ from src.colors import GRAY
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
+from src.utils.discord_tools import format_boolean_option_value
 
 language_options = [SelectOption(label=language.label, value=str(language.id),
                                  emoji=language.emoji, description=language.description)
@@ -20,10 +21,6 @@ class SettingsCog(commands.Cog):
         self.settings_service = settings_service
         self.t = localization_service.get_string
         self.user_service = user_service
-
-    @staticmethod
-    def _format_boolean_option_value(option_value: bool):
-        return "✅" if option_value else "❌"
 
     @staticmethod
     def _get_button_color(feature_enabled: bool):
@@ -48,13 +45,13 @@ class SettingsCog(commands.Cog):
 
         booster_opening_field_id = 1
         embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_opening_with_image_field_name'),
-                        value=self._format_boolean_option_value(
+                        value=format_boolean_option_value(
                             user.settings.booster_opening_with_image),
                         inline=False)
 
         booster_stock_use_id = 2
         embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_stock_use_field_name'),
-                        value=self._format_boolean_option_value(user.settings.only_use_booster_stock_with_option),
+                        value=format_boolean_option_value(user.settings.only_use_booster_stock_with_option),
                         inline=False)
 
         async def change_language_callback(language_interaction: discord.Interaction):
@@ -83,7 +80,7 @@ class SettingsCog(commands.Cog):
             self.settings_service.update_booster_opening_with_image(user.id, user.settings.booster_opening_with_image)
 
             embed.set_field_at(booster_opening_field_id, name=embed.fields[booster_opening_field_id].name,
-                               value=self._format_boolean_option_value(
+                               value=format_boolean_option_value(
                                    user.settings.booster_opening_with_image),
                                inline=False)
             switch_opening_booster_mode_button.style = self._get_button_color(user.settings.booster_opening_with_image)
@@ -102,7 +99,7 @@ class SettingsCog(commands.Cog):
                                                                             user.settings.only_use_booster_stock_with_option)
 
             embed.set_field_at(booster_stock_use_id, name=embed.fields[booster_stock_use_id].name,
-                               value=self._format_boolean_option_value(
+                               value=format_boolean_option_value(
                                    user.settings.only_use_booster_stock_with_option),
                                inline=False)
             switch_booster_stock_use_button.style = self._get_button_color(

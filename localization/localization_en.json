@@ -120,6 +120,12 @@
     "midnight_reset": "Daily reset at midnight",
     "available": "Available"
   },
+  "quests_cmd": {
+    "title": "Quests",
+    "booster_description": "Open {number} Basic Boosters",
+    "grade_description": "Grade {number} cards",
+    "daily_claim_description": "Claim daily reward"
+  },
   "joke_cmd": {
     "title": "Pokémon Joke",
     "description": "Warning: It's not because you don't find the joke funny that it is not a joke",

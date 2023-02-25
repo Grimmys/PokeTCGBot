@@ -5,10 +5,12 @@ from discord import Embed, app_commands
 from discord.ext import commands
 
 from config import DEFAULT_GRADING_COOLDOWN
+from src.entities.quest_entity import QuestType, QuestEntity, QuestReward
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService, DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
 from src.colors import YELLOW
 from src.utils import discord_tools
+from src.utils.discord_tools import format_boolean_option_value
 
 
 class UserInfoCog(commands.Cog):
@@ -17,6 +19,30 @@ class UserInfoCog(commands.Cog):
         self.bot = bot
         self.user_service = user_service
         self.t = localization_service.get_string
+
+    def _compute_quest_description(self, quest: QuestEntity, user_language_id: int) -> str:
+        match quest.kind:
+            case QuestType.BOOSTER:
+                return self.t(user_language_id, 'quests_cmd.booster_description').format(
+                    number=quest.goal_value)
+            case QuestType.GRADE:
+                return self.t(user_language_id, 'quests_cmd.grade_description').format(
+                    number=quest.goal_value)
+            case QuestType.DAILY_CLAIM:
+                return self.t(user_language_id, 'quests_cmd.daily_claim_description')
+            case _:
+                return "Invalid Quest"
+
+    def _compute_quest_reward(self, quest: QuestEntity, user_language_id: int) -> str:
+        match quest.reward_kind:
+            case QuestReward.BASIC_BOOSTER:
+                return f"{quest.reward_amount} {self.t(user_language_id, 'common.basic_booster')}"
+            case QuestReward.PROMO_BOOSTER:
+                return f"{quest.reward_amount} {self.t(user_language_id, 'common.promo_booster')}"
+            case QuestReward.MONEY:
+                return f"{quest.reward_amount} {self.t(user_language_id, 'common.pokedollar')}"
+            case _:
+                return "Invalid Reward"
 
     @app_commands.command(name="profile", description="Check user profile")
     async def profile_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
@@ -98,5 +124,22 @@ class UserInfoCog(commands.Cog):
         embed.add_field(name=f"{self.t(user_language_id, 'common.grading_cooldown')}",
                         value=f"{grading_cooldown}⠀⠀⠀⠀[{self.t(user_language_id, 'cooldowns_cmd.time_between_cmds')} {DEFAULT_GRADING_COOLDOWN // (60 * 60)} {self.t(user_language_id, 'common.hours')}]",
                         inline=False)
+
+        await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="quests", description="Check your quests")
+    async def quests_command(self, interaction: discord.Interaction) -> None:
+        user = self.user_service.get_and_update_user(interaction.user)
+        user_language_id = user.settings.language_id
+
+        embed = Embed(
+            title=f"---------- {self.t(user_language_id, 'quests_cmd.title')} ----------",
+            color=YELLOW)
+        embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+
+        for quest in user.daily_quests:
+            embed.add_field(name=self._compute_quest_description(quest, user_language_id),
+                            value=f"{self._compute_quest_reward(quest, user_language_id)} [{quest.progress}/{quest.goal_value}] {format_boolean_option_value(quest.accomplished)}",
+                            inline=False)
 
         await interaction.response.send_message(embed=embed)

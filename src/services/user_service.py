@@ -1,3 +1,4 @@
+import random
 from datetime import date, datetime, timedelta
 import time
 from typing import Optional
@@ -5,6 +6,7 @@ from typing import Optional
 import discord
 
 from config import DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN, DEFAULT_GRADING_COOLDOWN
+from src.entities.quest_entity import QuestEntity, QuestType, QuestReward
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
 from src.utils.card_grade import CardGrade
@@ -20,17 +22,53 @@ class UserService:
     def _compute_next_midnight():
         return int(datetime.timestamp(datetime.combine(date.today() + timedelta(days=1), datetime.min.time())))
 
+    @staticmethod
+    def _generate_random_quest():
+        quest_type = random.choice(list(QuestType))
+        match quest_type:
+            case QuestType.BOOSTER:
+                goal_value = random.randint(3, 8)
+            case QuestType.GRADE:
+                goal_value = random.randint(2, 6)
+            case QuestType.DAILY_CLAIM:
+                goal_value = 1
+            case _:
+                goal_value = 0
+        reward_type = random.choice(list(QuestReward))
+        match reward_type:
+            case QuestReward.BASIC_BOOSTER:
+                reward_amount = random.randint(2, 4)
+            case QuestReward.PROMO_BOOSTER:
+                reward_amount = random.randint(1, 2)
+            case QuestReward.MONEY:
+                reward_amount = random.randint(1, 4) * 100
+            case _:
+                reward_amount = 0
+        return QuestEntity(kind=quest_type, goal_value=goal_value, reward_kind=reward_type, reward_amount=reward_amount)
+
+    @staticmethod
+    def _compute_new_daily_quests():
+        daily_quests = []
+        for _ in range(2):
+            daily_quests.append(UserService._generate_random_quest())
+        return daily_quests
+
     def get_user(self, user: discord.User) -> Optional[UserEntity]:
         return self._user_repository.get_user(user.id)
 
     def get_and_update_user(self, user: discord.User) -> UserEntity:
         user_entity = self._user_repository.get_user(user.id)
         if user_entity is None:
-            user_entity = UserEntity(user_id=user.id, name_tag=str(user))
+            user_entity = UserEntity(user_id=user.id, name_tag=str(user),
+                                     daily_quests=self._compute_new_daily_quests(),
+                                     next_daily_quests_refresh=self._compute_next_midnight())
             self._user_repository.save_user(user_entity)
         else:
             user_entity.last_interaction_date = int(time.time())
             user_entity.name_tag = str(user)
+            if user_entity.next_daily_quests_refresh < time.time():
+                user_entity.daily_quests = self._compute_new_daily_quests()
+                user_entity.next_daily_quests_refresh = self._compute_next_midnight()
             self._user_repository.save_user(user_entity)
         return user_entity
 

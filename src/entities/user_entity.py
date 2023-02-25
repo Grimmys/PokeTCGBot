@@ -1,5 +1,6 @@
 import time
 
+from src.entities.quest_entity import QuestEntity
 from src.entities.user_cooldowns_entity import UserCooldownsEntity
 from src.entities.user_settings_entity import UserSettingsEntity
 from src.utils.card_grade import CardGrade, GRADES
@@ -10,7 +11,7 @@ class UserEntity:
                  boosters_quantity: int = 0, promo_boosters_quantity: int = 0,
                  cards_by_id: dict[str, int] = None, graded_cards: dict[tuple[str, CardGrade], int] = None,
                  user_settings_entity: UserSettingsEntity = None,
-                 user_cooldowns_entity=None):
+                 user_cooldowns_entity: UserCooldownsEntity = None, daily_quests: list[QuestEntity] = None, next_daily_quests_refresh: int = 0):
         self.id: int = user_id
         self.name_tag: str = name_tag
         self.last_interaction_date: int = last_interaction_date
@@ -19,8 +20,10 @@ class UserEntity:
         self.promo_boosters_quantity: int = promo_boosters_quantity
         self.cards: dict[str, int] = cards_by_id if cards_by_id is not None else {}
         self.graded_cards: dict[tuple[str, str], int] = graded_cards if graded_cards is not None else {}
-        self.settings = user_settings_entity if user_settings_entity is not None else UserSettingsEntity()
-        self.cooldowns = user_cooldowns_entity if user_cooldowns_entity is not None else UserCooldownsEntity()
+        self.settings: UserSettingsEntity = user_settings_entity if user_settings_entity is not None else UserSettingsEntity()
+        self.cooldowns: UserCooldownsEntity = user_cooldowns_entity if user_cooldowns_entity is not None else UserCooldownsEntity()
+        self.daily_quests: list[QuestEntity] = daily_quests if daily_quests is not None else []
+        self.next_daily_quests_refresh: int = next_daily_quests_refresh
 
     def count_quantity_of_card(self, card_id: str) -> int:
         quantity = 0
@@ -42,3 +45,6 @@ class UserEntity:
         self.graded_cards = state.get("graded_cards", {})
         self.settings = state.get("settings", UserSettingsEntity())
         self.cooldowns = state.get("cooldowns", UserCooldownsEntity())
+        self.daily_quests: list[QuestEntity] = state.get("daily_quests", [])
+        self.next_daily_quests_refresh: int = state.get("next_daily_quests_refresh", 0)
+
