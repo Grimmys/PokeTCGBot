@@ -1,9 +1,10 @@
 import pickle
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
+from src.utils.card_grade import CardGrade
 
 
 class PickleFileUserRepository(UserRepository):
@@ -23,6 +24,10 @@ class PickleFileUserRepository(UserRepository):
     @staticmethod
     def _save_pickle_file(content: dict[int, UserEntity]) -> None:
         pickle.dump(content, open(PickleFileUserRepository.PICKLE_FILE_LOCATION, "wb"))
+
+    def get_all(self) -> Sequence[UserEntity]:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        return list(users_by_id.values())
 
     def get_user(self, user_id: int) -> Optional[UserEntity]:
         users_by_id = PickleFileUserRepository._load_pickle_file()
@@ -44,6 +49,13 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
+    def change_all_money(self, money_change: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        for user in users_by_id.values():
+            user.money += money_change
+        PickleFileUserRepository._save_pickle_file(users_by_id)
+        return True
+
     def change_basic_boosters_quantity(self, user_id: int, quantity: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
@@ -52,6 +64,13 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
+    def change_all_basic_boosters_quantity(self, quantity: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        for user in users_by_id.values():
+            user.boosters_quantity += quantity
+        PickleFileUserRepository._save_pickle_file(users_by_id)
+        return True
+
     def change_promo_boosters_quantity(self, user_id: int, quantity: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
@@ -59,6 +78,13 @@ class PickleFileUserRepository(UserRepository):
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
+
+    def change_all_promo_boosters_quantity(self, quantity: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        for user in users_by_id.values():
+            user.promo_boosters_quantity += quantity
+        PickleFileUserRepository._save_pickle_file(users_by_id)
+        return True
 
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
@@ -72,6 +98,15 @@ class PickleFileUserRepository(UserRepository):
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             users_by_id[user_id].settings.booster_opening_with_image = new_booster_opening_with_image_value
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
+    def change_only_use_booster_stock_with_option(self, user_id, new_only_use_booster_stock_with_option_value):
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[
+                user_id].settings.only_use_booster_stock_with_option = new_only_use_booster_stock_with_option_value
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
@@ -100,6 +135,14 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
+    def change_grading_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].cooldowns.timestamp_for_next_grading = updated_timestamp_for_cooldown
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
     def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
@@ -109,6 +152,18 @@ class PickleFileUserRepository(UserRepository):
                     user.cards[card_id] += 1
                 else:
                     user.cards[card_id] = 1
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
+    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            user = users_by_id[user_id]
+            if (card_id, grade.in_application_name) in user.graded_cards:
+                user.graded_cards[(card_id, grade.in_application_name)] += 1
+            else:
+                user.graded_cards[(card_id, grade.in_application_name)] = 1
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False

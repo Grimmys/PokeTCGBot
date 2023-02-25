@@ -6,15 +6,14 @@ from typing import Optional
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
-from discord.ui import View, Button
 from pokemontcgsdk import Card, Set
 
 import config
+from src.colors import GREEN, RED
 from src.components.paginated_embed import PaginatedEmbed
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
-from src.colors import GREEN, RED
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
 from src.utils import discord_tools
@@ -42,6 +41,7 @@ class BoosterCog(commands.Cog):
                  localization_service: LocalizationService, user_service: UserService, rarity_service: RarityService,
                  type_service: TypeService) -> None:
         self.bot = bot
+        self._log_channel = None
         self.settings_service = settings_service
         self.t = localization_service.get_string
         self.user_service = user_service
@@ -49,6 +49,12 @@ class BoosterCog(commands.Cog):
         self.type_service = type_service
         self.sets: list[Set] = Set.all()
         self.cards_by_rarity: dict[str, list[Card]] = BoosterCog._compute_all_cards()
+
+    @property
+    def log_channel(self):
+        if self._log_channel is None:
+            self._log_channel = self.bot.get_channel(config.LOG_CHANNEL_ID)
+        return self._log_channel
 
     @staticmethod
     def _filter_cards_for_rarities(cards: list[Card], rarities: set[str]) -> list[Card]:
@@ -145,39 +151,24 @@ class BoosterCog(commands.Cog):
         return drawn_cards
 
     def _build_paginated_booster(self, formatted_cards, user_language_id, interaction):
-        paginated_embed = PaginatedEmbed(formatted_cards, True, 1,
+        paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
                                          title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
                                          discord_user=interaction.user)
-        view = View()
-
-        async def change_page_callback(click_interaction: discord.Interaction, forward):
-            if click_interaction.user != interaction.user:
-                return
-            paginated_embed.change_page(forward)
-            await interaction.edit_original_response(embed=paginated_embed.embed)
-            await click_interaction.response.defer()
-
-        next_button = Button(emoji="➡️")
-        next_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, True)
-
-        previous_button = Button(emoji="⬅️")
-        previous_button.callback = lambda click_interaction: change_page_callback(
-            click_interaction, False)
-
-        view.add_item(previous_button)
-        view.add_item(next_button)
-
-        return paginated_embed, view
+        return paginated_embed
 
     @app_commands.command(name="booster", description="Open a basic booster")
-    async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None) -> None:
+    async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,
+                              use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
-        if user.cooldowns.timestamp_for_next_basic_booster > time.time():
-            if user.boosters_quantity > 0:
+        if use_booster_stock or user.cooldowns.timestamp_for_next_basic_booster > time.time():
+            if user.boosters_quantity > 0 and (not user.settings.only_use_booster_stock_with_option 
+                                               or use_booster_stock):
                 self.user_service.consume_booster(user.id, "Basic")
+            elif use_booster_stock:
+                await interaction.response.send_message(self.t(user_language_id, 'booster_cmd.no_boosters_in_stock'))
+                return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_basic_booster)
@@ -188,18 +179,22 @@ class BoosterCog(commands.Cog):
             self.user_service.reset_basic_booster_cooldown(user.id)
 
         drawn_cards = self._generate_booster_cards()
+        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id, drawn_cards))
 
-        self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
+        self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) opened a basic booster containing {drawn_card_ids}")
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
         if with_image:
             formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
                                for card in drawn_cards]
 
-            paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
-
-            await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+            paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
+                                             title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                                             discord_user=interaction.user)
+            await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
                 title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
@@ -212,13 +207,19 @@ class BoosterCog(commands.Cog):
             await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="promo_booster", description="Open a Promo booster")
-    async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None) -> None:
+    async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,
+                                    use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
-        if user.cooldowns.timestamp_for_next_promo_booster > time.time():
-            if user.promo_boosters_quantity > 0:
+        if use_booster_stock or user.cooldowns.timestamp_for_next_promo_booster > time.time():
+            if user.promo_boosters_quantity > 0 and (not user.settings.only_use_booster_stock_with_option or 
+                                                     use_booster_stock):
                 self.user_service.consume_booster(user.id, "Promo")
+            elif use_booster_stock:
+                await interaction.response.send_message(
+                    self.t(user_language_id, 'promo_booster_cmd.no_boosters_in_stock'))
+                return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_promo_booster)
@@ -229,18 +230,23 @@ class BoosterCog(commands.Cog):
             self.user_service.reset_promo_booster_cooldown(user.id)
 
         drawn_cards = self._generate_promo_booster_cards()
+        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id, drawn_cards))
 
-        self.user_service.add_cards_to_collection(user.id, list(map(lambda drawn_card: drawn_card.id, drawn_cards)))
+        self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) opened a Promo booster containing {drawn_card_ids}")
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
         if with_image:
             formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
                                for card in drawn_cards]
 
-            paginated_embed, view = self._build_paginated_booster(formatted_cards, user_language_id, interaction)
+            paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
+                                             title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                                             discord_user=interaction.user)
 
-            await interaction.response.send_message(embed=paginated_embed.embed, view=view)
+            await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
                 title=f"---------- {self.t(user_language_id, 'promo_booster_cmd.title')} ----------",

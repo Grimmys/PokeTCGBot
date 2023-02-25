@@ -1,12 +1,17 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
+from src.utils.card_grade import CardGrade
 
 
 class InMemoryUserRepository(UserRepository):
+
     def __init__(self):
         self._user_entities_by_id: dict[int, UserEntity] = {}
+
+    def get_all(self) -> Sequence[UserEntity]:
+        return list(self._user_entities_by_id.values())
 
     def get_user(self, user_id: int) -> Optional[UserEntity]:
         if user_id in self._user_entities_by_id:
@@ -21,11 +26,23 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
+    def change_all_money(self, money_change: int) -> bool:
+        # TODO: implementation
+        pass
+
     def change_basic_boosters_quantity(self, user_id: int, quantity: int) -> bool:
         # TODO: implementation
         pass
 
+    def change_all_basic_boosters_quantity(self, quantity: int) -> bool:
+        # TODO: implementation
+        pass
+
     def change_promo_boosters_quantity(self, user_id: int, quantity: int) -> bool:
+        # TODO: implementation
+        pass
+
+    def change_all_promo_boosters_quantity(self, quantity: int) -> bool:
         # TODO: implementation
         pass
 
@@ -36,6 +53,10 @@ class InMemoryUserRepository(UserRepository):
         return False
 
     def change_booster_opening_with_image_by_default(self, user_id, new_booster_opening_with_image_value):
+        # TODO: implementation
+        pass
+
+    def change_only_use_booster_stock_with_option(self, user_id, new_only_use_booster_stock_with_option_value):
         # TODO: implementation
         pass
 
@@ -51,7 +72,15 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
+    def change_grading_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        # TODO: implementation
+        pass
+
     def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+        # TODO: implementation
+        pass
+
+    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
         # TODO: implementation
         pass
 

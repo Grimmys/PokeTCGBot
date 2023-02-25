@@ -4,11 +4,10 @@ from typing import Optional
 
 import discord
 
+from config import DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN, DEFAULT_GRADING_COOLDOWN
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
-
-DEFAULT_BASIC_BOOSTER_COOLDOWN = 60 * 15
-DEFAULT_PROMO_BOOSTER_COOLDOWN = 60 * 60
+from src.utils.card_grade import CardGrade
 
 NUMBER_TOP_USERS = 50
 
@@ -38,11 +37,20 @@ class UserService:
     def give_money(self, user_id: int, amount: int) -> bool:
         return self._user_repository.change_money(user_id, amount)
 
+    def give_all_money(self, amount: int) -> bool:
+        return self._user_repository.change_all_money(amount)
+
     def give_boosters(self, user_id: int, kind: str, quantity: int) -> bool:
         if kind == "Basic":
             return self._user_repository.change_basic_boosters_quantity(user_id, quantity)
         elif kind == "Promo":
             return self._user_repository.change_promo_boosters_quantity(user_id, quantity)
+
+    def give_all_boosters(self, kind: str, quantity: int) -> bool:
+        if kind == "Basic":
+            return self._user_repository.change_all_basic_boosters_quantity(quantity)
+        elif kind == "Promo":
+            return self._user_repository.change_all_promo_boosters_quantity(quantity)
 
     def consume_booster(self, user_id: int, kind: str) -> bool:
         if kind == "Basic":
@@ -58,6 +66,9 @@ class UserService:
 
     def reset_daily_cooldown(self, user_id: int) -> None:
         self._user_repository.change_daily_cooldown(user_id, self._compute_next_midnight())
+
+    def reset_grading_cooldown(self, user_id: int) -> None:
+        self._user_repository.change_grading_cooldown(user_id, int(time.time()) + DEFAULT_GRADING_COOLDOWN)
 
     def add_cards_to_collection(self, user_id: int, drawn_cards_ids: list[str]) -> bool:
         return self._user_repository.add_cards_to_collection(user_id, drawn_cards_ids)
@@ -82,3 +93,14 @@ class UserService:
         self._user_repository.change_money(sender_id, - amount)
         self._user_repository.change_money(receiver_id, amount)
         return True
+
+    def get_number_users(self):
+        return len(self._user_repository.get_all())
+
+    def get_sum_money_all_users(self):
+        user_entities = self._user_repository.get_all()
+        return sum(user.money for user in user_entities)
+
+    def grade_user_card(self, user_id: int, card_id: str, grade: CardGrade):
+        if self._user_repository.remove_cards_from_collection(user_id, [card_id]):
+            self._user_repository.add_graded_card_to_collection(user_id, card_id, grade)

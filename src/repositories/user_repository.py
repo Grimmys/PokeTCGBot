@@ -1,10 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
+from src.utils.card_grade import CardGrade
 
 
 class UserRepository(ABC):
+
+    @abstractmethod
+    def get_all(self) -> Sequence[UserEntity]:
+        pass
 
     @abstractmethod
     def get_user(self, user_id: int) -> Optional[UserEntity]:
@@ -19,11 +24,23 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_all_money(self, money_change: int) -> bool:
+        pass
+
+    @abstractmethod
     def change_basic_boosters_quantity(self, user_id: int, quantity: int) -> bool:
         pass
 
     @abstractmethod
+    def change_all_basic_boosters_quantity(self, quantity: int) -> bool:
+        pass
+
+    @abstractmethod
     def change_promo_boosters_quantity(self, user_id: int, quantity: int) -> bool:
+        pass
+
+    @abstractmethod
+    def change_all_promo_boosters_quantity(self, quantity: int) -> bool:
         pass
 
     @abstractmethod
@@ -32,6 +49,10 @@ class UserRepository(ABC):
 
     @abstractmethod
     def change_booster_opening_with_image_by_default(self, user_id, new_booster_opening_with_image_value):
+        pass
+
+    @abstractmethod
+    def change_only_use_booster_stock_with_option(self, user_id, new_only_use_booster_stock_with_option_value):
         pass
 
     @abstractmethod
@@ -47,7 +68,15 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_grading_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
+        pass
+
+    @abstractmethod
     def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+        pass
+
+    @abstractmethod
+    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
         pass
 
     @abstractmethod

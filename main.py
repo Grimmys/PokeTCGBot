@@ -13,6 +13,7 @@ from src.colors import BLUE
 from src.commands.admin_commands import AdminCog
 from src.commands.booster_command import BoosterCog
 from src.commands.daily_command import DailyCog
+from src.commands.grade_commands import GradeCog
 from src.commands.mini_game_commands import MiniGamesCog
 from src.commands.rankings_command import RankingCog
 from src.commands.search_commands import SearchCog
@@ -20,7 +21,9 @@ from src.commands.settings_command import SettingsCog
 from src.commands.shop_commands import ShoppingCog
 from src.commands.trade_commands import TradingCog
 from src.commands.user_info_commands import UserInfoCog
+from src.components.paginated_embed import PaginatedEmbed
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
+from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
@@ -40,6 +43,21 @@ async def ping_command(interaction: discord.Interaction) -> None:
         f"{t(user_language_id, 'ping_cmd.response_msg')} **{round(bot.latency * 1000)}ms**")
 
 
+@bot.tree.command(name="bot_infos", description="Get various statistics about the bot")
+async def bot_infos_command(interaction: discord.Interaction) -> None:
+    user_language_id = settings_service.get_user_language_id(interaction.user)
+
+    emojis = {emoji.name: str(emoji) for emoji in bot.emojis}
+
+    embed = Embed(title=f"---------- {t(user_language_id, 'bot_infos_cmd.title')} ----------", )
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.count_servers'), value=f"🗃️ {len(bot.guilds)}", inline=False)
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.total_users'),
+                    value=f"👥 {user_service.get_number_users()}", inline=False)
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.total_money_in_circulation'),
+                    value=f"{emojis['pokedollar']} {user_service.get_sum_money_all_users()}", inline=False)
+    await interaction.response.send_message(embed=embed)
+
+
 @bot.tree.command(name="help", description="Display the list of available commands")
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
@@ -47,6 +65,16 @@ async def help_command(interaction: discord.Interaction) -> None:
                   description=t(user_language_id, 'help_cmd.description'), color=BLUE)
     for command in bot.tree.get_commands():
         embed.add_field(name=command.qualified_name, value=command.description, inline=False)
+    await interaction.response.send_message(embed=embed)
+
+
+@bot.tree.command(name="support", description="Information about how to join support in case of any issue")
+async def support_command(interaction: discord.Interaction) -> None:
+    user_language_id = settings_service.get_user_language_id(interaction.user)
+    embed = Embed(title=f"---------- {t(user_language_id, 'support_cmd.title')} ----------",
+                  description=t(user_language_id, 'support_cmd.description'), color=BLUE)
+    embed.add_field(name=t(user_language_id, 'support_cmd.discord_server_invitation'),
+                    value="https://discord.gg/66dPeCnkVy")
     await interaction.response.send_message(embed=embed)
 
 
@@ -69,13 +97,15 @@ async def setup_cogs():
     await bot.add_cog(AdminCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(DailyCog(bot, localization_service, user_service))
-    await bot.add_cog(BoosterCog(bot, settings_service, localization_service, user_service, rarity_service, type_service))
+    await bot.add_cog(
+        BoosterCog(bot, settings_service, localization_service, user_service, rarity_service, type_service))
     await bot.add_cog(ShoppingCog(bot, user_service, localization_service))
     await bot.add_cog(TradingCog(bot, user_service, localization_service))
     await bot.add_cog(UserInfoCog(bot, user_service, localization_service))
-    await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service))
+    await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service, card_service))
     await bot.add_cog(RankingCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
+    await bot.add_cog(GradeCog(bot, user_service, localization_service, card_service))
 
 
 async def main():
@@ -97,8 +127,10 @@ if __name__ == "__main__":
     user_service = UserService(pickle_file_user_repository)
     settings_service = SettingsService(pickle_file_user_repository)
     rarity_service = RarityService()
+    card_service = CardService()
     type_service = TypeService()
     localization_service = LocalizationService()
     t = localization_service.get_string
+    PaginatedEmbed.setup_class(t)
 
     asyncio.run(main())

@@ -1,30 +1,54 @@
 {
   "common": {
+    "feature_disabled": "Cette fonctionnalité n'est pas disponible pour le moment.",
+    "loading": "Chargement...",
     "pokedollar": "Pokédollar",
     "collection": "collection",
     "booster": "booster",
     "basic_booster": "Booster de base",
     "promo_booster": "Booster Promo",
+    "grade": "évaluation",
+    "not_graded": "non-évaluée",
     "rarity": "rareté",
     "set": "série",
     "quantity": "quantité",
+    "card_is_owned": "possédée",
     "booster_cooldown": "Prochain booster gratuit :",
     "promo_booster_cooldown": "Prochain booster Promo gratuit :",
-    "daily_cooldown": "Prochain daily:",
+    "daily_cooldown": "Prochain daily :",
+    "grading_cooldown": "Prochaine évaluation gratuite :",
     "minutes": "minutes",
+    "hours": "heures",
     "last_interaction": "Date de la dernière interaction",
     "user_not_found": "L'utilisateur n'a pas été trouvé",
     "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",
-    "not_allowed": "Vous ne pouvez pas utiliser cette commande"
+    "no_results": "Aucun résultat",
+    "not_allowed": "Vous ne pouvez pas utiliser cette commande",
+    "unknown_issue": "Une erreur inconnue a eu lieu durant l'exécution de la commande"
   },
   "ping_cmd": {
     "response_msg": "Mon ping est de"
   },
+  "bot_infos_cmd": {
+    "title": "Métadonnées du bot",
+    "count_servers": "Nombre de serveurs utilisants le Bot",
+    "total_users": "Total de joueurs",
+    "total_money_in_circulation": "Total de Pokédollars en circulation"
+  },
   "give_money_cmd": {
     "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"
   },
+  "give_all_money_cmd": {
+    "response_msg": "Tous les utilisateurs ont reçu {amount} Pokédollars"
+  },
   "give_card_cmd": {
     "response_msg": "L'utilisateur {user} a reçu la carte {card_id}"
+  },
+  "give_boosters_cmd": {
+    "response_msg": "L'utilisateur {user} a reçu {quantity} booster(s) {kind}"
+  },
+  "give_all_boosters_cmd": {
+    "response_msg": "Tous les utilisateurs ont reçu {quantity} booster(s) {kind}"
   },
   "remove_card_cmd": {
     "response_msg": "L'utilisateur {user} a perdu la carte {card_id}"
@@ -34,6 +58,9 @@
     "language_field_name": "Langue",
     "booster_opening_with_image_field_name": "Image des cartes affichées lors de l'ouverture d'un booster",
     "booster_opening_with_image_response_msg": "Mode d'ouverture d'un booster changé",
+    "booster_stock_use_field_name": "Toujours besoin de l'option pour utiliser les boosters du stock",
+    "booster_stock_use_response_msg": "Option d'utilisation des boosters du stock changée",
+    "booster_stock_use_label": "Besoin de l'option pour utiliser le stock",
     "language_changed_response_msg": "Nouvelle langue configurée :",
     "select_language_placeholder": "Changer la langue",
     "switch_booster_opening_label": "Changer le mode d'ouverture d'un booster"
@@ -45,14 +72,21 @@
     "title": "Aide", 
     "description": "Liste des commandes disponibles"
   },
+  "support_cmd": {
+    "title": "Support", 
+    "description": "Pour toute demande de support, par rapport à une commande ne fonctionnant pas correctement, une suggestion ou autre problème quelconque lié au bot, nous vous invitons à rejoindre le serveur Discord officiel du bot, et envoyer un message dans #support",
+    "discord_server_invitation": "Lien d'invitation au serveur Discord"
+  },
   "daily_cmd": {
     "response_msg": "Vous récupérez {amount} Pokédollars"
   },
   "booster_cmd": {
-    "title": "Booster"
+    "title": "Booster",
+    "no_boosters_in_stock": "Vous n'avez aucun booster en stock."
   },
   "promo_booster_cmd": {
-    "title": "Booster Promo"
+    "title": "Booster Promo",
+    "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock."
   },
   "market_booster_cmd": {
     "title": "Échoppe à Boosters"
@@ -83,6 +117,7 @@
   "cooldowns_cmd": {
     "title": "Temps d'attente des commandes",
     "time_between_cmds": "Temps de récupération de base : ",
+    "midnight_reset": "Récupération à minuit",
     "available": "Disponible"
   },
   "joke_cmd": {
@@ -127,7 +162,25 @@
     "title": "Collection",
     "empty": "Vous n'avez pas encore de carte dans votre collection."
   },
+  "search_cards_embed": {
+    "filter_by_name_label": "Filtrer par nom",
+    "card_name_input": "Nom de carte"
+  },
   "ranking_cmd": {
     "title": "Classement des joueurs par nombre de cartes"
+  },
+  "grade": {
+    "0": "Mauvaise",
+    "1": "Moyenne",
+    "2": "Bonne",
+    "3": "Excellente"
+  },
+  "grade_cmd": {
+    "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
+    "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
+  },  
+  "grade_rates_cmd": {
+    "title": "Proportions des évaluations de carte",
+    "description": "Chance d'obtenir chacune des évaluations différentes lors de l'évaluation d'une carte"
   }
 }
