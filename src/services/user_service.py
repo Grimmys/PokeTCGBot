@@ -23,8 +23,8 @@ class UserService:
         return int(datetime.timestamp(datetime.combine(date.today() + timedelta(days=1), datetime.min.time())))
 
     @staticmethod
-    def _generate_random_quest():
-        quest_type = random.choice(list(QuestType))
+    def _generate_random_quest(available_quests: list[QuestType]):
+        quest_type = available_quests.pop(random.randrange(len(available_quests)))
         match quest_type:
             case QuestType.BOOSTER:
                 goal_value = random.randint(3, 8)
@@ -49,8 +49,9 @@ class UserService:
     @staticmethod
     def _compute_new_daily_quests():
         daily_quests = []
+        available_quests = list(QuestType)
         for _ in range(2):
-            daily_quests.append(UserService._generate_random_quest())
+            daily_quests.append(UserService._generate_random_quest(available_quests))
         return daily_quests
 
     def get_user(self, user: discord.User) -> Optional[UserEntity]:
