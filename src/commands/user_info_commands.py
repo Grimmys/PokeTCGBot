@@ -19,6 +19,13 @@ class UserInfoCog(commands.Cog):
         self.bot = bot
         self.user_service = user_service
         self.t = localization_service.get_string
+        self._emojis = {}
+
+    @property
+    def emojis(self):
+        if not self._emojis:
+            self._emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
+        return self._emojis
 
     def _compute_quest_description(self, quest: QuestEntity, user_language_id: int) -> str:
         match quest.kind:
@@ -33,14 +40,14 @@ class UserInfoCog(commands.Cog):
             case _:
                 return "Invalid Quest"
 
-    def _compute_quest_reward(self, quest: QuestEntity, user_language_id: int) -> str:
+    def _compute_quest_reward(self, quest: QuestEntity) -> str:
         match quest.reward_kind:
             case QuestReward.BASIC_BOOSTER:
-                return f"{quest.reward_amount} {self.t(user_language_id, 'common.basic_booster')}"
+                return f"{quest.reward_amount} {self.emojis['booster']}"
             case QuestReward.PROMO_BOOSTER:
-                return f"{quest.reward_amount} {self.t(user_language_id, 'common.promo_booster')}"
+                return f"{quest.reward_amount} {self.emojis['booster_promo']}"
             case QuestReward.MONEY:
-                return f"{quest.reward_amount} {self.t(user_language_id, 'common.pokedollar')}"
+                return f"{quest.reward_amount} {self.emojis['pokedollar']}"
             case _:
                 return "Invalid Reward"
 
@@ -139,7 +146,7 @@ class UserInfoCog(commands.Cog):
 
         for quest in user.daily_quests:
             embed.add_field(name=self._compute_quest_description(quest, user_language_id),
-                            value=f"{self._compute_quest_reward(quest, user_language_id)} [{quest.progress}/{quest.goal_value}] {format_boolean_option_value(quest.accomplished)}",
+                            value=f"{self._compute_quest_reward(quest)} [{quest.progress}/{quest.goal_value}] {format_boolean_option_value(quest.accomplished)}",
                             inline=False)
 
         await interaction.response.send_message(embed=embed)
