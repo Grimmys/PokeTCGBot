@@ -72,7 +72,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def add_ungraded_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
         pass
 
     @abstractmethod
@@ -80,11 +80,11 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+    def remove_ungraded_card_from_collection(self, user_id: int, card_id: str) -> bool:
         pass
 
     @abstractmethod
-    def remove_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def remove_ungraded_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
         pass
 
     @abstractmethod

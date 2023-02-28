@@ -13,7 +13,7 @@ from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
-from src.utils.card_grade import CardGrade, CardGradeEnum, GRADES, card_grade_from
+from src.utils.card_grade import CardGrade, CardGradeEnum, card_grade_from, OBTAINABLE_GRADES
 from src.utils.types import EntryCard
 
 SEARCH_PAGE_SIZE = 10
@@ -45,7 +45,6 @@ class SearchCog(commands.Cog):
             "grade": grade,
         }
         formatted_id = f"**ID**: {card.id}"
-        formatted_grade = f"**{self.t(user_language_id, 'common.grade').capitalize()}**: {self.t(user_language_id, grade.translation_key) if grade else self.t(user_language_id, 'common.not_graded').capitalize()}"
         formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
         formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
         formatted_quantity = f"**{self.t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
@@ -59,6 +58,7 @@ class SearchCog(commands.Cog):
 
         entry_card["value"] = f"{formatted_id}"
         if should_display_grade:
+            formatted_grade = f"**{self.t(user_language_id, 'common.grade').capitalize()}**: {self.t(user_language_id, grade.translation_key)}"
             entry_card["value"] += f"{spliter_chain}{formatted_grade}"
         entry_card["value"] += f"{spliter_chain}{formatted_rarity}{spliter_chain}{formatted_set}"
         if not owned_flag or viewer_quantity is not None:
@@ -141,17 +141,12 @@ class SearchCog(commands.Cog):
                 await interaction.response.send_message(self.t(user_language_id, 'common.user_not_found'))
 
         own_cards: list[EntryCard] = []
-        for card_id, quantity in collection_user.cards.items():
+        for (card_id, grade_name), quantity in collection_user.cards.items():
             card = self.cards_by_id[card_id]
             viewer_quantity = user.count_quantity_of_card(card_id) if someone_else_collection else None
             own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
                                                          owned_flag=someone_else_collection,
                                                          viewer_quantity=viewer_quantity,
-                                                         should_display_grade=True))
-        for (card_id, grade_name), quantity in collection_user.graded_cards.items():
-            card = self.cards_by_id[card_id]
-            own_cards.append(self._format_card_for_embed(card, with_image, user_language_id, quantity,
-                                                         owned_flag=someone_else_collection,
                                                          grade=card_grade_from(grade_name),
                                                          should_display_grade=True))
 
@@ -172,7 +167,7 @@ class SearchCog(commands.Cog):
     async def random_graded_card(self, interaction: discord.Interaction,
                                  quality: CardGradeEnum) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
-        grade = GRADES[quality.value]
+        grade = OBTAINABLE_GRADES[quality.value]
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))

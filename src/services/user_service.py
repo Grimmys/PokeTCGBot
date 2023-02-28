@@ -110,17 +110,17 @@ class UserService:
         self._user_repository.change_grading_cooldown(user_id, int(time.time()) + DEFAULT_GRADING_COOLDOWN)
 
     def add_cards_to_collection(self, user_id: int, drawn_cards_ids: list[str]) -> bool:
-        return self._user_repository.add_cards_to_collection(user_id, drawn_cards_ids)
+        return self._user_repository.add_ungraded_cards_to_collection(user_id, drawn_cards_ids)
 
     def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
-        return self._user_repository.remove_card_from_collection(user_id, card_id)
+        return self._user_repository.remove_ungraded_card_from_collection(user_id, card_id)
 
     def get_top_users_collection(self) -> list[UserEntity]:
         return self._user_repository.get_top_users_by_cards(NUMBER_TOP_USERS)
 
     def transfer_cards(self, sender_id: int, receiver_id: int, card_ids_list: list[str]) -> bool:
-        if self._user_repository.remove_cards_from_collection(sender_id, card_ids_list):
-            self._user_repository.add_cards_to_collection(receiver_id, card_ids_list)
+        if self._user_repository.remove_ungraded_cards_from_collection(sender_id, card_ids_list):
+            self._user_repository.add_ungraded_cards_to_collection(receiver_id, card_ids_list)
             return True
         return False
 
@@ -140,9 +140,11 @@ class UserService:
         user_entities = self._user_repository.get_all()
         return sum(user.money for user in user_entities)
 
-    def grade_user_card(self, user_id: int, card_id: str, grade: CardGrade):
-        if self._user_repository.remove_cards_from_collection(user_id, [card_id]):
+    def grade_user_card(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
+        if self._user_repository.remove_ungraded_cards_from_collection(user_id, [card_id]):
             self._user_repository.add_graded_card_to_collection(user_id, card_id, grade)
+            return True
+        return False
 
     def update_progress_on_quests(self, user_id: int, action_type: QuestType):
         user_entity = self._user_repository.get_user(user_id)

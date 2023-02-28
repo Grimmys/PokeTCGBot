@@ -143,15 +143,16 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def add_ungraded_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
             for card_id in card_ids:
-                if card_id in user.cards:
-                    user.cards[card_id] += 1
+                card_id_in_collection = (card_id, "ungraded")
+                if card_id_in_collection in user.cards:
+                    user.cards[card_id_in_collection] += 1
                 else:
-                    user.cards[card_id] = 1
+                    user.cards[card_id_in_collection] = 1
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
@@ -160,35 +161,37 @@ class PickleFileUserRepository(UserRepository):
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            if (card_id, grade.in_application_name) in user.graded_cards:
-                user.graded_cards[(card_id, grade.in_application_name)] += 1
+            if (card_id, grade.in_application_name) in user.cards:
+                user.cards[(card_id, grade.in_application_name)] += 1
             else:
-                user.graded_cards[(card_id, grade.in_application_name)] = 1
+                user.cards[(card_id, grade.in_application_name)] = 1
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
 
-    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+    def remove_ungraded_card_from_collection(self, user_id: int, card_id: str) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
             if card_id in user.cards:
-                user.cards[card_id] -= 1
-                if user.cards[card_id] == 0:
-                    del user.cards[card_id]
+                card_id_in_collection = (card_id, "ungraded")
+                user.cards[card_id_in_collection] -= 1
+                if user.cards[card_id_in_collection] == 0:
+                    del user.cards[card_id_in_collection]
                 PickleFileUserRepository._save_pickle_file(users_by_id)
                 return True
         return False
 
-    def remove_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def remove_ungraded_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
             for card_id in card_ids:
-                if card_id in user.cards:
-                    user.cards[card_id] -= 1
-                    if user.cards[card_id] == 0:
-                        del user.cards[card_id]
+                card_id_in_collection = (card_id, "ungraded")
+                if card_id_in_collection in user.cards:
+                    user.cards[card_id_in_collection] -= 1
+                    if user.cards[card_id_in_collection] == 0:
+                        del user.cards[card_id_in_collection]
                 else:
                     return False
             PickleFileUserRepository._save_pickle_file(users_by_id)

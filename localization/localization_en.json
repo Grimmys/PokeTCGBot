@@ -8,7 +8,6 @@
     "basic_booster": "Basic Booster",
     "promo_booster": "Promo Booster",
     "grade": "grade",
-    "not_graded": "ungraded",
     "rarity": "rarity",
     "set": "set",
     "quantity": "quantity",
@@ -177,6 +176,7 @@
     "title": "User Collection Ranking"
   },
   "grade": {
+    "not_graded": "Ungraded",
     "0": "Poor",
     "1": "Average",
     "2": "Good",

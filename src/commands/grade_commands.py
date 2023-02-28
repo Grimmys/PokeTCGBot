@@ -12,7 +12,7 @@ from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
 from src.utils import discord_tools
-from src.utils.card_grade import CardGrade, GRADES
+from src.utils.card_grade import CardGrade, OBTAINABLE_GRADES
 
 GRADE_DROP_RATES = [
     20,
@@ -58,12 +58,16 @@ class GradeCog(commands.Cog):
         self.user_service.reset_grading_cooldown(user.id)
 
         card = self.cards_by_id.get(card_id)
-        grade: CardGrade = random.choices(GRADES,
-                                          weights=[grade.probability for grade in GRADES])[0]
+        grade: CardGrade = random.choices(OBTAINABLE_GRADES,
+                                          weights=[grade.probability for grade in OBTAINABLE_GRADES])[0]
         self.card_service.generate_grade_for_card(card, grade)
 
         self.user_service.update_progress_on_quests(user.id, QuestType.GRADE)
-        self.user_service.grade_user_card(user.id, card_id, grade)
+        card_has_been_added = self.user_service.grade_user_card(user.id, card_id, grade)
+
+        if not card_has_been_added:
+            await self.log_channel.send(
+                f"Ungraded copy of {card.id} couldn't be removed for {user.id} ({user.name_tag}) while grading card as '{grade.in_application_name}'")
 
         await self.log_channel.send(
             f"{user.id} ({user.name_tag}) graded card {card.id} as '{grade.in_application_name}'")
@@ -83,7 +87,7 @@ class GradeCog(commands.Cog):
             color=GREEN
         )
 
-        for grade in GRADES:
+        for grade in OBTAINABLE_GRADES:
             embed.add_field(name=self.t(user_language_id, grade.translation_key),
                             value=f"{grade.probability}%", inline=False)
 

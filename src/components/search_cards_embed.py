@@ -50,8 +50,7 @@ class SearchCardsEmbed(PaginatedEmbed):
         grade_filter_select = Select(
             placeholder=SearchCardsEmbed.t(user_language_id, 'search_cards_embed.filter_by_grade_label'),
             options=[SelectOption(label=SearchCardsEmbed.t(user_language_id, grade.translation_key),
-                                  value=grade.in_application_name) for grade in GRADES] + [SelectOption(label=SearchCardsEmbed.t(user_language_id, 'common.not_graded').capitalize(),
-                                                                                                        value="")])
+                                  value=grade.in_application_name) for grade in GRADES])
         grade_filter_select.callback = self.filter_on_cards_grade_action
         grade_filter_select.disabled = grade_filter_disabled
         self.view.add_item(grade_filter_select)

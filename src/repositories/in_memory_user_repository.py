@@ -76,7 +76,7 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
-    def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def add_ungraded_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
         # TODO: implementation
         pass
 
@@ -84,11 +84,11 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
-    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+    def remove_ungraded_card_from_collection(self, user_id: int, card_id: str) -> bool:
         # TODO: implementation
         pass
 
-    def remove_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def remove_ungraded_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
         # TODO: implementation
         pass
 
