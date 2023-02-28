@@ -201,5 +201,5 @@ class PickleFileUserRepository(UserRepository):
     def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         users: list[UserEntity] = list(users_by_id.values())
-        users.sort(key=lambda user: len(user.cards), reverse=True)
+        users.sort(key=lambda user: len(set([card_id[0] for card_id in user.cards.keys()])), reverse=True)
         return users[:number]
