@@ -4,6 +4,7 @@ import time
 import discord
 from discord import app_commands, Embed
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 
 import config
 from src.colors import GREEN
@@ -38,7 +39,7 @@ class GradeCog(commands.Cog):
             self._log_channel = self.bot.get_channel(config.LOG_CHANNEL_ID)
         return self._log_channel
 
-    @app_commands.command(name="grade", description="Grade a given card")
+    @app_commands.command(name=_T("grade_cmd-name"), description=_T("grade_cmd-desc"))
     async def grade_command(self, interaction: discord.Interaction, card_id: str) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id

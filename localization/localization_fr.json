@@ -26,9 +26,13 @@
     "unknown_issue": "Une erreur inconnue a eu lieu durant l'exécution de la commande"
   },
   "ping_cmd": {
+    "name": "ping",
+    "desc": "Voir le délai de réponse du bot",
     "response_msg": "Mon ping est de"
   },
   "bot_infos_cmd": {
+    "name": "bot_infos",
+    "desc": "Affiche des informations diverses à propos du bot",
     "title": "Métadonnées du bot",
     "count_servers": "Nombre de serveurs utilisants le Bot",
     "total_users": "Total de joueurs",
@@ -68,10 +72,14 @@
     "card_not_found": "La carte {1} n'existe pas."
   },
   "help_cmd": {
+    "name": "aide",
+    "desc": "Affiche la liste des commandes disponibles",
     "title": "Aide", 
     "description": "Liste des commandes disponibles"
   },
   "support_cmd": {
+    "name": "support",
+    "desc": "Indications pour joindre le support en cas de besoin",
     "title": "Support", 
     "description": "Pour toute demande de support, par rapport à une commande ne fonctionnant pas correctement, une suggestion ou autre problème quelconque lié au bot, nous vous invitons à rejoindre le serveur Discord officiel du bot, et envoyer un message dans #support",
     "discord_server_invitation": "Lien d'invitation au serveur Discord"
@@ -183,6 +191,8 @@
     "3": "Excellente"
   },
   "grade_cmd": {
+    "name": "evaluation",
+    "desc": "Évaluer une carte ne l'ayant pas encore été",
     "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
     "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
   },  

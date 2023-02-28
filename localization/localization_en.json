@@ -26,9 +26,13 @@
     "unknown_issue": "An unknown issue occurred during the process of the command"
   },
   "ping_cmd": {
+    "name": "ping",
+    "desc": "Get bot latency",
     "response_msg": "My ping is"
   },
   "bot_infos_cmd": {
+    "name": "bot_stats",
+    "desc": "Get various statistics about the bot",
     "title": "Bot metadata",
     "count_servers": "Number of servers using the Bot",
     "total_users": "Total players",
@@ -68,10 +72,14 @@
     "card_not_found": "Card {1} does not exist."
   },
   "help_cmd": {
+    "name": "help",
+    "desc": "Display the list of available commands",
     "title": "Help",
     "description": "List of available commands"
   },
   "support_cmd": {
+    "name": "support",
+    "desc": "Information about how to join support in case of any issue",
     "title": "Support", 
     "description": "For any kind of support request, whether it is about a malfunctioning command, a feature request or any other issue related to the bot, we invite you to send a message on the #support channel of the official Discord server",
     "discord_server_invitation": "Discord server invitation link"
@@ -183,6 +191,8 @@
     "3": "Excellent"
   },
   "grade_cmd": {
+    "name": "grade",
+    "desc": "Grade a given card",
     "no_available_copy": "You do not own any ungraded copy of this card.",
     "card_has_been_grade": "The card `{card_id}` has been graded as: {grade}."
   },

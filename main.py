@@ -7,6 +7,7 @@ from os import environ as env
 import discord
 from discord import Intents, Embed
 from discord.ext.commands import Bot
+from discord.app_commands import locale_str as _T
 
 import config
 from src.colors import BLUE
@@ -29,6 +30,8 @@ from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
+from src.utils.discord_tools import PTCGTranslator
+from src.utils.flags import is_dev_mode
 
 intents = Intents.default()
 intents.message_content = True
@@ -36,21 +39,22 @@ intents.message_content = True
 bot = Bot(intents=intents, command_prefix=str(uuid.uuid1()))
 
 
-@bot.tree.command(name="ping", description="Get bot latency")
+@bot.tree.command(name=_T("ping_cmd-name"), description=_T("ping_cmd-desc"))
 async def ping_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
     await interaction.response.send_message(
         f"{t(user_language_id, 'ping_cmd.response_msg')} **{round(bot.latency * 1000)}ms**")
 
 
-@bot.tree.command(name="bot_infos", description="Get various statistics about the bot")
+@bot.tree.command(name=_T("bot_infos-name"), description=_T("bot_infos-desc"))
 async def bot_infos_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
 
     emojis = {emoji.name: str(emoji) for emoji in bot.emojis}
 
     embed = Embed(title=f"---------- {t(user_language_id, 'bot_infos_cmd.title')} ----------", )
-    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.count_servers'), value=f"🗃️ {len(bot.guilds)}", inline=False)
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.count_servers'), value=f"🗃️ {len(bot.guilds)}",
+                    inline=False)
     embed.add_field(name=t(user_language_id, 'bot_infos_cmd.total_users'),
                     value=f"👥 {user_service.get_number_users()}", inline=False)
     embed.add_field(name=t(user_language_id, 'bot_infos_cmd.total_money_in_circulation'),
@@ -58,9 +62,14 @@ async def bot_infos_command(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="help", description="Display the list of available commands")
+@bot.tree.command(name=_T("help_cmd-name"), description=_T("help_cmd-desc"))
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
+
+    if not is_dev_mode():
+        await interaction.response.send_message(t(user_language_id, 'common.feature_disabled'))
+        return
+
     embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------",
                   description=t(user_language_id, 'help_cmd.description'), color=BLUE)
     for command in bot.tree.get_commands():
@@ -68,7 +77,7 @@ async def help_command(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="support", description="Information about how to join support in case of any issue")
+@bot.tree.command(name=_T("support_cmd-name"), description=_T("support_cmd-desc"))
 async def support_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
     embed = Embed(title=f"---------- {t(user_language_id, 'support_cmd.title')} ----------",
@@ -106,6 +115,7 @@ async def setup_cogs():
     await bot.add_cog(RankingCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
     await bot.add_cog(GradeCog(bot, user_service, localization_service, card_service))
+    await bot.tree.set_translator(PTCGTranslator(localization_service))
 
 
 async def main():

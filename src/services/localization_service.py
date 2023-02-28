@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from src.entities.language_entity import LanguageEntity
 
@@ -14,11 +15,13 @@ class LocalizationService:
         for language in LocalizationService.supported_languages:
             self.localized_strings[language.abbreviation] = LocalizationService.parse_localization_file(language.abbreviation)
 
-    def get_string(self, language_id: int, string_identifier: str) -> str:
+    def get_string(self, language_id: int, string_identifier: str) -> Optional[str]:
         language_abbreviation = LocalizationService.supported_languages[language_id].abbreviation
         identifier_layers = string_identifier.split(".")
         string = self.localized_strings[language_abbreviation]
         for layer in identifier_layers:
+            if layer not in string:
+                return None
             string = string[layer]
         return string
 
