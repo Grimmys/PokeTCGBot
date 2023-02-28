@@ -50,7 +50,7 @@ class GradeCog(commands.Cog):
                 f"{self.t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
             return
 
-        if card_id not in user.cards:
+        if (card_id, "ungraded") not in user.cards:
             await interaction.response.send_message(self.t(user_language_id, 'grade_cmd.no_available_copy'))
             return
         await interaction.response.send_message(self.t(user_language_id, 'common.loading'))
