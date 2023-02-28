@@ -19,7 +19,7 @@ class DailyCog(commands.Cog):
 
     @app_commands.command(name="daily", description="Claim daily gift")
     async def daily_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
         if user.cooldowns.timestamp_for_next_daily > time.time():
