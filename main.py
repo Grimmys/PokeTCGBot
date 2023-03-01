@@ -46,7 +46,7 @@ async def ping_command(interaction: discord.Interaction) -> None:
         f"{t(user_language_id, 'ping_cmd.response_msg')} **{round(bot.latency * 1000)}ms**")
 
 
-@bot.tree.command(name=_T("bot_infos-name"), description=_T("bot_infos-desc"))
+@bot.tree.command(name=_T("bot_infos_cmd-name"), description=_T("bot_infos_cmd-desc"))
 async def bot_infos_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
 
