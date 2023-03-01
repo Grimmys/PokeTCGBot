@@ -29,7 +29,7 @@ class GradeCog(commands.Cog):
         self.bot = bot
         self._log_channel = None
         self.user_service = user_service
-        self.t = localization_service.get_string
+        self._t = localization_service.get_string
         self.card_service = card_service
         self.cards_by_id = self.card_service.get_all_cards_by_id()
 
@@ -48,13 +48,13 @@ class GradeCog(commands.Cog):
             discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                 user.cooldowns.timestamp_for_next_grading)
             await interaction.response.send_message(
-                f"{self.t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
+                f"{self._t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
             return
 
         if (card_id, "ungraded") not in user.cards:
-            await interaction.response.send_message(self.t(user_language_id, 'grade_cmd.no_available_copy'))
+            await interaction.response.send_message(self._t(user_language_id, 'grade_cmd.no_available_copy'))
             return
-        await interaction.response.send_message(self.t(user_language_id, 'common.loading'))
+        await interaction.response.send_message(self._t(user_language_id, 'common.loading'))
 
         self.user_service.reset_grading_cooldown(user.id)
 
@@ -72,9 +72,9 @@ class GradeCog(commands.Cog):
 
         await self.log_channel.send(
             f"{user.id} ({user.name_tag}) graded card {card.id} as '{grade.in_application_name}'")
-        await interaction.edit_original_response(content=self.t(user_language_id, 'grade_cmd.card_has_been_grade')
+        await interaction.edit_original_response(content=self._t(user_language_id, 'grade_cmd.card_has_been_grade')
                                                  .format(card_id=card_id,
-                                                         grade=self.t(user_language_id, grade.translation_key)))
+                                                         grade=self._t(user_language_id, grade.translation_key)))
 
     @app_commands.command(name=_T("grade_rates_cmd-name"),
                           description=_T("grade_rates_cmd-desc"))
@@ -83,13 +83,13 @@ class GradeCog(commands.Cog):
         user_language_id = user.settings.language_id
 
         embed = Embed(
-            title=f"---------- {self.t(user_language_id, 'grade_rates_cmd.title')} ----------",
-            description=self.t(user_language_id, 'grade_rates_cmd.description'),
+            title=f"---------- {self._t(user_language_id, 'grade_rates_cmd.title')} ----------",
+            description=self._t(user_language_id, 'grade_rates_cmd.description'),
             color=GREEN
         )
 
         for grade in OBTAINABLE_GRADES:
-            embed.add_field(name=self.t(user_language_id, grade.translation_key),
+            embed.add_field(name=self._t(user_language_id, grade.translation_key),
                             value=f"{grade.probability}%", inline=False)
 
         await interaction.response.send_message(embed=embed)

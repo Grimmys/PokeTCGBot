@@ -88,10 +88,14 @@
     "response_msg": "You earned {amount} Pokémon Dollars"
   },
   "booster_cmd": {
+    "name": "booster",
+    "desc": "Open a basic booster",
     "title": "Booster",
     "no_boosters_in_stock": "You have no boosters in stock"
   },
   "promo_booster_cmd": {
+    "name": "promo_booster",
+    "desc": "Open a Promo booster",
     "title": "Promo Booster",
     "no_boosters_in_stock": "You have no promo boosters in stock"
   },
@@ -115,6 +119,8 @@
     "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
   },
   "drop_rates_cmd": {
+    "name": "drop_rates",
+    "desc": "Get the probability for each tier of cards to be in a booster",
     "title": "Drop rates",
     "description": "Drop for the last card of a basic booster"
   },

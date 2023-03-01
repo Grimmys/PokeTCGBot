@@ -6,6 +6,7 @@ from typing import Optional
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 from pokemontcgsdk import Card, Set
 
 import config
@@ -44,7 +45,7 @@ class BoosterCog(commands.Cog):
         self.bot = bot
         self._log_channel = None
         self.settings_service = settings_service
-        self.t = localization_service.get_string
+        self._t = localization_service.get_string
         self.user_service = user_service
         self.rarity_service = rarity_service
         self.type_service = type_service
@@ -98,8 +99,8 @@ class BoosterCog(commands.Cog):
     def _format_card_for_embed(self, card: Card, user_language_id: int, is_new: bool):
         emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
         formatted_id = f"**ID**: {card.id}"
-        formatted_rarity = f"**{self.t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
-        formatted_set = f"**{self.t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
+        formatted_rarity = f"**{self._t(user_language_id, 'common.rarity').capitalize()}**: {card.rarity}"
+        formatted_set = f"**{self._t(user_language_id, 'common.set').capitalize()}**: {card.set.name} ({card.set.series})"
         entry_card = {
             "name": card.name,
             "value": f"{formatted_id}\n{formatted_rarity}\n{formatted_set}",
@@ -153,11 +154,11 @@ class BoosterCog(commands.Cog):
 
     def _build_paginated_booster(self, formatted_cards, user_language_id, interaction):
         paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
-                                         title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                                         title=f"---------- {self._t(user_language_id, 'booster_cmd.title')} ----------",
                                          discord_user=interaction.user)
         return paginated_embed
 
-    @app_commands.command(name="booster", description="Open a basic booster")
+    @app_commands.command(name=_T("booster_cmd-name"), description=_T("booster_cmd-desc"))
     async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,
                               use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
@@ -168,13 +169,13 @@ class BoosterCog(commands.Cog):
                                                or use_booster_stock):
                 self.user_service.consume_booster(user.id, "Basic")
             elif use_booster_stock:
-                await interaction.response.send_message(self.t(user_language_id, 'booster_cmd.no_boosters_in_stock'))
+                await interaction.response.send_message(self._t(user_language_id, 'booster_cmd.no_boosters_in_stock'))
                 return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_basic_booster)
                 await interaction.response.send_message(
-                    f"{self.t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
+                    f"{self._t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
                 return
         else:
             self.user_service.reset_basic_booster_cooldown(user.id)
@@ -194,12 +195,12 @@ class BoosterCog(commands.Cog):
                                for card in drawn_cards]
 
             paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
-                                             title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                                             title=f"---------- {self._t(user_language_id, 'booster_cmd.title')} ----------",
                                              discord_user=interaction.user)
             await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
-                title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                title=f"---------- {self._t(user_language_id, 'booster_cmd.title')} ----------",
                 color=GREEN)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
@@ -208,7 +209,7 @@ class BoosterCog(commands.Cog):
 
             await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="promo_booster", description="Open a Promo booster")
+    @app_commands.command(name=_T("promo_booster_cmd-name"), description=_T("promo_booster_cmd-desc"))
     async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,
                                     use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
@@ -220,13 +221,13 @@ class BoosterCog(commands.Cog):
                 self.user_service.consume_booster(user.id, "Promo")
             elif use_booster_stock:
                 await interaction.response.send_message(
-                    self.t(user_language_id, 'promo_booster_cmd.no_boosters_in_stock'))
+                    self._t(user_language_id, 'promo_booster_cmd.no_boosters_in_stock'))
                 return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_promo_booster)
                 await interaction.response.send_message(
-                    f"{self.t(user_language_id, 'common.promo_booster_cooldown')} {discord_formatted_timestamp}")
+                    f"{self._t(user_language_id, 'common.promo_booster_cooldown')} {discord_formatted_timestamp}")
                 return
         else:
             self.user_service.reset_promo_booster_cooldown(user.id)
@@ -245,13 +246,13 @@ class BoosterCog(commands.Cog):
                                for card in drawn_cards]
 
             paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
-                                             title=f"---------- {self.t(user_language_id, 'booster_cmd.title')} ----------",
+                                             title=f"---------- {self._t(user_language_id, 'booster_cmd.title')} ----------",
                                              discord_user=interaction.user)
 
             await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
-                title=f"---------- {self.t(user_language_id, 'promo_booster_cmd.title')} ----------",
+                title=f"---------- {self._t(user_language_id, 'promo_booster_cmd.title')} ----------",
                 color=RED)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
@@ -260,14 +261,14 @@ class BoosterCog(commands.Cog):
 
             await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="drop_rates",
-                          description="Get the probability for each tier of cards to be in a booster")
+    @app_commands.command(name=_T("drop_rates_cmd-name"),
+                          description=_T("drop_rates_cmd-desc"))
     async def drop_rates_command(self, interaction: discord.Interaction) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         embed = Embed(
-            title=f"---------- {self.t(user_language_id, 'drop_rates_cmd.title')} ----------",
-            description=self.t(user_language_id, 'drop_rates_cmd.description'),
+            title=f"---------- {self._t(user_language_id, 'drop_rates_cmd.title')} ----------",
+            description=self._t(user_language_id, 'drop_rates_cmd.description'),
             color=GREEN
         )
 

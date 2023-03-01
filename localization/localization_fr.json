@@ -31,7 +31,7 @@
     "response_msg": "Mon ping est de"
   },
   "bot_infos_cmd": {
-    "name": "bot_infos",
+    "name": "infos_bot",
     "desc": "Affiche des informations diverses à propos du bot",
     "title": "Métadonnées du bot",
     "count_servers": "Nombre de serveurs utilisants le Bot",
@@ -88,10 +88,14 @@
     "response_msg": "Vous récupérez {amount} Pokédollars"
   },
   "booster_cmd": {
+    "name": "booster",
+    "desc": "Ouvre un booster de base",
     "title": "Booster",
     "no_boosters_in_stock": "Vous n'avez aucun booster en stock."
   },
   "promo_booster_cmd": {
+    "name": "booster_promo",
+    "desc": "Ouvre un booster Promo",
     "title": "Booster Promo",
     "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock."
   },
@@ -115,6 +119,8 @@
     "money_transferred": "{amount} Pokédollars ont été envoyé à {user}"
   },
   "drop_rates_cmd": {
+    "name": "taux_drop_cartes",
+    "desc": "Table des taux d'obtention pour chaque tier de carte d'être dans un booster",
     "title": "Taux de drop",
     "description": "Taux pour la dernière carte d'un booster de base"
   },
