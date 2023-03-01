@@ -110,13 +110,17 @@
     "success_buy": "Congratulations on your purchases"
   },
   "send_cards_cmd": {
+    "name": "send_cards",
+    "desc": "Send card(s) to another player",
     "same_user": "You can't send your cards to... yourself",
     "missing_cards": "You do not own some of the cards you provided, transfer cancelled",
     "cards_transferred": "Cards have been sent to {user}"
   },
   "send_money_cmd": {
+    "name": "send_money",
+    "desc": "Send Pokémon Dollars to another player",
     "same_user": "You can't send money to... yourself",
-    "negative_amount": "No, you can't steal someone else Pokémon Dollars",
+    "negative_amount": "No, you can't steal someone else's Pokémon Dollars",
     "not_enough_money": "You don't have that much Pokémon Dollars",
     "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
   },

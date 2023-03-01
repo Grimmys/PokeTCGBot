@@ -110,11 +110,15 @@
     "success_buy": "Félicitations pour vos achats"
   },
   "send_cards_cmd": {
+    "name": "transferer_cartes",
+    "desc": "Transférer des cartes à un autre joueur",
     "same_user": "Vous ne pouvez pas envoyer des cartes à... vous-même",
     "missing_cards": "Vous ne possédez pas toutes les cartes, le transfert est annulé",
     "cards_transferred": "Cartes envoyées à {user}"
   },
   "send_money_cmd": {
+    "name": "transferer_argent",
+    "desc": "Transférer des Pokédollars à un autre joueur",
     "same_user": "Vous ne pouvez pas envoyer des Pokédollars à... vous-même",
     "negative_amount": "Non, vous ne pouvez pas voler les Pokédollars de quelqu'un d'autre",
     "not_enough_money": "Vous ne possédez pas autant de Pokédollars",

@@ -1,6 +1,7 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 
 from config import LOG_CHANNEL_ID
 from src.services.localization_service import LocalizationService
@@ -21,7 +22,7 @@ class TradingCog(commands.Cog):
             self._log_channel = self.bot.get_channel(LOG_CHANNEL_ID)
         return self._log_channel
 
-    @app_commands.command(name="send_cards", description="Send card(s) to another player")
+    @app_commands.command(name=_T("send_cards_cmd-name"), description=_T("send_cards_cmd-desc"))
     async def send_cards_command(self, interaction: discord.Interaction, member: discord.User, card_ids: str) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
@@ -48,7 +49,7 @@ class TradingCog(commands.Cog):
         await interaction.response.send_message(self.t(user_language_id, 'send_cards_cmd.cards_transferred')
                                                 .format(user=other_user.name_tag))
 
-    @app_commands.command(name="send_money", description="Send Pokémon Dollars to another player")
+    @app_commands.command(name=_T("send_money_cmd-name"), description=_T("send_money_cmd-desc"))
     async def send_money_command(self, interaction: discord.Interaction, member: discord.User, amount: int) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
