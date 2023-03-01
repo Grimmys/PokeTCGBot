@@ -197,6 +197,8 @@
     "card_has_been_grade": "The card `{card_id}` has been graded as: {grade}."
   },
   "grade_rates_cmd": {
+    "name": "grade_rates",
+    "desc": "Get the probability for each card grade",
     "title": "Grade rates",
     "description": "Rates for the grade obtained after grading a card"
   }

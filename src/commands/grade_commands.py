@@ -76,8 +76,8 @@ class GradeCog(commands.Cog):
                                                  .format(card_id=card_id,
                                                          grade=self.t(user_language_id, grade.translation_key)))
 
-    @app_commands.command(name="grade_rates",
-                          description="Get the probability for each card grade")
+    @app_commands.command(name=_T("grade_rates_cmd-name"),
+                          description=_T("grade_rates_cmd-desc"))
     async def grade_rates_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
