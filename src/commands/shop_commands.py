@@ -5,7 +5,7 @@ from discord import Embed, app_commands
 from discord.ext import commands
 from discord.app_commands import locale_str as _T
 
-from config import LOG_CHANNEL_ID, BOOSTERS_PRICE
+from config import LOG_CHANNEL_ID, BOOSTERS_PRICE, GRADING_PRICE
 from src.colors import BLUE
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
@@ -63,3 +63,22 @@ class ShoppingCog(commands.Cog):
         self.user_service.give_boosters(user.id, kind, quantity)
         await self.log_channel.send(f"{user.id} ({user.name_tag}) bought {quantity} {kind} booster(s) for {total_price} Pokémon Dollars")
         await interaction.response.send_message(self.t(user_language_id, 'buy_boosters_cmd.success_buy'))
+
+    @app_commands.command(name=_T("buy_gradings_cmd-name"), description=_T("buy_gradings_cmd-desc"))
+    async def buy_gradings_command(self, interaction: discord.Interaction, quantity: int) -> None:
+        user = self.user_service.get_and_update_user(interaction.user)
+        user_language_id = user.settings.language_id
+
+        if quantity <= 0:
+            await interaction.response.send_message(self.t(user_language_id, 'buy_gradings_cmd.negative_quantity'))
+            return
+
+        total_price = GRADING_PRICE * quantity
+        if user.money < total_price:
+            await interaction.response.send_message(self.t(user_language_id, 'buy_gradings_cmd.not_enough_money'))
+            return
+
+        self.user_service.give_money(user.id, - total_price)
+        self.user_service.give_gradings(user.id, quantity)
+        await self.log_channel.send(f"{user.id} ({user.name_tag}) bought {quantity} gradings for {total_price} Pokémon Dollars")
+        await interaction.response.send_message(self.t(user_language_id, 'buy_gradings_cmd.success_buy'))

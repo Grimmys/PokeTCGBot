@@ -46,6 +46,10 @@ class InMemoryUserRepository(UserRepository):
         # TODO: implementation
         pass
 
+    def change_gradings_quantity(self, user_id: int, quantity: int) -> bool:
+        # TODO: implementation
+        pass
+
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         if user_id in self._user_entities_by_id:
             self._user_entities_by_id[user_id].settings.language_id = new_language_id

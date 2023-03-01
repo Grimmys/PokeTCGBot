@@ -118,6 +118,13 @@
     "not_enough_money": "Vous êtes trop pauvre pour cet achat",
     "success_buy": "Félicitations pour vos achats"
   },
+  "buy_gradings_cmd": {
+    "name": "achat_evaluations",
+    "desc": "Achète des actions d'évaluation de cartes",
+    "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter votre stock !",
+    "not_enough_money": "Vous êtes trop pauvre pour cet achat",
+    "success_buy": "Félicitations pour vos achats"
+  },
   "send_cards_cmd": {
     "name": "transferer_cartes",
     "desc": "Transférer des cartes à un autre joueur",

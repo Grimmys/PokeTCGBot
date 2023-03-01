@@ -44,6 +44,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_gradings_quantity(self, user_id: int, quantity: int) -> bool:
+        pass
+
+    @abstractmethod
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         pass
 

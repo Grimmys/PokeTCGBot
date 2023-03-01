@@ -118,6 +118,13 @@
     "not_enough_money": "You're too poor to buy these boosters",
     "success_buy": "Congratulations on your purchases"
   },
+  "buy_gradings_cmd": {
+    "name": "buy_gradings",
+    "desc": "Buy grading actions for cards",
+    "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your stock!",
+    "not_enough_money": "You're too poor to buy these gradings",
+    "success_buy": "Congratulations on your purchases"
+  },
   "send_cards_cmd": {
     "name": "send_cards",
     "desc": "Send card(s) to another player",

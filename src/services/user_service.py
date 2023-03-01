@@ -91,6 +91,9 @@ class UserService:
         elif kind == "Promo":
             return self._user_repository.change_all_promo_boosters_quantity(quantity)
 
+    def give_gradings(self, user_id: int, quantity: int) -> bool:
+        return self._user_repository.change_gradings_quantity(user_id, quantity)
+
     def consume_booster(self, user_id: int, kind: str) -> bool:
         if kind == "Basic":
             return self._user_repository.change_basic_boosters_quantity(user_id, -1)
