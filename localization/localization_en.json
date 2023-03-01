@@ -85,6 +85,8 @@
     "discord_server_invitation": "Discord server invitation link"
   },
   "daily_cmd": {
+    "name": "daily",
+    "desc": "Claim daily gift",
     "response_msg": "You earned {amount} Pokémon Dollars"
   },
   "booster_cmd": {

@@ -85,6 +85,8 @@
     "discord_server_invitation": "Lien d'invitation au serveur Discord"
   },
   "daily_cmd": {
+    "name": "daily",
+    "desc": "Réclamer récompense quotidienne",
     "response_msg": "Vous récupérez {amount} Pokédollars"
   },
   "booster_cmd": {

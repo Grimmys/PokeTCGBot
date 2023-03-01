@@ -3,6 +3,7 @@ import time
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 
 from config import DAILY_MONEY_GIFT_AMOUNT
 from src.entities.quest_entity import QuestType
@@ -17,7 +18,7 @@ class DailyCog(commands.Cog):
         self.t = localization_service.get_string
         self.user_service = user_service
 
-    @app_commands.command(name="daily", description="Claim daily gift")
+    @app_commands.command(name=_T("daily_cmd-name"), description=_T("daily_cmd-desc"))
     async def daily_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
