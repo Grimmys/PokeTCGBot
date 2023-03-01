@@ -102,9 +102,13 @@
     "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock."
   },
   "market_booster_cmd": {
+    "name": "boutique_boosters",
+    "desc": "Affiche les boosters disponibles à la boutique ainsi que leurs prix",
     "title": "Échoppe à Boosters"
   },
   "buy_boosters_cmd": {
+    "name": "achat_boosters",
+    "desc": "Achète des boosters depuis la boutique",
     "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter vos boosters !",
     "not_enough_money": "Vous êtes trop pauvre pour cet achat",
     "success_buy": "Félicitations pour vos achats"

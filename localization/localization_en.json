@@ -102,9 +102,13 @@
     "no_boosters_in_stock": "You have no promo boosters in stock"
   },
   "market_booster_cmd": {
+    "name": "market_booster",
+    "desc": "Check available boosters with their prices",
     "title": "Booster Market"
   },
   "buy_boosters_cmd": {
+    "name": "buy_boosters",
+    "desc": "Buy some boosters from market",
     "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your boosters!",
     "not_enough_money": "You're too poor to buy these boosters",
     "success_buy": "Congratulations on your purchases"

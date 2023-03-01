@@ -3,6 +3,7 @@ from typing import Literal
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 
 from config import LOG_CHANNEL_ID, BOOSTERS_PRICE
 from src.colors import BLUE
@@ -24,7 +25,7 @@ class ShoppingCog(commands.Cog):
             self._log_channel = self.bot.get_channel(LOG_CHANNEL_ID)
         return self._log_channel
 
-    @app_commands.command(name="market_booster", description="Check available boosters with their prices")
+    @app_commands.command(name=_T("market_booster_cmd-name"), description=_T("market_booster_cmd-desc"))
     async def market_booster_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
@@ -43,7 +44,7 @@ class ShoppingCog(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="buy_boosters", description="Buy some boosters from market")
+    @app_commands.command(name=_T("buy_boosters_cmd-name"), description=_T("buy_boosters_cmd-desc"))
     async def buy_boosters_command(self, interaction: discord.Interaction, kind: Literal["Basic", "Promo"],
                                    quantity: int) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
