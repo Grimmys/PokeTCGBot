@@ -90,7 +90,7 @@
   },
   "daily_cmd": {
     "name": "daily",
-    "desc": "Réclamer récompense quotidienne",
+    "desc": "Récupère la récompense quotidienne",
     "response_msg": "Vous récupérez {amount} Pokédollars"
   },
   "booster_cmd": {
