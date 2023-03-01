@@ -57,6 +57,8 @@
     "response_msg": "L'utilisateur {user} a perdu la carte {card_id}"
   },
   "settings_cmd": {
+    "name": "parametres",
+    "desc": "Accès aux paramètres de votre profil",
     "title": "Préférences",
     "language_field_name": "Langue",
     "booster_opening_with_image_field_name": "Image des cartes affichées lors de l'ouverture d'un booster",

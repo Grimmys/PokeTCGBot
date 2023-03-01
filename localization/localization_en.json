@@ -57,6 +57,8 @@
     "response_msg": "User {user} lost card {card_id}"
   },
   "settings_cmd": {
+    "name": "settings",
+    "desc": "Change user settings",
     "title": "Settings",
     "language_field_name": "Language",
     "booster_opening_with_image_field_name": "Booster opened with card images by default",

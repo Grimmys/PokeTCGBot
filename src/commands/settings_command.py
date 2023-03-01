@@ -2,6 +2,7 @@ import discord
 from discord import SelectOption, Embed, app_commands
 from discord.ext import commands
 from discord.ui import View, Select, Button
+from discord.app_commands import locale_str as _T
 
 from src.colors import GRAY
 from src.services.localization_service import LocalizationService
@@ -26,7 +27,7 @@ class SettingsCog(commands.Cog):
     def _get_button_color(feature_enabled: bool):
         return discord.ButtonStyle.green if feature_enabled else discord.ButtonStyle.red
 
-    @app_commands.command(name="settings", description="Change user settings")
+    @app_commands.command(name=_T("settings_cmd-name"), description=_T("settings_cmd-desc"))
     async def settings_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_user(interaction.user)
         user_language_id = user.settings.language_id
