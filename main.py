@@ -66,14 +66,15 @@ async def bot_infos_command(interaction: discord.Interaction) -> None:
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
 
-    if not is_dev_mode():
-        await interaction.response.send_message(t(user_language_id, 'common.feature_disabled'))
-        return
-
     embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------",
                   description=t(user_language_id, 'help_cmd.description'), color=BLUE)
     for command in bot.tree.get_commands():
-        embed.add_field(name=command.qualified_name, value=command.description, inline=False)
+        parsed_qualified_name = command.qualified_name.replace("-", ".")
+        localized_qualified_name = t(user_language_id, parsed_qualified_name)
+        parsed_description = command.description.replace("-", ".")
+        localized_description = t(user_language_id, parsed_description)
+        if localized_qualified_name and parsed_description:
+            embed.add_field(name=localized_qualified_name, value=localized_description, inline=False)
     await interaction.response.send_message(embed=embed)
 
 
