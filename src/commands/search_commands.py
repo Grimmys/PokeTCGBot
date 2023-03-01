@@ -4,6 +4,7 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands, Embed, File
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 from pokemontcgsdk import Card, PokemonTcgException
 
 from config import BOT_ADMIN_USER_IDS
@@ -74,7 +75,7 @@ class SearchCog(commands.Cog):
 
         return entry_card
 
-    @app_commands.command(name="card", description="Get a card with its id")
+    @app_commands.command(name=_T("get_card_cmd-name"), description=_T("get_card_cmd-desc"))
     async def get_card_command(self, interaction: discord.Interaction, card_id: str) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
@@ -91,7 +92,7 @@ class SearchCog(commands.Cog):
             await interaction.response.send_message(
                 self.t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
 
-    @app_commands.command(name="search", description="Search card with several parameters")
+    @app_commands.command(name=_T("search_cmd-name"), description=_T("search_cmd-desc"))
     async def search_command(self, interaction: discord.Interaction, content: str,
                              search_mode: Literal["card_name", "card_id", "set_name", "set_id", "rarity"] = "card_name",
                              with_image: bool = False) -> None:
@@ -124,7 +125,7 @@ class SearchCog(commands.Cog):
 
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
 
-    @app_commands.command(name="collection", description="Search cards in your own collection")
+    @app_commands.command(name=_T("collection_cmd-name"), description=_T("collection_cmd-desc"))
     async def collection_command(self, interaction: discord.Interaction, with_image: bool = False,
                                  member: discord.User = None) -> None:
         user = self.user_service.get_and_update_user(interaction.user)

@@ -69,6 +69,8 @@
     "switch_booster_opening_label": "Changer le mode d'ouverture d'un booster"
   },
   "get_card_cmd": {
+    "name": "carte",
+    "desc": "Affiche une carte selon son id",
     "card_not_found": "La carte {1} n'existe pas."
   },
   "help_cmd": {
@@ -193,9 +195,13 @@
     "joke_31": "Comment appelle-t-on un gros poisson qui se déplace dans tous les sens ?\n\n Un Zigza-thon."
   },
   "search_cmd": {
+    "name": "recherche",
+    "desc": "Recherche des cartes selon différents paramètres",
     "not_found": "Aucun résultat ne correspond à la recherche `{1}`."
   },
   "collection_cmd": {
+    "name": "collection",
+    "desc": "Affiche la collection de cartes d'un joueur",
     "title": "Collection",
     "empty": "Vous n'avez pas encore de carte dans votre collection."
   },

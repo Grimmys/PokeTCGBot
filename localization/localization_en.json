@@ -69,6 +69,8 @@
     "switch_booster_opening_label": "Switch booster opening value"
   },
   "get_card_cmd": {
+    "name": "card",
+    "desc": "Get a card with its id",
     "card_not_found": "Card {1} does not exist."
   },
   "help_cmd": {
@@ -193,9 +195,13 @@
     "joke_31": "What do you call a scout that likes to chew gum while climbing Pikes Peak?\n\n A Peak-A-Chewer!"
   },
   "search_cmd": {
+    "name": "search",
+    "desc": "Search card with several parameters",
     "not_found": "No result for search `{1}`."
   },
   "collection_cmd": {
+    "name": "collection",
+    "desc": "Search cards in a player collection",
     "title": "Collection",
     "empty": "You don't have any card in your collection yet."
   },
