@@ -131,15 +131,21 @@
     "description": "Taux pour la dernière carte d'un booster de base"
   },
   "profile_cmd": {
+    "name": "profil",
+    "desc": "Affiche le profil du joueur",
     "title": "Profil"
   },
   "cooldowns_cmd": {
+    "name": "delai_commandes",
+    "desc": "Affiche le temps d'attente restant pour chaque commande à délai",
     "title": "Temps d'attente des commandes",
     "time_between_cmds": "Temps de récupération de base : ",
     "midnight_reset": "Récupération à minuit",
     "available": "Disponible"
   },
   "quests_cmd": {
+    "name": "quetes",
+    "desc": "Affiche les quêtes actives",
     "title": "Quêtes",
     "booster_description": "Ouvrir {number} Boosters de base",
     "grade_description": "Faire évaluer {number} cartes",

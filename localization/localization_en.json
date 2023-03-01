@@ -131,15 +131,21 @@
     "description": "Drop for the last card of a basic booster"
   },
   "profile_cmd": {
+    "name": "profile",
+    "desc": "Check user profile",
     "title": "Profile"
   },
   "cooldowns_cmd": {
+    "name": "cooldowns",
+    "desc": "Check the time you still have to wait for your next commands",
     "title": "Commands' cooldown",
     "time_between_cmds": "Default timeout: ",
     "midnight_reset": "Daily reset at midnight",
     "available": "Available"
   },
   "quests_cmd": {
+    "name": "quests",
+    "desc": "Check your quests",
     "title": "Quests",
     "booster_description": "Open {number} Basic Boosters",
     "grade_description": "Grade {number} cards",

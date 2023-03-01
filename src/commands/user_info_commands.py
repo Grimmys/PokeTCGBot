@@ -3,6 +3,7 @@ import time
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 
 from config import DEFAULT_GRADING_COOLDOWN
 from src.entities.quest_entity import QuestType, QuestEntity, QuestReward
@@ -51,7 +52,7 @@ class UserInfoCog(commands.Cog):
             case _:
                 return "Invalid Reward"
 
-    @app_commands.command(name="profile", description="Check user profile")
+    @app_commands.command(name=_T("profile_cmd-name"), description=_T("profile_cmd-desc"))
     async def profile_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         discord_user = interaction.user
@@ -84,7 +85,7 @@ class UserInfoCog(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="cooldowns", description="Check the time you still have to wait for your next commands")
+    @app_commands.command(name=_T("cooldowns_cmd-name"), description=_T("cooldowns_cmd-desc"))
     async def cooldowns_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
@@ -134,7 +135,7 @@ class UserInfoCog(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="quests", description="Check your quests")
+    @app_commands.command(name=_T("quests_cmd-name"), description=_T("quests_cmd-desc"))
     async def quests_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
