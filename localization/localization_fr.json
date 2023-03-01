@@ -142,6 +142,8 @@
     "daily_claim_description": "Réclamer sa récompense quotidienne"
   },
   "joke_cmd": {
+    "name": "blague",
+    "desc": "Affiche une (terrible) blague Pokémon",
     "title": "Blague Pokémon",
     "description": "Avertissement : ce n'est pas parce que vous trouvez la blague pas drôle que ce n'est pas une blague",
     "joke_1": "C'est l'histoire d'un Pikachu, il cour il cour il cour et trébuche sur une pierre, puis c'est devenu un raichu",
@@ -189,6 +191,8 @@
     "filter_by_grade_label": "Filter by grade"
   },
   "ranking_cmd": {
+    "name": "classement",
+    "desc": "Affiche le classement des joueurs ayant le plus de cartes (différentes)",
     "title": "Classement des joueurs par nombre de cartes"
   },
   "grade": {

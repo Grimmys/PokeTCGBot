@@ -142,6 +142,8 @@
     "daily_claim_description": "Claim daily reward"
   },
   "joke_cmd": {
+    "name": "joke",
+    "desc": "Get a (bad) Pokémon joke",
     "title": "Pokémon Joke",
     "description": "Warning: It's not because you don't find the joke funny that it is not a joke",
     "joke_1": "It is the tale of a wild Pikachu. He runs, runs and runs again when suddenly he stumbles on a rock, then he becomes a Raichu.",
@@ -189,6 +191,8 @@
     "filter_by_grade_label": "Filter by grade"
   },
   "ranking_cmd": {
+    "name": "rankings",
+    "desc": "Get the top users having the most cards",
     "title": "User Collection Ranking"
   },
   "grade": {

@@ -3,7 +3,7 @@ import asyncio
 import discord
 from discord import app_commands
 from discord.ext import commands
-from discord.ui import View, Button
+from discord.app_commands import locale_str as _T
 
 from src.components.paginated_embed import PaginatedEmbed
 from src.entities.user_entity import UserEntity
@@ -27,7 +27,7 @@ class RankingCog(commands.Cog):
         discord_users = await asyncio.gather(*[self.bot.fetch_user(user.id) for user in discord_users])
         return {user.id: user for user in discord_users}
 
-    @app_commands.command(name="rankings", description="Get the top users having the most cards")
+    @app_commands.command(name=_T("ranking_cmd-name"), description=_T("ranking_cmd-desc"))
     async def get_rankings_command(self, interaction: discord.Interaction) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
