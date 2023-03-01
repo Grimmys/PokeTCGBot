@@ -78,6 +78,8 @@ class UserInfoCog(commands.Cog):
                         value=f"{emojis['booster']} {user.boosters_quantity}")
         embed.add_field(name=f"{self.t(user_language_id, 'common.promo_booster')}",
                         value=f"{emojis['booster_promo']} {user.promo_boosters_quantity}")
+        embed.add_field(name=f"{self.t(user_language_id, 'common.grading')}s",
+                        value=f"🔬 {user.grading_quantity}")
         embed.add_field(name=self.t(user_language_id, 'common.collection').capitalize(),
                         value=f"{emojis['card']} {len(user.cards)}")
         embed.add_field(name=self.t(user_language_id, 'common.last_interaction'),
