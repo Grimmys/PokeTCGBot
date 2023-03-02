@@ -84,6 +84,25 @@ class GradeCog(commands.Cog):
                                                  .format(card_id=card_id,
                                                          grade=self._t(user_language_id, grade.translation_key)))
 
+    @app_commands.command(name=_T("stock_grade_cmd-name"), description=_T("stock_grade_cmd-desc"))
+    async def stock_grade_command(self, interaction: discord.Interaction) -> None:
+        user = self.user_service.get_and_update_user(interaction.user)
+        user_language_id = user.settings.language_id
+
+        if user.cooldowns.timestamp_for_next_grading > time.time():
+            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
+                user.cooldowns.timestamp_for_next_grading)
+            await interaction.response.send_message(
+                f"{self._t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
+            return
+
+        self.user_service.give_gradings(user.id, 1)
+        self.user_service.reset_grading_cooldown(user.id)
+
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) stored a grading action")
+        await interaction.response.send_message(self._t(user_language_id, 'stock_grade_cmd.response_msg'))
+
     @app_commands.command(name=_T("grade_rates_cmd-name"),
                           description=_T("grade_rates_cmd-desc"))
     async def grade_rates_command(self, interaction: discord.Interaction) -> None:

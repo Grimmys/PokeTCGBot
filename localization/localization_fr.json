@@ -237,7 +237,12 @@
     "desc": "Évaluer une carte ne l'ayant pas encore été",
     "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
     "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
-  },  
+  },
+  "stock_grade_cmd": {
+    "name": "stocker_evaluation",
+    "desc": "Stocker l'évaluation gratuite pour plus tard",
+    "response_msg": "Votre évaluation gratuite a été ajouté à votre réserve."
+  },
   "grade_rates_cmd": {
     "name": "taux_evaluations",
     "desc": "Table des taux d'obtention de chaque évaluation de carte",

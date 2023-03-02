@@ -238,6 +238,11 @@
     "no_available_copy": "You do not own any ungraded copy of this card.",
     "card_has_been_grade": "The card `{card_id}` has been graded as: {grade}."
   },
+  "stock_grade_cmd": {
+    "name": "stock_grade",
+    "desc": "Stock the free grade action for later use",
+    "response_msg": "Your free grade action has been added to your stock."
+  },
   "grade_rates_cmd": {
     "name": "grade_rates",
     "desc": "Get the probability for each card grade",
