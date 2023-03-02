@@ -52,7 +52,7 @@ class SettingsCog(commands.Cog):
 
         booster_stock_use_id = 2
         embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_stock_use_field_name'),
-                        value=format_boolean_option_value(user.settings.only_use_booster_stock_with_option),
+                        value=format_boolean_option_value(user.settings.only_use_action_from_stock_with_option),
                         inline=False)
 
         async def change_language_callback(language_interaction: discord.Interaction):
@@ -94,17 +94,17 @@ class SettingsCog(commands.Cog):
             if booster_stock_use_interaction.user != interaction.user:
                 return
 
-            user.settings.only_use_booster_stock_with_option = not user.settings.only_use_booster_stock_with_option
+            user.settings.only_use_action_from_stock_with_option = not user.settings.only_use_action_from_stock_with_option
 
             self.settings_service.update_only_use_booster_stock_with_option(user.id,
-                                                                            user.settings.only_use_booster_stock_with_option)
+                                                                            user.settings.only_use_action_from_stock_with_option)
 
             embed.set_field_at(booster_stock_use_id, name=embed.fields[booster_stock_use_id].name,
                                value=format_boolean_option_value(
-                                   user.settings.only_use_booster_stock_with_option),
+                                   user.settings.only_use_action_from_stock_with_option),
                                inline=False)
             switch_booster_stock_use_button.style = self._get_button_color(
-                user.settings.only_use_booster_stock_with_option)
+                user.settings.only_use_action_from_stock_with_option)
             await interaction.edit_original_response(embed=embed, view=view)
             await booster_stock_use_interaction.response.send_message(
                 self.t(user_language_id, "settings_cmd.booster_stock_use_response_msg"),
@@ -124,7 +124,7 @@ class SettingsCog(commands.Cog):
 
         switch_booster_stock_use_button = Button(
             label=self.t(user_language_id, 'settings_cmd.booster_stock_use_label'),
-            style=self._get_button_color(user.settings.only_use_booster_stock_with_option)
+            style=self._get_button_color(user.settings.only_use_action_from_stock_with_option)
         )
         switch_booster_stock_use_button.callback = switch_booster_stock_use_callback
 

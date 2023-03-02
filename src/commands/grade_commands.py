@@ -1,5 +1,6 @@
 import random
 import time
+from typing import Optional
 
 import discord
 from discord import app_commands, Embed
@@ -40,23 +41,30 @@ class GradeCog(commands.Cog):
         return self._log_channel
 
     @app_commands.command(name=_T("grade_cmd-name"), description=_T("grade_cmd-desc"))
-    async def grade_command(self, interaction: discord.Interaction, card_id: str) -> None:
+    async def grade_command(self, interaction: discord.Interaction, card_id: str, use_grading_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
-
-        if user.cooldowns.timestamp_for_next_grading > time.time():
-            discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
-                user.cooldowns.timestamp_for_next_grading)
-            await interaction.response.send_message(
-                f"{self._t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
-            return
 
         if (card_id, "ungraded") not in user.cards:
             await interaction.response.send_message(self._t(user_language_id, 'grade_cmd.no_available_copy'))
             return
-        await interaction.response.send_message(self._t(user_language_id, 'common.loading'))
 
-        self.user_service.reset_grading_cooldown(user.id)
+        if use_grading_stock or user.cooldowns.timestamp_for_next_grading > time.time():
+            if user.grading_quantity > 0 and (not user.settings.only_use_action_from_stock_with_option or use_grading_stock):
+                self.user_service.consume_grading(user.id)
+            elif use_grading_stock:
+                await interaction.response.send_message(self._t(user_language_id, 'grade_cmd.no_gradings_in_stock'))
+                return
+            else:
+                discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
+                    user.cooldowns.timestamp_for_next_grading)
+                await interaction.response.send_message(
+                    f"{self._t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
+                return
+        else:
+            self.user_service.reset_grading_cooldown(user.id)
+
+        await interaction.response.send_message(self._t(user_language_id, 'common.loading'))
 
         card = self.cards_by_id.get(card_id)
         grade: CardGrade = random.choices(OBTAINABLE_GRADES,
