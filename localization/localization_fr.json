@@ -64,9 +64,9 @@
     "language_field_name": "Langue",
     "booster_opening_with_image_field_name": "Image des cartes affichées lors de l'ouverture d'un booster",
     "booster_opening_with_image_response_msg": "Mode d'ouverture d'un booster changé",
-    "booster_stock_use_field_name": "Toujours besoin de l'option pour utiliser les boosters du stock",
-    "booster_stock_use_response_msg": "Option d'utilisation des boosters du stock changée",
-    "booster_stock_use_label": "Besoin de l'option pour utiliser le stock",
+    "command_stock_use_field_name": "Toujours besoin de l'option pour utiliser des actions depuis le stock",
+    "command_stock_use_response_msg": "Option d'utilisation du stock changée",
+    "command_stock_use_label": "Besoin de l'option pour utiliser une action depuis le stock",
     "language_changed_response_msg": "Nouvelle langue configurée :",
     "select_language_placeholder": "Changer la langue",
     "switch_booster_opening_label": "Changer le mode d'ouverture d'un booster"

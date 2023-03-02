@@ -51,7 +51,7 @@ class SettingsCog(commands.Cog):
                         inline=False)
 
         booster_stock_use_id = 2
-        embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_stock_use_field_name'),
+        embed.add_field(name=self.t(user_language_id, 'settings_cmd.command_stock_use_field_name'),
                         value=format_boolean_option_value(user.settings.only_use_action_from_stock_with_option),
                         inline=False)
 
@@ -107,7 +107,7 @@ class SettingsCog(commands.Cog):
                 user.settings.only_use_action_from_stock_with_option)
             await interaction.edit_original_response(embed=embed, view=view)
             await booster_stock_use_interaction.response.send_message(
-                self.t(user_language_id, "settings_cmd.booster_stock_use_response_msg"),
+                self.t(user_language_id, "settings_cmd.command_stock_use_response_msg"),
                 delete_after=2
             )
 
@@ -123,7 +123,7 @@ class SettingsCog(commands.Cog):
         switch_opening_booster_mode_button.callback = switch_opening_booster_mode_callback
 
         switch_booster_stock_use_button = Button(
-            label=self.t(user_language_id, 'settings_cmd.booster_stock_use_label'),
+            label=self.t(user_language_id, 'settings_cmd.command_stock_use_label'),
             style=self._get_button_color(user.settings.only_use_action_from_stock_with_option)
         )
         switch_booster_stock_use_button.callback = switch_booster_stock_use_callback
