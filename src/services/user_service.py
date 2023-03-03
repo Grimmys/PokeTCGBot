@@ -126,7 +126,8 @@ class UserService:
         self._user_repository.change_grading_cooldown(user_id, int(time.time()) + DEFAULT_GRADING_COOLDOWN)
 
     def add_cards_to_collection(self, user_id: int, drawn_cards_ids: list[str]) -> bool:
-        return self._user_repository.add_cards_to_collection(user_id, [(card_id, "ungraded") for card_id in drawn_cards_ids])
+        return self._user_repository.add_cards_to_collection(user_id,
+                                                             [(card_id, "ungraded") for card_id in drawn_cards_ids])
 
     def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
         return self._user_repository.remove_card_from_collection(user_id, card_id)
@@ -146,7 +147,6 @@ class UserService:
                 actual_grade = "ungraded"
             return actual_card_id, actual_grade
         return input_card_id, "ungraded"
-
 
     def transfer_cards(self, sender_id: int, receiver_id: int, card_ids: list[str]) -> bool:
         parsed_card_ids: list[tuple[str, str]] = [self._parse_card_id(card_id) for card_id in card_ids]
@@ -174,7 +174,7 @@ class UserService:
 
     def grade_user_card(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
         if self._user_repository.remove_cards_from_collection(user_id, [(card_id, "ungraded")]):
-            self._user_repository.add_card_to_collection(user_id, card_id, grade)
+            self._user_repository.add_card_to_collection(user_id, card_id, grade.in_application_name)
             return True
         return False
 
