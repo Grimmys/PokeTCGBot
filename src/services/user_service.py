@@ -116,17 +116,25 @@ class UserService:
         self._user_repository.change_grading_cooldown(user_id, int(time.time()) + DEFAULT_GRADING_COOLDOWN)
 
     def add_cards_to_collection(self, user_id: int, drawn_cards_ids: list[str]) -> bool:
-        return self._user_repository.add_ungraded_cards_to_collection(user_id, drawn_cards_ids)
+        return self._user_repository.add_cards_to_collection(user_id, [(card_id, "ungraded") for card_id in drawn_cards_ids])
 
     def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
-        return self._user_repository.remove_ungraded_card_from_collection(user_id, card_id)
+        return self._user_repository.remove_card_from_collection(user_id, card_id)
 
     def get_top_users_collection(self) -> list[UserEntity]:
         return self._user_repository.get_top_users_by_cards(NUMBER_TOP_USERS)
 
-    def transfer_cards(self, sender_id: int, receiver_id: int, card_ids_list: list[str]) -> bool:
-        if self._user_repository.remove_ungraded_cards_from_collection(sender_id, card_ids_list):
-            self._user_repository.add_ungraded_cards_to_collection(receiver_id, card_ids_list)
+    def transfer_cards(self, sender_id: int, receiver_id: int, card_ids: list[str]) -> bool:
+        parsed_card_ids: list[tuple[str, str]] = []
+        for card_id in card_ids:
+            if card_id.count("-") == 2:
+                actual_card_id, grade = card_id.rsplit("-", 1)
+            else:
+                actual_card_id, grade = card_id, "ungraded"
+            parsed_card_ids.append((actual_card_id, grade))
+
+        if self._user_repository.remove_cards_from_collection(sender_id, parsed_card_ids):
+            self._user_repository.add_cards_to_collection(receiver_id, parsed_card_ids)
             return True
         return False
 
@@ -147,7 +155,7 @@ class UserService:
         return sum(user.money for user in user_entities)
 
     def grade_user_card(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
-        if self._user_repository.remove_ungraded_cards_from_collection(user_id, [card_id]):
+        if self._user_repository.remove_cards_from_collection(user_id, [(card_id, "ungraded")]):
             self._user_repository.add_graded_card_to_collection(user_id, card_id, grade)
             return True
         return False

@@ -151,12 +151,11 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def add_ungraded_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def add_cards_to_collection(self, user_id: int, card_ids_with_grade: list[tuple[str, str]]) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            for card_id in card_ids:
-                card_id_in_collection = (card_id, "ungraded")
+            for card_id_in_collection in card_ids_with_grade:
                 if card_id_in_collection in user.cards:
                     user.cards[card_id_in_collection] += 1
                 else:
@@ -177,12 +176,12 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def remove_ungraded_card_from_collection(self, user_id: int, card_id: str) -> bool:
+    def remove_card_from_collection(self, user_id: int, card_id: str, grade_name: str = "ungraded") -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
             if card_id in user.cards:
-                card_id_in_collection = (card_id, "ungraded")
+                card_id_in_collection = (card_id, grade_name)
                 user.cards[card_id_in_collection] -= 1
                 if user.cards[card_id_in_collection] == 0:
                     del user.cards[card_id_in_collection]
@@ -190,12 +189,11 @@ class PickleFileUserRepository(UserRepository):
                 return True
         return False
 
-    def remove_ungraded_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def remove_cards_from_collection(self, user_id: int, card_ids_with_grade: list[tuple[str, str]]) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            for card_id in card_ids:
-                card_id_in_collection = (card_id, "ungraded")
+            for card_id_in_collection in card_ids_with_grade:
                 if card_id_in_collection in user.cards:
                     user.cards[card_id_in_collection] -= 1
                     if user.cards[card_id_in_collection] == 0:
