@@ -23,17 +23,19 @@ class CardGradeEnum(Enum):
     EXCELLENT = 3
 
 
+CARD_GRADE_NAMES = ["ungraded", "poor", "average", "good", "excellent"]
+
 OBTAINABLE_GRADES: tuple[CardGrade, ...] = (
-    CardGrade("poor", "grade.0", 20, [Image.open("assets/quality_filters/poor_card_1.png"),
+    CardGrade(CARD_GRADE_NAMES[1], "grade.0", 20, [Image.open("assets/quality_filters/poor_card_1.png"),
                                       Image.open("assets/quality_filters/poor_card_2.png")]),
-    CardGrade("average", "grade.1", 50, [Image.open("assets/quality_filters/average_card_1.png"),
+    CardGrade(CARD_GRADE_NAMES[2], "grade.1", 50, [Image.open("assets/quality_filters/average_card_1.png"),
                                          Image.open("assets/quality_filters/average_card_2.png")]),
-    CardGrade("good", "grade.2", 20, [Image.open("assets/quality_filters/good_card_1.png"),
+    CardGrade(CARD_GRADE_NAMES[3], "grade.2", 20, [Image.open("assets/quality_filters/good_card_1.png"),
                                       Image.open("assets/quality_filters/good_card_2.png")]),
-    CardGrade("excellent", "grade.3", 10)
+    CardGrade(CARD_GRADE_NAMES[4], "grade.3", 10)
 )
 
-GRADES: tuple[CardGrade, ...] = (CardGrade("ungraded", "grade.not_graded"),) + OBTAINABLE_GRADES
+GRADES: tuple[CardGrade, ...] = (CardGrade(CARD_GRADE_NAMES[0], "grade.not_graded"),) + OBTAINABLE_GRADES
 
 
 def card_grade_from(name: str) -> CardGrade:

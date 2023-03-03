@@ -135,12 +135,13 @@ if __name__ == "__main__":
     random.seed()
 
     pickle_file_user_repository = PickleFileUserRepository()
-    user_service = UserService(pickle_file_user_repository)
+    localization_service = LocalizationService()
+    user_service = UserService(pickle_file_user_repository, localization_service)
     settings_service = SettingsService(pickle_file_user_repository)
     rarity_service = RarityService()
     card_service = CardService()
     type_service = TypeService()
-    localization_service = LocalizationService()
+
     t = localization_service.get_string
     PaginatedEmbed.setup_class(t)
 
