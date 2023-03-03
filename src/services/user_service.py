@@ -156,7 +156,7 @@ class UserService:
 
     def grade_user_card(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
         if self._user_repository.remove_cards_from_collection(user_id, [(card_id, "ungraded")]):
-            self._user_repository.add_graded_card_to_collection(user_id, card_id, grade)
+            self._user_repository.add_card_to_collection(user_id, card_id, grade)
             return True
         return False
 

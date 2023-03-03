@@ -76,11 +76,11 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def add_cards_to_collection(self, user_id: int, card_ids_with_grade: list[tuple[str, str]]) -> bool:
+    def add_card_to_collection(self, user_id: int, card_id: str, grade_name: str = "ungraded") -> bool:
         pass
 
     @abstractmethod
-    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
+    def add_cards_to_collection(self, user_id: int, card_ids_with_grade: list[tuple[str, str]]) -> bool:
         pass
 
     @abstractmethod

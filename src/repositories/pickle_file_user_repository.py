@@ -164,14 +164,15 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
+    def add_card_to_collection(self, user_id: int, card_id: str, grade_name: str) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            if (card_id, grade.in_application_name) in user.cards:
-                user.cards[(card_id, grade.in_application_name)] += 1
+            card_id_in_collection = (card_id, grade_name)
+            if card_id_in_collection in user.cards:
+                user.cards[card_id_in_collection] += 1
             else:
-                user.cards[(card_id, grade.in_application_name)] = 1
+                user.cards[card_id_in_collection] = 1
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
