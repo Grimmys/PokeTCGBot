@@ -178,12 +178,14 @@ class UserService:
             return True
         return False
 
-    def update_progress_on_quests(self, user_id: int, action_type: QuestType):
+    def update_progress_on_quests(self, user_id: int, action_type: QuestType) -> list[QuestEntity]:
         user_entity = self._user_repository.get_user(user_id)
+        accomplished_quests = []
         for quest in user_entity.daily_quests:
             if quest.kind == action_type and not quest.accomplished:
                 quest.increase_progress()
                 if quest.accomplished:
+                    accomplished_quests.append(quest)
                     match quest.reward_kind:
                         case QuestReward.BASIC_BOOSTER:
                             user_entity.boosters_quantity += quest.reward_amount
@@ -192,3 +194,4 @@ class UserService:
                         case QuestReward.MONEY:
                             user_entity.money += quest.reward_amount
         self._user_repository.save_user(user_entity)
+        return accomplished_quests

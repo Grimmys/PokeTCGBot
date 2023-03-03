@@ -8,6 +8,7 @@ from discord.app_commands import locale_str as _T
 from config import DEFAULT_GRADING_COOLDOWN
 from src.entities.quest_entity import QuestType, QuestEntity, QuestReward
 from src.services.localization_service import LocalizationService
+from src.services.quest_service import QuestService
 from src.services.user_service import UserService, DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
 from src.colors import YELLOW
 from src.utils import discord_tools
@@ -16,10 +17,11 @@ from src.utils.discord_tools import format_boolean_option_value
 
 class UserInfoCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService,
-                 localization_service: LocalizationService) -> None:
+                 localization_service: LocalizationService, quest_service: QuestService) -> None:
         self.bot = bot
         self.user_service = user_service
         self.t = localization_service.get_string
+        self.quest_service = quest_service
         self._emojis = {}
 
     @property
@@ -27,19 +29,6 @@ class UserInfoCog(commands.Cog):
         if not self._emojis:
             self._emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
         return self._emojis
-
-    def _compute_quest_description(self, quest: QuestEntity, user_language_id: int) -> str:
-        match quest.kind:
-            case QuestType.BOOSTER:
-                return self.t(user_language_id, 'quests_cmd.booster_description').format(
-                    number=quest.goal_value)
-            case QuestType.GRADE:
-                return self.t(user_language_id, 'quests_cmd.grade_description').format(
-                    number=quest.goal_value)
-            case QuestType.DAILY_CLAIM:
-                return self.t(user_language_id, 'quests_cmd.daily_claim_description')
-            case _:
-                return "Invalid Quest"
 
     def _compute_quest_reward(self, quest: QuestEntity) -> str:
         match quest.reward_kind:
@@ -148,7 +137,7 @@ class UserInfoCog(commands.Cog):
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
         for quest in user.daily_quests:
-            embed.add_field(name=self._compute_quest_description(quest, user_language_id),
+            embed.add_field(name=self.quest_service.compute_quest_description(quest, user_language_id),
                             value=f"{self._compute_quest_reward(quest)} [{quest.progress}/{quest.goal_value}] {format_boolean_option_value(quest.accomplished)}",
                             inline=False)
 

@@ -6,8 +6,8 @@ from os import environ as env
 
 import discord
 from discord import Intents, Embed
-from discord.ext.commands import Bot
 from discord.app_commands import locale_str as _T
+from discord.ext.commands import Bot
 
 import config
 from src.colors import BLUE
@@ -26,12 +26,12 @@ from src.components.paginated_embed import PaginatedEmbed
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
+from src.services.quest_service import QuestService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
 from src.utils.discord_tools import PTCGTranslator
-from src.utils.flags import is_dev_mode
 
 intents = Intents.default()
 intents.message_content = True
@@ -106,16 +106,17 @@ def setup_logs():
 async def setup_cogs():
     await bot.add_cog(AdminCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service, user_service))
-    await bot.add_cog(DailyCog(bot, localization_service, user_service))
+    await bot.add_cog(DailyCog(bot, localization_service, user_service, quest_service))
     await bot.add_cog(
-        BoosterCog(bot, settings_service, localization_service, user_service, rarity_service, type_service))
+        BoosterCog(bot, settings_service, localization_service, user_service,
+                   rarity_service, type_service, quest_service))
     await bot.add_cog(ShoppingCog(bot, user_service, localization_service))
     await bot.add_cog(TradingCog(bot, user_service, localization_service))
-    await bot.add_cog(UserInfoCog(bot, user_service, localization_service))
+    await bot.add_cog(UserInfoCog(bot, user_service, localization_service, quest_service))
     await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service, card_service))
     await bot.add_cog(RankingCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
-    await bot.add_cog(GradeCog(bot, user_service, localization_service, card_service))
+    await bot.add_cog(GradeCog(bot, user_service, localization_service, card_service, quest_service))
     await bot.tree.set_translator(PTCGTranslator(localization_service))
 
 
@@ -141,6 +142,7 @@ if __name__ == "__main__":
     rarity_service = RarityService()
     card_service = CardService()
     type_service = TypeService()
+    quest_service = QuestService(localization_service)
 
     t = localization_service.get_string
     PaginatedEmbed.setup_class(t)

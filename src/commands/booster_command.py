@@ -5,8 +5,8 @@ from typing import Optional
 
 import discord
 from discord import Embed, app_commands
-from discord.ext import commands
 from discord.app_commands import locale_str as _T
+from discord.ext import commands
 from pokemontcgsdk import Card, Set
 
 import config
@@ -14,6 +14,7 @@ from src.colors import GREEN, RED
 from src.components.paginated_embed import PaginatedEmbed
 from src.entities.quest_entity import QuestType
 from src.services.localization_service import LocalizationService
+from src.services.quest_service import QuestService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
@@ -41,7 +42,7 @@ class BoosterCog(commands.Cog):
 
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
                  localization_service: LocalizationService, user_service: UserService, rarity_service: RarityService,
-                 type_service: TypeService) -> None:
+                 type_service: TypeService, quest_service: QuestService) -> None:
         self.bot = bot
         self._log_channel = None
         self.settings_service = settings_service
@@ -49,6 +50,7 @@ class BoosterCog(commands.Cog):
         self.user_service = user_service
         self.rarity_service = rarity_service
         self.type_service = type_service
+        self.quest_service = quest_service
         self.sets: list[Set] = Set.all()
         self.cards_by_rarity: dict[str, list[Card]] = BoosterCog._compute_all_cards()
 
@@ -183,7 +185,7 @@ class BoosterCog(commands.Cog):
         drawn_cards = self._generate_booster_cards()
         drawn_card_ids = list(map(lambda drawn_card: drawn_card.id, drawn_cards))
 
-        self.user_service.update_progress_on_quests(user.id, QuestType.BOOSTER)
+        accomplished_quests = self.user_service.update_progress_on_quests(user.id, QuestType.BOOSTER)
         self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 
         await self.log_channel.send(
@@ -208,6 +210,10 @@ class BoosterCog(commands.Cog):
                 self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
 
             await interaction.response.send_message(embed=embed)
+
+        for quest in accomplished_quests:
+            await interaction.followup.send(self._t(user_language_id, 'common.quest_accomplished').format(
+                quest_name=self.quest_service.compute_quest_description(quest, user_language_id)))
 
     @app_commands.command(name=_T("promo_booster_cmd-name"), description=_T("promo_booster_cmd-desc"))
     async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,

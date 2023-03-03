@@ -12,6 +12,7 @@ from src.colors import GREEN
 from src.entities.quest_entity import QuestType
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
+from src.services.quest_service import QuestService
 from src.services.user_service import UserService
 from src.utils import discord_tools
 from src.utils.card_grade import CardGrade, OBTAINABLE_GRADES
@@ -26,12 +27,14 @@ GRADE_DROP_RATES = [
 
 class GradeCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService,
-                 localization_service: LocalizationService, card_service: CardService) -> None:
+                 localization_service: LocalizationService, card_service: CardService,
+                 quest_service: QuestService) -> None:
         self.bot = bot
         self._log_channel = None
         self.user_service = user_service
         self._t = localization_service.get_string
         self.card_service = card_service
+        self.quest_service = quest_service
         self.cards_by_id = self.card_service.get_all_cards_by_id()
 
     @property
@@ -71,7 +74,7 @@ class GradeCog(commands.Cog):
                                           weights=[grade.probability for grade in OBTAINABLE_GRADES])[0]
         self.card_service.generate_grade_for_card(card, grade)
 
-        self.user_service.update_progress_on_quests(user.id, QuestType.GRADE)
+        accomplished_quests = self.user_service.update_progress_on_quests(user.id, QuestType.GRADE)
         card_has_been_added = self.user_service.grade_user_card(user.id, card_id, grade)
 
         if not card_has_been_added:
@@ -83,6 +86,10 @@ class GradeCog(commands.Cog):
         await interaction.edit_original_response(content=self._t(user_language_id, 'grade_cmd.card_has_been_grade')
                                                  .format(card_id=card_id,
                                                          grade=self._t(user_language_id, grade.translation_key)))
+
+        for quest in accomplished_quests:
+            await interaction.followup.send(self._t(user_language_id, 'common.quest_accomplished').format(
+                quest_name=self.quest_service.compute_quest_description(quest, user_language_id)))
 
     @app_commands.command(name=_T("stock_grade_cmd-name"), description=_T("stock_grade_cmd-desc"))
     async def stock_grade_command(self, interaction: discord.Interaction) -> None:
