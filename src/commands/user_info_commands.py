@@ -43,7 +43,7 @@ class UserInfoCog(commands.Cog):
 
     @app_commands.command(name=_T("profile_cmd-name"), description=_T("profile_cmd-desc"))
     async def profile_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         discord_user = interaction.user
         user_language_id = user.settings.language_id
 
@@ -82,7 +82,7 @@ class UserInfoCog(commands.Cog):
 
     @app_commands.command(name=_T("cooldowns_cmd-name"), description=_T("cooldowns_cmd-desc"))
     async def cooldowns_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -136,7 +136,7 @@ class UserInfoCog(commands.Cog):
 
     @app_commands.command(name=_T("quests_cmd-name"), description=_T("quests_cmd-desc"))
     async def quests_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:

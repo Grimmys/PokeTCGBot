@@ -45,7 +45,7 @@ class GradeCog(commands.Cog):
 
     @app_commands.command(name=_T("grade_cmd-name"), description=_T("grade_cmd-desc"))
     async def grade_command(self, interaction: discord.Interaction, card_id: str, use_grading_stock: Optional[bool] = False) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -97,7 +97,7 @@ class GradeCog(commands.Cog):
 
     @app_commands.command(name=_T("stock_grade_cmd-name"), description=_T("stock_grade_cmd-desc"))
     async def stock_grade_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -121,7 +121,7 @@ class GradeCog(commands.Cog):
     @app_commands.command(name=_T("grade_rates_cmd-name"),
                           description=_T("grade_rates_cmd-desc"))
     async def grade_rates_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:

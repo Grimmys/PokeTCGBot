@@ -27,7 +27,7 @@ class ShoppingCog(commands.Cog):
 
     @app_commands.command(name=_T("market_booster_cmd-name"), description=_T("market_booster_cmd-desc"))
     async def market_booster_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -51,7 +51,7 @@ class ShoppingCog(commands.Cog):
     @app_commands.command(name=_T("buy_boosters_cmd-name"), description=_T("buy_boosters_cmd-desc"))
     async def buy_boosters_command(self, interaction: discord.Interaction, kind: Literal["Basic", "Promo"],
                                    quantity: int) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -74,7 +74,7 @@ class ShoppingCog(commands.Cog):
 
     @app_commands.command(name=_T("buy_gradings_cmd-name"), description=_T("buy_gradings_cmd-desc"))
     async def buy_gradings_command(self, interaction: discord.Interaction, quantity: int) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:

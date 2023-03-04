@@ -163,7 +163,7 @@ class BoosterCog(commands.Cog):
     @app_commands.command(name=_T("booster_cmd-name"), description=_T("booster_cmd-desc"))
     async def booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,
                               use_booster_stock: Optional[bool] = False) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -222,7 +222,7 @@ class BoosterCog(commands.Cog):
     @app_commands.command(name=_T("promo_booster_cmd-name"), description=_T("promo_booster_cmd-desc"))
     async def promo_booster_command(self, interaction: discord.Interaction, with_image: Optional[bool] = None,
                                     use_booster_stock: Optional[bool] = False) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:

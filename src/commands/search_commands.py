@@ -77,7 +77,7 @@ class SearchCog(commands.Cog):
 
     @app_commands.command(name=_T("get_card_cmd-name"), description=_T("get_card_cmd-desc"))
     async def get_card_command(self, interaction: discord.Interaction, card_id: str) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -100,7 +100,7 @@ class SearchCog(commands.Cog):
     async def search_command(self, interaction: discord.Interaction, content: str,
                              search_mode: Literal["card_name", "card_id", "set_name", "set_id", "rarity"] = "card_name",
                              with_image: bool = False) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -136,7 +136,7 @@ class SearchCog(commands.Cog):
     @app_commands.command(name=_T("collection_cmd-name"), description=_T("collection_cmd-desc"))
     async def collection_command(self, interaction: discord.Interaction, with_image: bool = False,
                                  member: discord.User = None) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         collection_user = user
         discord_user = interaction.user
         user_language_id = user.settings.language_id

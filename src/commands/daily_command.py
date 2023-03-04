@@ -23,7 +23,7 @@ class DailyCog(commands.Cog):
 
     @app_commands.command(name=_T("daily_cmd-name"), description=_T("daily_cmd-desc"))
     async def daily_command(self, interaction: discord.Interaction) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:

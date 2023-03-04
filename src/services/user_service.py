@@ -8,9 +8,11 @@ import discord
 from config import DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN, DEFAULT_GRADING_COOLDOWN
 from src.entities.quest_entity import QuestEntity, QuestType, QuestReward
 from src.entities.user_entity import UserEntity
+from src.entities.user_settings_entity import UserSettingsEntity
 from src.repositories.user_repository import UserRepository
 from src.services.localization_service import LocalizationService
 from src.utils.card_grade import CardGrade, CARD_GRADE_NAMES
+from src.utils.discord_tools import get_language_id_from_locale
 
 NUMBER_TOP_USERS = 50
 
@@ -67,12 +69,14 @@ class UserService:
     def get_user(self, user: discord.User) -> Optional[UserEntity]:
         return self._user_repository.get_user(user.id)
 
-    def get_and_update_user(self, user: discord.User) -> UserEntity:
+    def get_and_update_user(self, user: discord.User, locale: discord.Locale) -> UserEntity:
         user_entity = self._user_repository.get_user(user.id)
         if user_entity is None:
+            user_settings = UserSettingsEntity(language_id=get_language_id_from_locale(locale))
             user_entity = UserEntity(user_id=user.id, name_tag=str(user),
                                      daily_quests=self._compute_new_daily_quests(),
-                                     next_daily_quests_refresh=self._compute_next_midnight())
+                                     next_daily_quests_refresh=self._compute_next_midnight(),
+                                     user_settings_entity=user_settings)
             self._user_repository.save_user(user_entity)
         else:
             user_entity.last_interaction_date = int(time.time())

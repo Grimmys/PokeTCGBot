@@ -24,7 +24,7 @@ class TradingCog(commands.Cog):
 
     @app_commands.command(name=_T("send_cards_cmd-name"), description=_T("send_cards_cmd-desc"))
     async def send_cards_command(self, interaction: discord.Interaction, member: discord.User, card_ids: str) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         if user.is_banned:
@@ -55,7 +55,7 @@ class TradingCog(commands.Cog):
 
     @app_commands.command(name=_T("send_money_cmd-name"), description=_T("send_money_cmd-desc"))
     async def send_money_command(self, interaction: discord.Interaction, member: discord.User, amount: int) -> None:
-        user = self.user_service.get_and_update_user(interaction.user)
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
         other_user = self.user_service.get_user(member)
