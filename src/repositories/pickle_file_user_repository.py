@@ -4,7 +4,6 @@ from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
-from src.utils.card_grade import CardGrade
 
 
 class PickleFileUserRepository(UserRepository):
@@ -172,7 +171,7 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def add_card_to_collection(self, user_id: int, card_id: str, grade_name: str) -> bool:
+    def add_card_to_collection(self, user_id: int, card_id: str, grade_name: str = "ungraded") -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
