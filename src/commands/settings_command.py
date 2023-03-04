@@ -20,7 +20,7 @@ class SettingsCog(commands.Cog):
                  localization_service: LocalizationService, user_service: UserService) -> None:
         self.bot = bot
         self.settings_service = settings_service
-        self.t = localization_service.get_string
+        self._t = localization_service.get_string
         self.user_service = user_service
 
     @staticmethod
@@ -32,26 +32,30 @@ class SettingsCog(commands.Cog):
         user = self.user_service.get_user(interaction.user)
         user_language_id = user.settings.language_id
 
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
+
         embed = Embed(
-            title=f"---------- {self.t(user_language_id, 'settings_cmd.title')} ----------",
+            title=f"---------- {self._t(user_language_id, 'settings_cmd.title')} ----------",
             color=GRAY)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
         current_user_language = LocalizationService.supported_languages[user_language_id]
 
         language_field_id = 0
-        embed.add_field(name=self.t(user_language_id, 'settings_cmd.language_field_name'),
+        embed.add_field(name=self._t(user_language_id, 'settings_cmd.language_field_name'),
                         value=f"{current_user_language.emoji} {current_user_language.label}",
                         inline=False)
 
         booster_opening_field_id = 1
-        embed.add_field(name=self.t(user_language_id, 'settings_cmd.booster_opening_with_image_field_name'),
+        embed.add_field(name=self._t(user_language_id, 'settings_cmd.booster_opening_with_image_field_name'),
                         value=format_boolean_option_value(
                             user.settings.booster_opening_with_image),
                         inline=False)
 
         booster_stock_use_id = 2
-        embed.add_field(name=self.t(user_language_id, 'settings_cmd.command_stock_use_field_name'),
+        embed.add_field(name=self._t(user_language_id, 'settings_cmd.command_stock_use_field_name'),
                         value=format_boolean_option_value(user.settings.only_use_action_from_stock_with_option),
                         inline=False)
 
@@ -69,7 +73,7 @@ class SettingsCog(commands.Cog):
                                inline=False)
             await interaction.edit_original_response(embed=embed, view=view)
             await language_interaction.response.send_message(
-                f"{self.t(new_user_language.id, 'settings_cmd.language_changed_response_msg')} {new_user_language.label}",
+                f"{self._t(new_user_language.id, 'settings_cmd.language_changed_response_msg')} {new_user_language.label}",
                 delete_after=2)
 
         async def switch_opening_booster_mode_callback(opening_booster_mode_interaction: discord.Interaction):
@@ -87,7 +91,7 @@ class SettingsCog(commands.Cog):
             switch_opening_booster_mode_button.style = self._get_button_color(user.settings.booster_opening_with_image)
             await interaction.edit_original_response(embed=embed, view=view)
             await opening_booster_mode_interaction.response.send_message(
-                f"{self.t(user_language_id, 'settings_cmd.booster_opening_with_image_response_msg')}",
+                f"{self._t(user_language_id, 'settings_cmd.booster_opening_with_image_response_msg')}",
                 delete_after=2)
 
         async def switch_booster_stock_use_callback(booster_stock_use_interaction: discord.Interaction):
@@ -107,23 +111,23 @@ class SettingsCog(commands.Cog):
                 user.settings.only_use_action_from_stock_with_option)
             await interaction.edit_original_response(embed=embed, view=view)
             await booster_stock_use_interaction.response.send_message(
-                self.t(user_language_id, "settings_cmd.command_stock_use_response_msg"),
+                self._t(user_language_id, "settings_cmd.command_stock_use_response_msg"),
                 delete_after=2
             )
 
         select_language = Select(
-            placeholder=self.t(user_language_id, 'settings_cmd.select_language_placeholder'),
+            placeholder=self._t(user_language_id, 'settings_cmd.select_language_placeholder'),
             options=language_options
         )
         select_language.callback = change_language_callback
 
         switch_opening_booster_mode_button = Button(
-            label=self.t(user_language_id, 'settings_cmd.switch_booster_opening_label'),
+            label=self._t(user_language_id, 'settings_cmd.switch_booster_opening_label'),
             style=self._get_button_color(user.settings.booster_opening_with_image))
         switch_opening_booster_mode_button.callback = switch_opening_booster_mode_callback
 
         switch_booster_stock_use_button = Button(
-            label=self.t(user_language_id, 'settings_cmd.command_stock_use_label'),
+            label=self._t(user_language_id, 'settings_cmd.command_stock_use_label'),
             style=self._get_button_color(user.settings.only_use_action_from_stock_with_option)
         )
         switch_booster_stock_use_button.callback = switch_booster_stock_use_callback

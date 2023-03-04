@@ -14,7 +14,7 @@ class TradingCog(commands.Cog):
         self.bot = bot
         self._log_channel = None
         self.user_service = user_service
-        self.t = localization_service.get_string
+        self._t = localization_service.get_string
 
     @property
     def log_channel(self):
@@ -27,26 +27,30 @@ class TradingCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
+
         other_user = self.user_service.get_user(member)
 
         card_ids_list: list[str] = card_ids.split()
 
         if other_user is None:
-            await interaction.response.send_message(self.t(user_language_id, 'common.user_not_found'))
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_not_found'))
             return
 
         if user.id == other_user.id:
-            await interaction.response.send_message(self.t(user_language_id, 'send_cards_cmd.same_user'))
+            await interaction.response.send_message(self._t(user_language_id, 'send_cards_cmd.same_user'))
             return
 
         success_transfer = self.user_service.transfer_cards(user.id, other_user.id, card_ids_list)
         if not success_transfer:
-            await interaction.response.send_message(self.t(user_language_id, 'send_cards_cmd.missing_cards'))
+            await interaction.response.send_message(self._t(user_language_id, 'send_cards_cmd.missing_cards'))
             return
 
         await self.log_channel.send(
             f"{user.id} ({user.name_tag}) sent '{card_ids}' card(s) to {other_user.id} ({other_user.name_tag})")
-        await interaction.response.send_message(self.t(user_language_id, 'send_cards_cmd.cards_transferred')
+        await interaction.response.send_message(self._t(user_language_id, 'send_cards_cmd.cards_transferred')
                                                 .format(user=other_user.name_tag))
 
     @app_commands.command(name=_T("send_money_cmd-name"), description=_T("send_money_cmd-desc"))
@@ -57,23 +61,23 @@ class TradingCog(commands.Cog):
         other_user = self.user_service.get_user(member)
 
         if other_user is None:
-            await interaction.response.send_message(self.t(user_language_id, 'common.user_not_found'))
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_not_found'))
             return
 
         if user.id == other_user.id:
-            await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.same_user'))
+            await interaction.response.send_message(self._t(user_language_id, 'send_money_cmd.same_user'))
             return
 
         if amount <= 0:
-            await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.negative_amount'))
+            await interaction.response.send_message(self._t(user_language_id, 'send_money_cmd.negative_amount'))
             return
 
         success_transfer = self.user_service.transfer_money(user.id, other_user.id, amount)
         if not success_transfer:
-            await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.not_enough_money'))
+            await interaction.response.send_message(self._t(user_language_id, 'send_money_cmd.not_enough_money'))
             return
 
         await self.log_channel.send(
             f"{user.id} ({user.name_tag}) sent {amount} Pokémon Dollars to {other_user.id} ({other_user.name_tag})")
-        await interaction.response.send_message(self.t(user_language_id, 'send_money_cmd.money_transferred')
+        await interaction.response.send_message(self._t(user_language_id, 'send_money_cmd.money_transferred')
                                                 .format(user=other_user.name_tag, amount=amount))

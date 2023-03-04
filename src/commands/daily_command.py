@@ -17,7 +17,7 @@ class DailyCog(commands.Cog):
     def __init__(self, bot: commands.Bot, localization_service: LocalizationService, user_service: UserService,
                  quest_service: QuestService) -> None:
         self.bot = bot
-        self.t = localization_service.get_string
+        self._t = localization_service.get_string
         self.user_service = user_service
         self.quest_service = quest_service
 
@@ -26,11 +26,15 @@ class DailyCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
+
         if user.cooldowns.timestamp_for_next_daily > time.time():
             discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                 user.cooldowns.timestamp_for_next_daily)
             await interaction.response.send_message(
-                f"{self.t(user_language_id, 'common.daily_cooldown')} {discord_formatted_timestamp}")
+                f"{self._t(user_language_id, 'common.daily_cooldown')} {discord_formatted_timestamp}")
             return
 
         self.user_service.reset_daily_cooldown(user.id)
@@ -40,8 +44,8 @@ class DailyCog(commands.Cog):
         self.user_service.give_money(user.id, money_gift_amount)
 
         await interaction.response.send_message(
-            self.t(user_language_id, 'daily_cmd.response_msg').format(amount=money_gift_amount))
+            self._t(user_language_id, 'daily_cmd.response_msg').format(amount=money_gift_amount))
 
         for quest in accomplished_quests:
-            await interaction.followup.send(self.t(user_language_id, 'common.quest_accomplished').format(
+            await interaction.followup.send(self._t(user_language_id, 'common.quest_accomplished').format(
                 quest_name=self.quest_service.compute_quest_description(quest, user_language_id)))

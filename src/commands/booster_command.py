@@ -166,6 +166,10 @@ class BoosterCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
+
         if use_booster_stock or user.cooldowns.timestamp_for_next_basic_booster > time.time():
             if user.boosters_quantity > 0 and (not user.settings.only_use_action_from_stock_with_option
                                                or use_booster_stock):
@@ -220,6 +224,10 @@ class BoosterCog(commands.Cog):
                                     use_booster_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
+
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
 
         if use_booster_stock or user.cooldowns.timestamp_for_next_promo_booster > time.time():
             if user.promo_boosters_quantity > 0 and (not user.settings.only_use_action_from_stock_with_option or

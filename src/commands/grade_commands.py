@@ -48,6 +48,10 @@ class GradeCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
+
         if (card_id, "ungraded") not in user.cards:
             await interaction.response.send_message(self._t(user_language_id, 'grade_cmd.no_available_copy'))
             return
@@ -96,6 +100,10 @@ class GradeCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
 
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
+
         if user.cooldowns.timestamp_for_next_grading > time.time():
             discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                 user.cooldowns.timestamp_for_next_grading)
@@ -115,6 +123,10 @@ class GradeCog(commands.Cog):
     async def grade_rates_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_and_update_user(interaction.user)
         user_language_id = user.settings.language_id
+
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
 
         embed = Embed(
             title=f"---------- {self._t(user_language_id, 'grade_rates_cmd.title')} ----------",

@@ -21,6 +21,7 @@
     "hours": "heures",
     "last_interaction": "Date de la dernière interaction",
     "quest_accomplished": "Félicitations ! Vous avez rempli la quête « {quest_name} »",
+    "user_banned": "Vous êtes banni",
     "user_not_found": "L'utilisateur n'a pas été trouvé",
     "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",
     "no_results": "Aucun résultat",
