@@ -58,6 +58,16 @@
   "remove_card_cmd": {
     "response_msg": "L'utilisateur {user} a perdu la carte {card_id}"
   },
+  "ban_user_cmd": {
+    "name": "ban_utilisateur",
+    "desc": "Banni l'utilisateur du bot",
+    "response_msg": "L'utilisateur {user} a été banni"
+  },
+  "unban_user_cmd": {
+    "name": "deban_utilisateur",
+    "desc": "Débanni l'utilisateur du bot (il pourra jouer à nouveau)",
+    "response_msg": "L'utilisateur {user} a été débanni"
+  },
   "settings_cmd": {
     "name": "parametres",
     "desc": "Accès aux paramètres de votre profil",

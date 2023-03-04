@@ -20,6 +20,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def set_user_ban(self, user_id: int, is_ban: bool) -> bool:
+        pass
+
+    @abstractmethod
     def change_money(self, user_id: int, money_change: int) -> bool:
         pass
 

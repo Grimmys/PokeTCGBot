@@ -7,13 +7,14 @@ from src.utils.card_grade import GRADES
 
 
 class UserEntity:
-    def __init__(self, user_id: int, name_tag: str = "", last_interaction_date: int = int(time.time()), money: int = 0,
+    def __init__(self, user_id: int, name_tag: str = "", is_banned: bool = False, last_interaction_date: int = int(time.time()), money: int = 0,
                  boosters_quantity: int = 0, promo_boosters_quantity: int = 0, grading_quantity: int = 0,
                  cards_by_id: dict[str, int] = None,
                  user_settings_entity: UserSettingsEntity = None,
                  user_cooldowns_entity: UserCooldownsEntity = None, daily_quests: list[QuestEntity] = None, next_daily_quests_refresh: int = 0):
         self.id: int = user_id
         self.name_tag: str = name_tag
+        self.is_banned: bool = is_banned
         self.last_interaction_date: int = last_interaction_date
         self.money: int = money
         self.boosters_quantity: int = boosters_quantity
@@ -35,6 +36,7 @@ class UserEntity:
     def __setstate__(self, state):
         self.id = state.get("id")
         self.name_tag = state.get("name_tag", "")
+        self.is_banned = state.get("is_banned", False)
         self.last_interaction_date = state.get("last_interaction_date", 0)
         self.money = state.get("money", 0)
         self.boosters_quantity = state.get("boosters_quantity", 0)

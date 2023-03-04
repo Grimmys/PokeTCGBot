@@ -58,6 +58,16 @@
   "remove_card_cmd": {
     "response_msg": "User {user} lost card {card_id}"
   },
+  "ban_user_cmd": {
+    "name": "ban_user",
+    "desc": "Ban the given user to ever use the bot again",
+    "response_msg": "User {user} has been banned"
+  },
+  "unban_user_cmd": {
+    "name": "unban_user",
+    "desc": "Unban the given user (they will be able to play again)",
+    "response_msg": "User {user} has been unbanned"
+  },
   "settings_cmd": {
     "name": "settings",
     "desc": "Change user settings",

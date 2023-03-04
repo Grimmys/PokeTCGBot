@@ -195,3 +195,9 @@ class UserService:
                             user_entity.money += quest.reward_amount
         self._user_repository.save_user(user_entity)
         return accomplished_quests
+
+    def ban_user(self, user_id: int) -> bool:
+        return self._user_repository.set_user_ban(user_id, True)
+
+    def unban_user(self, user_id: int) -> bool:
+        return self._user_repository.set_user_ban(user_id, False)

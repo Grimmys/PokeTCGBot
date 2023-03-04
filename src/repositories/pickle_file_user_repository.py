@@ -41,6 +41,14 @@ class PickleFileUserRepository(UserRepository):
         PickleFileUserRepository._save_pickle_file(users_by_id)
         return True
 
+    def set_user_ban(self, user_id: int, is_banned: bool) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].is_banned = is_banned
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
     def change_money(self, user_id: int, money_change: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:

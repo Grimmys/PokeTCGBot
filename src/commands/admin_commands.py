@@ -3,6 +3,7 @@ from typing import Literal
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 
 from config import BOT_ADMIN_USER_IDS
 from src.services.localization_service import LocalizationService
@@ -115,3 +116,33 @@ class AdminCog(commands.Cog):
         else:
             await interaction.response.send_message(
                 self.t(user_language_id, 'common.unknown_issue'))
+
+    @app_commands.command(name=_T("ban_user_cmd-name"), description=_T("ban_user_cmd-desc"))
+    async def ban_user_command(self, interaction: discord.Interaction, member: discord.User) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
+
+        if interaction.user.id not in BOT_ADMIN_USER_IDS:
+            await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        if self.user_service.ban_user(member.id):
+            await interaction.response.send_message(
+                self.t(user_language_id, 'ban_user_cmd.response_msg').format(user=f"{member.id} ({member.name})"))
+        else:
+            await interaction.response.send_message(
+                self.t(user_language_id, 'common.user_not_found'))
+
+    @app_commands.command(name=_T("unban_user_cmd-name"), description=_T("unban_user_cmd-desc"))
+    async def unban_user_command(self, interaction: discord.Interaction, member: discord.User) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
+
+        if interaction.user.id not in BOT_ADMIN_USER_IDS:
+            await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        if self.user_service.unban_user(member.id):
+            await interaction.response.send_message(
+                self.t(user_language_id, 'unban_user_cmd.response_msg').format(user=f"{member.id} ({member.name})"))
+        else:
+            await interaction.response.send_message(
+                self.t(user_language_id, 'common.user_not_found'))
