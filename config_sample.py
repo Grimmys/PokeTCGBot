@@ -8,20 +8,17 @@ DISCORD_TOKEN = None
 # Required config parameters to replace
 
 # -- Gameplay balancing related
-UNCOMMON_UPGRADE_RATE: float = 4.5
-DEFAULT_BASIC_BOOSTER_COOLDOWN: int = 10
-DEFAULT_PROMO_BOOSTER_COOLDOWN: int = 15
-DEFAULT_GRADING_COOLDOWN: int = 40
-DAILY_MONEY_GIFT_AMOUNT: int = 5000
+UNCOMMON_UPGRADE_RATE: float = None
+DEFAULT_BASIC_BOOSTER_COOLDOWN: int = None
+DEFAULT_PROMO_BOOSTER_COOLDOWN: int = None
+DEFAULT_GRADING_COOLDOWN: int = None
+DAILY_MONEY_GIFT_AMOUNT: int = None
 BOOSTERS_PRICE: dict[str, int] = {
-    "Basic": 100,
-    "Promo": 100
+    "Basic": None,
+    "Promo": None
 }
-<<<<<<< HEAD:config.py
-=======
 GRADING_PRICE: int = None
 
->>>>>>> 9bc3219c42d3448f66b7216a0282fabe038043b3:config_sample.py
 # -- Discord related
-LOG_CHANNEL_ID: int = 0.01
+LOG_CHANNEL_ID: int = None
 BOT_ADMIN_USER_IDS: List[int] = []
