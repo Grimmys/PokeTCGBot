@@ -1,264 +1,288 @@
 {
-  "common": {
-    "feature_disabled": "Feature is currently work-in-progress.",
-    "loading": "Loading...",
-    "pokedollar": "Pokémon Dollar",
-    "collection": "collection",
-    "booster": "booster",
-    "basic_booster": "Basic Booster",
-    "promo_booster": "Promo Booster",
-    "grade": "grade",
-    "grading": "Grading",
-    "rarity": "rarity",
-    "set": "set",
-    "quantity": "quantity",
-    "card_is_owned": "owned",
-    "booster_cooldown": "Next free booster:",
-    "promo_booster_cooldown": "Next free Promo booster:",
-    "daily_cooldown": "Next daily:",
-    "grading_cooldown": "Next free grading:",
-    "minutes": "minutes",
-    "hours": "hours",
-    "last_interaction": "Last interaction done date",
-    "quest_accomplished": "Congratulations! You accomplished the quest \"{quest_name}\"",
-    "user_banned": "You are banned",
-    "user_not_found": "User not found",
-    "user_or_card_not_found": "User not found or they don't have the card",
-    "no_results": "No results found",
-    "not_allowed": "You are not allowed to use this command",
-    "unknown_issue": "An unknown issue occurred during the process of the command"
-  },
-  "ping_cmd": {
-    "name": "ping",
-    "desc": "Get bot latency",
-    "response_msg": "My ping is"
-  },
-  "bot_infos_cmd": {
-    "name": "bot_stats",
-    "desc": "Get various statistics about the bot",
-    "title": "Bot metadata",
-    "count_servers": "Number of servers using the Bot",
-    "total_users": "Total players",
-    "total_money_in_circulation": "All Pokémon Dollars in circulation"
-  },
-  "give_money_cmd": {
-    "response_msg": "User {user} received {amount} Pokémon Dollars"
-  },
-  "give_all_money_cmd": {
-    "response_msg": "All users received {amount} Pokémon Dollars"
-  },
-  "give_card_cmd": {
-    "response_msg": "User {user} received card {card_id}"
-  },
-  "give_boosters_cmd": {
-    "response_msg": "User {user} received {quantity} {kind} booster(s)"
-  },
-  "give_all_boosters_cmd": {
-    "response_msg": "All users received {quantity} {kind} booster(s)"
-  },
-  "remove_card_cmd": {
-    "response_msg": "User {user} lost card {card_id}"
-  },
-  "ban_user_cmd": {
-    "name": "ban_user",
-    "desc": "Ban the given user to ever use the bot again",
-    "response_msg": "User {user} has been banned"
-  },
-  "unban_user_cmd": {
-    "name": "unban_user",
-    "desc": "Unban the given user (they will be able to play again)",
-    "response_msg": "User {user} has been unbanned"
-  },
-  "settings_cmd": {
-    "name": "settings",
-    "desc": "Change user settings",
-    "title": "Settings",
-    "language_field_name": "Language",
-    "booster_opening_with_image_field_name": "Booster opened with card images by default",
-    "language_changed_response_msg": "Language changed to:",
-    "booster_opening_with_image_response_msg": "Booster opening mode switched",
-    "command_stock_use_field_name": "Only use command stock when called with option",
-    "command_stock_use_response_msg": "Command stock use changed",
-    "command_stock_use_label": "Require option to use action from stock",
-    "select_language_placeholder": "Change language",
-    "switch_booster_opening_label": "Switch booster opening value"
-  },
-  "get_card_cmd": {
-    "name": "card",
-    "desc": "Get a card with its id",
-    "card_not_found": "Card {1} does not exist."
-  },
-  "help_cmd": {
-    "name": "help",
-    "desc": "Display the list of available commands",
-    "title": "Help",
-    "description": "List of available commands"
-  },
-  "support_cmd": {
-    "name": "support",
-    "desc": "Information about how to join support in case of any issue",
-    "title": "Support", 
-    "description": "For any kind of support request, whether it is about a malfunctioning command, a feature request or any other issue related to the bot, we invite you to send a message on the #support channel of the official Discord server",
-    "discord_server_invitation": "Discord server invitation link"
-  },
-  "daily_cmd": {
-    "name": "daily",
-    "desc": "Claim daily gift",
-    "response_msg": "You earned {amount} Pokémon Dollars"
-  },
-  "booster_cmd": {
-    "name": "booster",
-    "desc": "Open a basic booster",
-    "title": "Booster",
-    "no_boosters_in_stock": "You have no boosters in stock"
-  },
-  "promo_booster_cmd": {
-    "name": "promo_booster",
-    "desc": "Open a Promo booster",
-    "title": "Promo Booster",
-    "no_boosters_in_stock": "You have no promo boosters in stock"
-  },
-  "market_booster_cmd": {
-    "name": "market_booster",
-    "desc": "Check available boosters with their prices",
-    "title": "Booster Market"
-  },
-  "buy_boosters_cmd": {
-    "name": "buy_boosters",
-    "desc": "Buy some boosters from market",
-    "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your boosters!",
-    "not_enough_money": "You're too poor to buy these boosters",
-    "success_buy": "Congratulations on your purchases"
-  },
-  "buy_gradings_cmd": {
-    "name": "buy_gradings",
-    "desc": "Buy grading actions for cards",
-    "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your stock!",
-    "not_enough_money": "You're too poor to buy these gradings",
-    "success_buy": "Congratulations on your purchases"
-  },
-  "send_cards_cmd": {
-    "name": "send_cards",
-    "desc": "Send card(s) to another player",
-    "same_user": "You can't send your cards to... yourself",
-    "missing_cards": "You do not own some of the cards you provided, transfer cancelled",
-    "cards_transferred": "Cards have been sent to {user}"
-  },
-  "send_money_cmd": {
-    "name": "send_money",
-    "desc": "Send Pokémon Dollars to another player",
-    "same_user": "You can't send money to... yourself",
-    "negative_amount": "No, you can't steal someone else's Pokémon Dollars",
-    "not_enough_money": "You don't have that much Pokémon Dollars",
-    "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
-  },
-  "drop_rates_cmd": {
-    "name": "drop_rates",
-    "desc": "Get the probability for each tier of cards to be in a booster",
-    "title": "Drop rates",
-    "description": "Drop for the last card of a basic booster"
-  },
-  "profile_cmd": {
-    "name": "profile",
-    "desc": "Check user profile",
-    "title": "Profile"
-  },
-  "cooldowns_cmd": {
-    "name": "cooldowns",
-    "desc": "Check the time you still have to wait for your next commands",
-    "title": "Commands' cooldown",
-    "time_between_cmds": "Default timeout: ",
-    "midnight_reset": "Daily reset at midnight",
-    "available": "Available"
-  },
-  "quests_cmd": {
-    "name": "quests",
-    "desc": "Check your quests",
-    "title": "Quests",
-    "booster_description": "Open {number} Basic Boosters",
-    "grade_description": "Grade {number} cards",
-    "daily_claim_description": "Claim daily reward"
-  },
-  "joke_cmd": {
-    "name": "joke",
-    "desc": "Get a (bad) Pokémon joke",
-    "title": "Pokémon Joke",
-    "description": "Warning: It's not because you don't find the joke funny that it is not a joke",
-    "joke_1": "It is the tale of a wild Pikachu. He runs, runs and runs again when suddenly he stumbles on a rock, then he becomes a Raichu.",
-    "joke_2": "Arceus appears in front of 3 Pokémons. \n\nPikachu: oh my god it's god! \nSquirtle: Oh great Arceus we are nothing without you!\nMew: Bitch please, you would not exist without me.",
-    "joke_3": "What TV show about dancing do Pokémon love?\n\nDancing with the Staryus.",
-    "joke_4": "What is a Pokémon fan’s favorite place to go in France?\n\nParas!",
-    "joke_5": "I wish you were the ground and I was a Diglett.\n\nBecause then I could be inside of you.",
-    "joke_6": "You must be a Charmander.\n\nBecause you’re making me hot.",
-    "joke_7": "Is that a Bellsprout in your pants or are you just happy to see me?",
-    "joke_8": "What did Pikachu say when ash fell off a cliff?\n\n “Pikachu”, that’s all he can say.",
-    "joke_9": "What is a Primeape? A Mankey which became an expert in trolling.",
-    "joke_10": "Hey miss you are so fresh.\n\n I wish I could Wobbuffet you!",
-    "joke_11": "What noise a firearm is making ? Rattata.",
-    "joke_12": "What does a Pokémon player take to not stink? Some Deoxys.",
-    "joke_13": "Go make your Jynx on my Jigglypuff.",
-    "joke_14": "Do you want to see my Poké Balls?",
-    "joke_15": "It's not because of the team that I'm called the Rocket",
-    "joke_16": "Hi, do you want to see my Weedle?",
-    "joke_17": "When I see you it's Hydro Pump in my cheeky.",
-    "joke_18": "I overheard someone telling Pokémon jokes, but I couldn't catch 'em all.",
-    "joke_19": "According to recent surveys, fans of Pokémon love electric type the most. These results are shocking.",
-    "joke_20": "Why should you always bring Charmander camping?\n\nHe's the fire starter.", 
-    "joke_21": "How is the milk of a drugged Miltank called?\n\nWeewee Milk.",
-    "joke_22": "What is the favorite color of a Meowth?\n\nCyan, because they wish to be a Per-sian.",
-    "joke_23": "What does one Geodude say to the other Geodude?\n\n Let’s rock!",
-    "joke_24": "What appears over Ash’s head when he gets an idea?\n\n A LightBulbasaur.",
-    "joke_25": "What do you call a Pokemon that wants to be a police officer?\n\n Magic-cop!",
-    "joke_26": "How do you get Pikachu on a bus?\n\nPoke him on!",
-    "joke_27": "Why are Zigzagoon lying during mid-day ?\n\nBecause they want to evolve into Li-noone.",
-    "joke_28": "- Hello Sir, do you have the collector figurine of Green Lanturn ? \n- Well no, sorry but it is out of Stock.",
-    "joke_29": "Which Pokémon could also be a pirate?\n\n Arrrrrr-ceus.",
-    "joke_30": "What’s Wailord’s favorite TV show?\n\n Whale of Fortune.",
-    "joke_31": "What do you call a scout that likes to chew gum while climbing Pikes Peak?\n\n A Peak-A-Chewer!"
-  },
-  "search_cmd": {
-    "name": "search",
-    "desc": "Search card with several parameters",
-    "not_found": "No result for search `{1}`."
-  },
-  "collection_cmd": {
-    "name": "collection",
-    "desc": "Search cards in a player collection",
-    "title": "Collection",
-    "empty": "You don't have any card in your collection yet."
-  },
-  "search_cards_embed": {
-    "filter_by_name_label": "Filter by name",
-    "card_name_input": "Card name",
-    "filter_by_grade_label": "Filter by grade"
-  },
-  "ranking_cmd": {
-    "name": "rankings",
-    "desc": "Get the top users having the most cards",
-    "title": "User Collection Ranking"
-  },
-  "grade": {
-    "not_graded": "Ungraded",
-    "0": "Poor",
-    "1": "Average",
-    "2": "Good",
-    "3": "Excellent"
-  },
-  "grade_cmd": {
-    "name": "grade",
-    "desc": "Grade a given card",
-    "no_available_copy": "You do not own any ungraded copy of this card.",
-    "card_has_been_grade": "The card `{card_id}` has been graded as: {grade}."
-  },
-  "stock_grade_cmd": {
-    "name": "stock_grade",
-    "desc": "Stock the free grade action for later use",
-    "response_msg": "Your free grade action has been added to your stock."
-  },
-  "grade_rates_cmd": {
-    "name": "grade_rates",
-    "desc": "Get the probability for each card grade",
-    "title": "Grade rates",
-    "description": "Rates for the grade obtained after grading a card"
-  }
+    "common": {
+        "feature_disabled": "Feature is currently work-in-progress.",
+        "loading": "Loading...",
+        "pokedollar": "Pokémon Dollar",
+        "collection": "collection",
+        "booster": "booster",
+        "basic_booster": "Basic Booster",
+        "promo_booster": "Promo Booster",
+        "grade": "grade",
+        "grading": "Grading",
+        "rarity": "rarity",
+        "set": "set",
+        "quantity": "quantity",
+        "card_is_owned": "owned",
+        "booster_cooldown": "Next free booster:",
+        "promo_booster_cooldown": "Next free Promo booster:",
+        "daily_cooldown": "Next daily:",
+        "grading_cooldown": "Next free grading:",
+        "minutes": "minutes",
+        "hours": "hours",
+        "last_interaction": "Last interaction done date",
+        "quest_accomplished": "Congratulations! You accomplished the quest \"{quest_name}\"",
+        "user_banned": "You are banned",
+        "user_not_found": "User not found",
+        "user_or_card_not_found": "User not found or they don't have the card",
+        "no_results": "No results found",
+        "not_allowed": "You are not allowed to use this command",
+        "unknown_issue": "An unknown issue occurred during the process of the command"
+    },
+    "ping_cmd": {
+        "name": "ping",
+        "desc": "Get bot latency",
+        "response_msg": "My ping is"
+    },
+    "bot_infos_cmd": {
+        "name": "bot_stats",
+        "desc": "Get various statistics about the bot",
+        "title": "Bot metadata",
+        "count_servers": "Number of servers using the Bot",
+        "total_users": "Total players",
+        "total_money_in_circulation": "All Pokémon Dollars in circulation"
+    },
+    "give_money_cmd": {
+        "response_msg": "User {user} received {amount} Pokémon Dollars"
+    },
+    "give_all_money_cmd": {
+        "response_msg": "All users received {amount} Pokémon Dollars"
+    },
+    "give_card_cmd": {
+        "response_msg": "User {user} received card {card_id}"
+    },
+    "give_boosters_cmd": {
+        "response_msg": "User {user} received {quantity} {kind} booster(s)"
+    },
+    "give_all_boosters_cmd": {
+        "response_msg": "All users received {quantity} {kind} booster(s)"
+    },
+    "remove_card_cmd": {
+        "response_msg": "User {user} lost card {card_id}"
+    },
+    "ban_user_cmd": {
+        "name": "ban_user",
+        "desc": "Ban the given user to ever use the bot again",
+        "response_msg": "User {user} has been banned"
+    },
+    "unban_user_cmd": {
+        "name": "unban_user",
+        "desc": "Unban the given user (they will be able to play again)",
+        "response_msg": "User {user} has been unbanned"
+    },
+    "settings_cmd": {
+        "name": "settings",
+        "desc": "Change user settings",
+        "title": "Settings",
+        "language_field_name": "Language",
+        "booster_opening_with_image_field_name": "Booster opened with card images by default",
+        "language_changed_response_msg": "Language changed to:",
+        "booster_opening_with_image_response_msg": "Booster opening mode switched",
+        "command_stock_use_field_name": "Only use command stock when called with option",
+        "command_stock_use_response_msg": "Command stock use changed",
+        "command_stock_use_label": "Require option to use action from stock",
+        "select_language_placeholder": "Change language",
+        "switch_booster_opening_label": "Switch booster opening value"
+    },
+    "get_card_cmd": {
+        "name": "card",
+        "desc": "Get a card with its id",
+        "card_not_found": "Card {1} does not exist."
+    },
+    "help_cmd": {
+        "name": "help",
+        "desc": "Display the list of available commands",
+        "title": "Help",
+        "description": "List of available commands"
+    },
+    "support_cmd": {
+        "name": "support",
+        "desc": "Information about how to join support in case of any issue",
+        "title": "Support",
+        "description": "For any kind of support request, whether it is about a malfunctioning command, a feature request or any other issue related to the bot, we invite you to send a message on the #support channel of the official Discord server",
+        "discord_server_invitation": "Discord server invitation link"
+    },
+    "daily_cmd": {
+        "name": "daily",
+        "desc": "Claim daily gift",
+        "response_msg": "You earned {amount} Pokémon Dollars"
+    },
+    "booster_cmd": {
+        "name": "booster",
+        "desc": "Open a basic booster",
+        "title": "Booster",
+        "no_boosters_in_stock": "You have no boosters in stock"
+    },
+    "promo_booster_cmd": {
+        "name": "promo_booster",
+        "desc": "Open a Promo booster",
+        "title": "Promo Booster",
+        "no_boosters_in_stock": "You have no promo boosters in stock"
+    },
+    "market_booster_cmd": {
+        "name": "market_booster",
+        "desc": "Check available boosters with their prices",
+        "title": "Booster Market"
+    },
+    "buy_boosters_cmd": {
+        "name": "buy_boosters",
+        "desc": "Buy some boosters from market",
+        "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your boosters!",
+        "not_enough_money": "You're too poor to buy these boosters",
+        "success_buy": "Congratulations on your purchases"
+    },
+    "buy_gradings_cmd": {
+        "name": "buy_gradings",
+        "desc": "Buy grading actions for cards",
+        "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your stock!",
+        "not_enough_money": "You're too poor to buy these gradings",
+        "success_buy": "Congratulations on your purchases"
+    },
+    "send_cards_cmd": {
+        "name": "send_cards",
+        "desc": "Send card(s) to another player",
+        "same_user": "You can't send your cards to... yourself",
+        "missing_cards": "You do not own some of the cards you provided, transfer cancelled",
+        "cards_transferred": "Cards have been sent to {user}"
+    },
+    "send_money_cmd": {
+        "name": "send_money",
+        "desc": "Send Pokémon Dollars to another player",
+        "same_user": "You can't send money to... yourself",
+        "negative_amount": "No, you can't steal someone else's Pokémon Dollars",
+        "not_enough_money": "You don't have that much Pokémon Dollars",
+        "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
+    },
+    "drop_rates_cmd": {
+        "name": "drop_rates",
+        "desc": "Get the probability for each tier of cards to be in a booster",
+        "title": "Drop rates",
+        "description": "Drop for the last card of a basic booster"
+    },
+    "profile_cmd": {
+        "name": "profile",
+        "desc": "Check user profile",
+        "title": "Profile"
+    },
+    "cooldowns_cmd": {
+        "name": "cooldowns",
+        "desc": "Check the time you still have to wait for your next commands",
+        "title": "Commands' cooldown",
+        "time_between_cmds": "Default timeout: ",
+        "midnight_reset": "Daily reset at midnight",
+        "available": "Available"
+    },
+    "quests_cmd": {
+        "name": "quests",
+        "desc": "Check your quests",
+        "title": "Quests",
+        "booster_description": "Open {number} Basic Boosters",
+        "grade_description": "Grade {number} cards",
+        "daily_claim_description": "Claim daily reward"
+    },
+    "joke_cmd": {
+        "name": "joke",
+        "desc": "Get a (bad) Pokémon joke",
+        "title": "Pokémon Joke",
+        "description": "Warning: It's not because you don't find the joke funny that it is not a joke",
+        "joke_1": "It is the tale of a wild Pikachu. He runs, runs and runs again when suddenly he stumbles on a rock, then he becomes a Raichu.",
+        "joke_2": "Arceus appears in front of 3 Pokémons. \n\nPikachu: oh my god it's god! \nSquirtle: Oh great Arceus we are nothing without you!\nMew: Bitch please, you would not exist without me.",
+        "joke_3": "What TV show about dancing do Pokémon love?\n\nDancing with the Staryus.",
+        "joke_4": "What is a Pokémon fan’s favorite place to go in France?\n\nParas!",
+        "joke_5": "I wish you were the ground and I was a Diglett.\n\nBecause then I could be inside of you.",
+        "joke_6": "You must be a Charmander.\n\nBecause you’re making me hot.",
+        "joke_7": "Is that a Bellsprout in your pants or are you just happy to see me?",
+        "joke_8": "What did Pikachu say when ash fell off a cliff?\n\n “Pikachu”, that’s all he can say.",
+        "joke_9": "What is a Primeape? A Mankey which became an expert in trolling.",
+        "joke_10": "Hey miss you are so fresh.\n\n I wish I could Wobbuffet you!",
+        "joke_11": "What noise a firearm is making ? Rattata.",
+        "joke_12": "What does a Pokémon player take to not stink? Some Deoxys.",
+        "joke_13": "Go make your Jynx on my Jigglypuff.",
+        "joke_14": "Do you want to see my Poké Balls?",
+        "joke_15": "It's not because of the team that I'm called the Rocket",
+        "joke_16": "Hi, do you want to see my Weedle?",
+        "joke_17": "When I see you it's Hydro Pump in my cheeky.",
+        "joke_18": "I overheard someone telling Pokémon jokes, but I couldn't catch 'em all.",
+        "joke_19": "According to recent surveys, fans of Pokémon love electric type the most. These results are shocking.",
+        "joke_20": "Why should you always bring Charmander camping?\n\nHe's the fire starter.",
+        "joke_21": "How is the milk of a drugged Miltank called?\n\nWeewee Milk.",
+        "joke_22": "What is the favorite color of a Meowth?\n\nCyan, because they wish to be a Per-sian.",
+        "joke_23": "What does one Geodude say to the other Geodude?\n\n Let’s rock!",
+        "joke_24": "What appears over Ash’s head when he gets an idea?\n\n A LightBulbasaur.",
+        "joke_25": "What do you call a Pokemon that wants to be a police officer?\n\n Magic-cop!",
+        "joke_26": "How do you get Pikachu on a bus?\n\nPoke him on!",
+        "joke_27": "Why are Zigzagoon lying during mid-day ?\n\nBecause they want to evolve into Li-noone.",
+        "joke_28": "- Hello Sir, do you have the collector figurine of Green Lanturn ? \n- Well no, sorry but it is out of Stock.",
+        "joke_29": "Which Pokémon could also be a pirate?\n\n Arrrrrr-ceus.",
+        "joke_30": "What’s Wailord’s favorite TV show?\n\n Whale of Fortune.",
+        "joke_31": "What do you call a scout that likes to chew gum while climbing Pikes Peak?\n\n A Peak-A-Chewer!",
+        "joke_32": "Which music style has had a lot of fame for a few last years?\n\nThe BeeDRILL!",
+        "joke_33": "What is the secret car of Brock?\n\nThe ZuBatmobile!",
+        "joke_34": "What is the origin of MAC OS X and Linux?\n\nOnix. (Unix)",
+        "joke_35": "What can appear in winter?\n\nSnom! (snow)",
+        "joke_36": "It smells bad, do you have a deonidoran?",
+        "joke_37": "Babisharp doo-doo doo-doo, babisharp doo-doo doo-doo, babisharp doo-doo doo-doo, babisharp",
+        "joke_38": "What are pop smoke’s two favorite pokemon ?\n\nExcadrill and Beedrill.",
+        "joke_39": "What do you call an old gorilla?\n\nA Rillaboomer!",
+        "joke_40": "What manga are you reading?\n\nAn Entei.",
+        "joke_41": "What does Brock say when he sees Nurse Joy? Tynamo ❤️ (Ti amo)",
+        "joke_42": "Customer: I’m here to buy new RAM sticks for my PC. What do you have to offer me?\nSeller : We have ReshiRAM 32GB.",
+        "joke_43": "What is the capital of Italy?\n\nZekRom!",
+        "joke_44": "What does a cat when it is hungry?\n\nHe Mew.",
+        "joke_45": "To win the party, you need to Ghetsis points more.",
+        "joke_46": "Have you ever heard of the Greek goddess Hatenna?",
+        "joke_47": "I love to eat apple pie and you?\nI prefer Cater pie.",
+        "joke_48": "I will eraticate the world mouahahaha!!",
+        "joke_49": "What does an artist read?\n\nAn Arbok!",
+        "joke_50": "In this book, there are ninetales.",
+        "joke_51": "Do you know that there is a pokemon that already existed during the time of the dinosaurs?\nIts name is Venusaur.",
+        "joke_52": "Can we named cerberus dugtrio?\nBecause it is a dog with 3 heads!",
+        "joke_53": "Father: What did you learn today at school?\nSon: I studied blitzle krieg in history class.",
+        "joke_54": "Friend: Want to race ?\nMe: No, you are too slowbro.",
+        "joke_55": "Do you know the Haunter x Haunter manga? It is awesome!"
+    },
+    "search_cmd": {
+        "name": "search",
+        "desc": "Search card with several parameters",
+        "not_found": "No result for search `{1}`."
+    },
+    "collection_cmd": {
+        "name": "collection",
+        "desc": "Search cards in a player collection",
+        "title": "Collection",
+        "empty": "You don't have any card in your collection yet."
+    },
+    "search_cards_embed": {
+        "filter_by_name_label": "Filter by name",
+        "card_name_input": "Card name",
+        "filter_by_grade_label": "Filter by grade"
+    },
+    "ranking_cmd": {
+        "name": "rankings",
+        "desc": "Get the top users having the most cards",
+        "title": "User Collection Ranking"
+    },
+    "grade": {
+        "not_graded": "Ungraded",
+        "0": "Poor",
+        "1": "Average",
+        "2": "Good",
+        "3": "Excellent"
+    },
+    "grade_cmd": {
+        "name": "grade",
+        "desc": "Grade a given card",
+        "no_available_copy": "You do not own any ungraded copy of this card.",
+        "card_has_been_grade": "The card `{card_id}` has been graded as: {grade}."
+    },
+    "stock_grade_cmd": {
+        "name": "stock_grade",
+        "desc": "Stock the free grade action for later use",
+        "response_msg": "Your free grade action has been added to your stock."
+    },
+    "grade_rates_cmd": {
+        "name": "grade_rates",
+        "desc": "Get the probability for each card grade",
+        "title": "Grade rates",
+        "description": "Rates for the grade obtained after grading a card"
+    }
 }

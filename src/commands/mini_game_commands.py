@@ -11,7 +11,7 @@ from src.colors import MAGENTA
 
 
 class MiniGamesCog(commands.Cog):
-    NUMBER_OF_JOKES = 31
+    NUMBER_OF_JOKES = 55
 
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
                  localization_service: LocalizationService) -> None:

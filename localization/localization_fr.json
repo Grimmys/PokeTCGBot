@@ -1,264 +1,288 @@
 {
-  "common": {
-    "feature_disabled": "Cette fonctionnalité n'est pas disponible pour le moment.",
-    "loading": "Chargement...",
-    "pokedollar": "Pokédollar",
-    "collection": "collection",
-    "booster": "booster",
-    "basic_booster": "Booster de base",
-    "promo_booster": "Booster Promo",
-    "grade": "évaluation",
-    "grading": "Évaluation",
-    "rarity": "rareté",
-    "set": "série",
-    "quantity": "quantité",
-    "card_is_owned": "possédée",
-    "booster_cooldown": "Prochain booster gratuit :",
-    "promo_booster_cooldown": "Prochain booster Promo gratuit :",
-    "daily_cooldown": "Prochain daily :",
-    "grading_cooldown": "Prochaine évaluation gratuite :",
-    "minutes": "minutes",
-    "hours": "heures",
-    "last_interaction": "Date de la dernière interaction",
-    "quest_accomplished": "Félicitations ! Vous avez rempli la quête « {quest_name} »",
-    "user_banned": "Vous êtes banni",
-    "user_not_found": "L'utilisateur n'a pas été trouvé",
-    "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",
-    "no_results": "Aucun résultat",
-    "not_allowed": "Vous ne pouvez pas utiliser cette commande",
-    "unknown_issue": "Une erreur inconnue a eu lieu durant l'exécution de la commande"
-  },
-  "ping_cmd": {
-    "name": "ping",
-    "desc": "Voir le délai de réponse du bot",
-    "response_msg": "Mon ping est de"
-  },
-  "bot_infos_cmd": {
-    "name": "infos_bot",
-    "desc": "Affiche des informations diverses à propos du bot",
-    "title": "Métadonnées du bot",
-    "count_servers": "Nombre de serveurs utilisants le Bot",
-    "total_users": "Total de joueurs",
-    "total_money_in_circulation": "Total de Pokédollars en circulation"
-  },
-  "give_money_cmd": {
-    "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"
-  },
-  "give_all_money_cmd": {
-    "response_msg": "Tous les utilisateurs ont reçu {amount} Pokédollars"
-  },
-  "give_card_cmd": {
-    "response_msg": "L'utilisateur {user} a reçu la carte {card_id}"
-  },
-  "give_boosters_cmd": {
-    "response_msg": "L'utilisateur {user} a reçu {quantity} booster(s) {kind}"
-  },
-  "give_all_boosters_cmd": {
-    "response_msg": "Tous les utilisateurs ont reçu {quantity} booster(s) {kind}"
-  },
-  "remove_card_cmd": {
-    "response_msg": "L'utilisateur {user} a perdu la carte {card_id}"
-  },
-  "ban_user_cmd": {
-    "name": "ban_utilisateur",
-    "desc": "Banni l'utilisateur du bot",
-    "response_msg": "L'utilisateur {user} a été banni"
-  },
-  "unban_user_cmd": {
-    "name": "deban_utilisateur",
-    "desc": "Débanni l'utilisateur du bot (il pourra jouer à nouveau)",
-    "response_msg": "L'utilisateur {user} a été débanni"
-  },
-  "settings_cmd": {
-    "name": "parametres",
-    "desc": "Accès aux paramètres de votre profil",
-    "title": "Préférences",
-    "language_field_name": "Langue",
-    "booster_opening_with_image_field_name": "Image des cartes affichées lors de l'ouverture d'un booster",
-    "booster_opening_with_image_response_msg": "Mode d'ouverture d'un booster changé",
-    "command_stock_use_field_name": "Toujours besoin de l'option pour utiliser des actions depuis le stock",
-    "command_stock_use_response_msg": "Option d'utilisation du stock changée",
-    "command_stock_use_label": "Besoin de l'option pour utiliser une action depuis le stock",
-    "language_changed_response_msg": "Nouvelle langue configurée :",
-    "select_language_placeholder": "Changer la langue",
-    "switch_booster_opening_label": "Changer le mode d'ouverture d'un booster"
-  },
-  "get_card_cmd": {
-    "name": "carte",
-    "desc": "Affiche une carte selon son id",
-    "card_not_found": "La carte {1} n'existe pas."
-  },
-  "help_cmd": {
-    "name": "aide",
-    "desc": "Affiche la liste des commandes disponibles",
-    "title": "Aide", 
-    "description": "Liste des commandes disponibles"
-  },
-  "support_cmd": {
-    "name": "support",
-    "desc": "Indications pour joindre le support en cas de besoin",
-    "title": "Support", 
-    "description": "Pour toute demande de support, par rapport à une commande ne fonctionnant pas correctement, une suggestion ou autre problème quelconque lié au bot, nous vous invitons à rejoindre le serveur Discord officiel du bot, et envoyer un message dans #support",
-    "discord_server_invitation": "Lien d'invitation au serveur Discord"
-  },
-  "daily_cmd": {
-    "name": "daily",
-    "desc": "Récupère la récompense quotidienne",
-    "response_msg": "Vous récupérez {amount} Pokédollars"
-  },
-  "booster_cmd": {
-    "name": "booster",
-    "desc": "Ouvre un booster de base",
-    "title": "Booster",
-    "no_boosters_in_stock": "Vous n'avez aucun booster en stock."
-  },
-  "promo_booster_cmd": {
-    "name": "booster_promo",
-    "desc": "Ouvre un booster Promo",
-    "title": "Booster Promo",
-    "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock."
-  },
-  "market_booster_cmd": {
-    "name": "boutique_boosters",
-    "desc": "Affiche les boosters disponibles à la boutique ainsi que leurs prix",
-    "title": "Échoppe à Boosters"
-  },
-  "buy_boosters_cmd": {
-    "name": "achat_boosters",
-    "desc": "Achète des boosters depuis la boutique",
-    "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter vos boosters !",
-    "not_enough_money": "Vous êtes trop pauvre pour cet achat",
-    "success_buy": "Félicitations pour vos achats"
-  },
-  "buy_gradings_cmd": {
-    "name": "achat_evaluations",
-    "desc": "Achète des actions d'évaluation de cartes",
-    "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter votre stock !",
-    "not_enough_money": "Vous êtes trop pauvre pour cet achat",
-    "success_buy": "Félicitations pour vos achats"
-  },
-  "send_cards_cmd": {
-    "name": "transferer_cartes",
-    "desc": "Transférer des cartes à un autre joueur",
-    "same_user": "Vous ne pouvez pas envoyer des cartes à... vous-même",
-    "missing_cards": "Vous ne possédez pas toutes les cartes, le transfert est annulé",
-    "cards_transferred": "Cartes envoyées à {user}"
-  },
-  "send_money_cmd": {
-    "name": "transferer_argent",
-    "desc": "Transférer des Pokédollars à un autre joueur",
-    "same_user": "Vous ne pouvez pas envoyer des Pokédollars à... vous-même",
-    "negative_amount": "Non, vous ne pouvez pas voler les Pokédollars de quelqu'un d'autre",
-    "not_enough_money": "Vous ne possédez pas autant de Pokédollars",
-    "money_transferred": "{amount} Pokédollars ont été envoyé à {user}"
-  },
-  "drop_rates_cmd": {
-    "name": "taux_drop_cartes",
-    "desc": "Table des taux d'obtention pour chaque tier de carte d'être dans un booster",
-    "title": "Taux de drop",
-    "description": "Taux pour la dernière carte d'un booster de base"
-  },
-  "profile_cmd": {
-    "name": "profil",
-    "desc": "Affiche le profil du joueur",
-    "title": "Profil"
-  },
-  "cooldowns_cmd": {
-    "name": "delai_commandes",
-    "desc": "Affiche le temps d'attente restant pour chaque commande à délai",
-    "title": "Temps d'attente des commandes",
-    "time_between_cmds": "Temps de récupération de base : ",
-    "midnight_reset": "Récupération à minuit",
-    "available": "Disponible"
-  },
-  "quests_cmd": {
-    "name": "quetes",
-    "desc": "Affiche les quêtes actives",
-    "title": "Quêtes",
-    "booster_description": "Ouvrir {number} Boosters de base",
-    "grade_description": "Faire évaluer {number} cartes",
-    "daily_claim_description": "Réclamer sa récompense quotidienne"
-  },
-  "joke_cmd": {
-    "name": "blague",
-    "desc": "Affiche une (terrible) blague Pokémon",
-    "title": "Blague Pokémon",
-    "description": "Avertissement : ce n'est pas parce que vous trouvez la blague pas drôle que ce n'est pas une blague",
-    "joke_1": "C'est l'histoire d'un Pikachu, il cour il cour il cour et trébuche sur une pierre, puis c'est devenu un raichu",
-    "joke_2": "Arceus apparais devant 3 pokémon \n\nPikachu : oh mon dieu c'est dieu ! \nCarapuce : oh grand Arceus on est rien sans vous \nMew : bitch pleaz, tu existerait pas sans moi",
-    "joke_3": "Quelle programme télévisé de danse les Pokémon adorent ?\n\nDanse avec les Stari.",
-    "joke_4": "Quel est l'endroit préféré d'un fan de Pokémon à visiter en France ?\n\nParas !",
-    "joke_5": "Je rêverais que tu sois le sol et que je sois un Taupiqueur.\n\nComme ça je pourrais être à l'intérieur de toi.", 
-    "joke_6": "Tu es probablement un Salamèche.\n\nCar tu me rends chaud.",
-    "joke_7": "Y a-t-il un Chétiflor dans ton pantalon ou es-tu juste content de me voir ?",
-    "joke_8": "Qu'a dit Pikachu quand Sacha est tombé de la falaise ?\n\n “Pikachu”, c'est tout ce qu'il sait dire.",
-    "joke_9": "Qu'est-ce qu'un Colossinge ? Un Férosinge devenu expert en trollage.",
-    "joke_10": "Hé madame t'es trop fraîche, j'ai envie de te Qulbutoker.",
-    "joke_11": "Quel bruit fait une arme à feu ? Rattata.",
-    "joke_12": "Que met un joueur de pokemon pour ne pas puer ? Du déo xys.",
-    "joke_13": "Viens faire Lippoutou sur mon Rondoudou.",
-    "joke_14": "Tu veux voir mes Poké Balls ?",
-    "joke_15": "C'est pas pour la team qu'on m'appelle le Rocket.",
-    "joke_16": "Coucou, tu veux voir mon Aspicot ?",
-    "joke_17": "Quand je te vois c'est Hydrocanon dans ma culotte.",
-    "joke_18": "J'ai entendu quelqu'un raconter des blagues Pokémon, mais je ne pouvais pas tous les attraper.",
-    "joke_19": "Selon des études récentes, le type préféré des fans de Pokémon est le type Electrique.\n\nCes résultats sont foudroyants.",
-    "joke_20": "Pourquoi devez-vous toujours amener un Salamèche avec vous pour le camping?\n\nParce qu'il est le Pokémon de départ de feu.",
-    "joke_21": "Comment appelle-t-on le lait d'un Écrémeuh drogué ?\n\nDu lait beubeu.",
-    "joke_22": "Comment appelle-t-on un papa Miaouss de couleur bleue ?\n\nUn père cyan.",
-    "joke_23": "Alors c'est Pikachu qui monte dans un car pour aller à l'école, mais quand il ressort il se gratte, pourquoi ?\n\nParce que c'était un car à puces.",
-    "joke_24": "Comment appelle-t-on une bande de 3 voyous qui volent des montres ? Un trio pique-heure.",
-    "joke_25": "Pourquoi Sacha ne prête jamais sa casquette aux pokemon chat ?\n\nParce qu'il a des poux, Sacha...",
-    "joke_26": "Le paresseux il est pas sympa, pourtant il paraît cool.",
-    "joke_27": "Comment appelle-t-on un lit qui brille ?\n\nUn lit néon.",
-    "joke_28": "- Bonjour Monsieur, est-ce que vous avez la figurine collector de Green Lanturn ? \n- Ah non, désolé mais elle est en rupture de Rhina-stock.",
-    "joke_29": "Comment appelle-t-on un enfant qui joue au Pôle Nord ?\n\n Un môme arctique.",
-    "joke_30": "- Alors les enfants, c'est quoi votre Régi préféré ? \n- Régisteel !\n- Moi c'est Régirock !\n- Régice ! C'est le meilleur !!\n- Et toi c'est lequel ? \n- Souriez, Régilait !",
-    "joke_31": "Comment appelle-t-on un gros poisson qui se déplace dans tous les sens ?\n\n Un Zigza-thon."
-  },
-  "search_cmd": {
-    "name": "recherche",
-    "desc": "Recherche des cartes selon différents paramètres",
-    "not_found": "Aucun résultat ne correspond à la recherche `{1}`."
-  },
-  "collection_cmd": {
-    "name": "collection",
-    "desc": "Affiche la collection de cartes d'un joueur",
-    "title": "Collection",
-    "empty": "Vous n'avez pas encore de carte dans votre collection."
-  },
-  "search_cards_embed": {
-    "filter_by_name_label": "Filtrer par nom",
-    "card_name_input": "Nom de carte",
-    "filter_by_grade_label": "Filter by grade"
-  },
-  "ranking_cmd": {
-    "name": "classement",
-    "desc": "Affiche le classement des joueurs ayant le plus de cartes (différentes)",
-    "title": "Classement des joueurs par nombre de cartes"
-  },
-  "grade": {
-    "not_graded": "Non-évaluée",
-    "0": "Mauvaise",
-    "1": "Moyenne",
-    "2": "Bonne",
-    "3": "Excellente"
-  },
-  "grade_cmd": {
-    "name": "evaluation",
-    "desc": "Évaluer une carte ne l'ayant pas encore été",
-    "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
-    "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
-  },
-  "stock_grade_cmd": {
-    "name": "stocker_evaluation",
-    "desc": "Stocker l'évaluation gratuite pour plus tard",
-    "response_msg": "Votre évaluation gratuite a été ajouté à votre réserve."
-  },
-  "grade_rates_cmd": {
-    "name": "taux_evaluations",
-    "desc": "Table des taux d'obtention de chaque évaluation de carte",
-    "title": "Proportions des évaluations de carte",
-    "description": "Chance d'obtenir chacune des évaluations différentes lors de l'évaluation d'une carte"
-  }
+    "common": {
+        "feature_disabled": "Cette fonctionnalité n'est pas disponible pour le moment.",
+        "loading": "Chargement...",
+        "pokedollar": "Pokédollar",
+        "collection": "collection",
+        "booster": "booster",
+        "basic_booster": "Booster de base",
+        "promo_booster": "Booster Promo",
+        "grade": "évaluation",
+        "grading": "Évaluation",
+        "rarity": "rareté",
+        "set": "série",
+        "quantity": "quantité",
+        "card_is_owned": "possédée",
+        "booster_cooldown": "Prochain booster gratuit :",
+        "promo_booster_cooldown": "Prochain booster Promo gratuit :",
+        "daily_cooldown": "Prochain daily :",
+        "grading_cooldown": "Prochaine évaluation gratuite :",
+        "minutes": "minutes",
+        "hours": "heures",
+        "last_interaction": "Date de la dernière interaction",
+        "quest_accomplished": "Félicitations ! Vous avez rempli la quête « {quest_name} »",
+        "user_banned": "Vous êtes banni",
+        "user_not_found": "L'utilisateur n'a pas été trouvé",
+        "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",
+        "no_results": "Aucun résultat",
+        "not_allowed": "Vous ne pouvez pas utiliser cette commande",
+        "unknown_issue": "Une erreur inconnue a eu lieu durant l'exécution de la commande"
+    },
+    "ping_cmd": {
+        "name": "ping",
+        "desc": "Voir le délai de réponse du bot",
+        "response_msg": "Mon ping est de"
+    },
+    "bot_infos_cmd": {
+        "name": "infos_bot",
+        "desc": "Affiche des informations diverses à propos du bot",
+        "title": "Métadonnées du bot",
+        "count_servers": "Nombre de serveurs utilisants le Bot",
+        "total_users": "Total de joueurs",
+        "total_money_in_circulation": "Total de Pokédollars en circulation"
+    },
+    "give_money_cmd": {
+        "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"
+    },
+    "give_all_money_cmd": {
+        "response_msg": "Tous les utilisateurs ont reçu {amount} Pokédollars"
+    },
+    "give_card_cmd": {
+        "response_msg": "L'utilisateur {user} a reçu la carte {card_id}"
+    },
+    "give_boosters_cmd": {
+        "response_msg": "L'utilisateur {user} a reçu {quantity} booster(s) {kind}"
+    },
+    "give_all_boosters_cmd": {
+        "response_msg": "Tous les utilisateurs ont reçu {quantity} booster(s) {kind}"
+    },
+    "remove_card_cmd": {
+        "response_msg": "L'utilisateur {user} a perdu la carte {card_id}"
+    },
+    "ban_user_cmd": {
+        "name": "ban_utilisateur",
+        "desc": "Banni l'utilisateur du bot",
+        "response_msg": "L'utilisateur {user} a été banni"
+    },
+    "unban_user_cmd": {
+        "name": "deban_utilisateur",
+        "desc": "Débanni l'utilisateur du bot (il pourra jouer à nouveau)",
+        "response_msg": "L'utilisateur {user} a été débanni"
+    },
+    "settings_cmd": {
+        "name": "parametres",
+        "desc": "Accès aux paramètres de votre profil",
+        "title": "Préférences",
+        "language_field_name": "Langue",
+        "booster_opening_with_image_field_name": "Image des cartes affichées lors de l'ouverture d'un booster",
+        "booster_opening_with_image_response_msg": "Mode d'ouverture d'un booster changé",
+        "command_stock_use_field_name": "Toujours besoin de l'option pour utiliser des actions depuis le stock",
+        "command_stock_use_response_msg": "Option d'utilisation du stock changée",
+        "command_stock_use_label": "Besoin de l'option pour utiliser une action depuis le stock",
+        "language_changed_response_msg": "Nouvelle langue configurée :",
+        "select_language_placeholder": "Changer la langue",
+        "switch_booster_opening_label": "Changer le mode d'ouverture d'un booster"
+    },
+    "get_card_cmd": {
+        "name": "carte",
+        "desc": "Affiche une carte selon son id",
+        "card_not_found": "La carte {1} n'existe pas."
+    },
+    "help_cmd": {
+        "name": "aide",
+        "desc": "Affiche la liste des commandes disponibles",
+        "title": "Aide",
+        "description": "Liste des commandes disponibles"
+    },
+    "support_cmd": {
+        "name": "support",
+        "desc": "Indications pour joindre le support en cas de besoin",
+        "title": "Support",
+        "description": "Pour toute demande de support, par rapport à une commande ne fonctionnant pas correctement, une suggestion ou autre problème quelconque lié au bot, nous vous invitons à rejoindre le serveur Discord officiel du bot, et envoyer un message dans #support",
+        "discord_server_invitation": "Lien d'invitation au serveur Discord"
+    },
+    "daily_cmd": {
+        "name": "daily",
+        "desc": "Récupère la récompense quotidienne",
+        "response_msg": "Vous récupérez {amount} Pokédollars"
+    },
+    "booster_cmd": {
+        "name": "booster",
+        "desc": "Ouvre un booster de base",
+        "title": "Booster",
+        "no_boosters_in_stock": "Vous n'avez aucun booster en stock."
+    },
+    "promo_booster_cmd": {
+        "name": "booster_promo",
+        "desc": "Ouvre un booster Promo",
+        "title": "Booster Promo",
+        "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock."
+    },
+    "market_booster_cmd": {
+        "name": "boutique_boosters",
+        "desc": "Affiche les boosters disponibles à la boutique ainsi que leurs prix",
+        "title": "Échoppe à Boosters"
+    },
+    "buy_boosters_cmd": {
+        "name": "achat_boosters",
+        "desc": "Achète des boosters depuis la boutique",
+        "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter vos boosters !",
+        "not_enough_money": "Vous êtes trop pauvre pour cet achat",
+        "success_buy": "Félicitations pour vos achats"
+    },
+    "buy_gradings_cmd": {
+        "name": "achat_evaluations",
+        "desc": "Achète des actions d'évaluation de cartes",
+        "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter votre stock !",
+        "not_enough_money": "Vous êtes trop pauvre pour cet achat",
+        "success_buy": "Félicitations pour vos achats"
+    },
+    "send_cards_cmd": {
+        "name": "transferer_cartes",
+        "desc": "Transférer des cartes à un autre joueur",
+        "same_user": "Vous ne pouvez pas envoyer des cartes à... vous-même",
+        "missing_cards": "Vous ne possédez pas toutes les cartes, le transfert est annulé",
+        "cards_transferred": "Cartes envoyées à {user}"
+    },
+    "send_money_cmd": {
+        "name": "transferer_argent",
+        "desc": "Transférer des Pokédollars à un autre joueur",
+        "same_user": "Vous ne pouvez pas envoyer des Pokédollars à... vous-même",
+        "negative_amount": "Non, vous ne pouvez pas voler les Pokédollars de quelqu'un d'autre",
+        "not_enough_money": "Vous ne possédez pas autant de Pokédollars",
+        "money_transferred": "{amount} Pokédollars ont été envoyé à {user}"
+    },
+    "drop_rates_cmd": {
+        "name": "taux_drop_cartes",
+        "desc": "Table des taux d'obtention pour chaque tier de carte d'être dans un booster",
+        "title": "Taux de drop",
+        "description": "Taux pour la dernière carte d'un booster de base"
+    },
+    "profile_cmd": {
+        "name": "profil",
+        "desc": "Affiche le profil du joueur",
+        "title": "Profil"
+    },
+    "cooldowns_cmd": {
+        "name": "delai_commandes",
+        "desc": "Affiche le temps d'attente restant pour chaque commande à délai",
+        "title": "Temps d'attente des commandes",
+        "time_between_cmds": "Temps de récupération de base : ",
+        "midnight_reset": "Récupération à minuit",
+        "available": "Disponible"
+    },
+    "quests_cmd": {
+        "name": "quetes",
+        "desc": "Affiche les quêtes actives",
+        "title": "Quêtes",
+        "booster_description": "Ouvrir {number} Boosters de base",
+        "grade_description": "Faire évaluer {number} cartes",
+        "daily_claim_description": "Réclamer sa récompense quotidienne"
+    },
+    "joke_cmd": {
+        "name": "blague",
+        "desc": "Affiche une (terrible) blague Pokémon",
+        "title": "Blague Pokémon",
+        "description": "Avertissement : ce n'est pas parce que vous trouvez la blague pas drôle que ce n'est pas une blague",
+        "joke_1": "C'est l'histoire d'un Pikachu, il cour il cour il cour et trébuche sur une pierre, puis c'est devenu un raichu",
+        "joke_2": "Arceus apparais devant 3 pokémon \n\nPikachu : oh mon dieu c'est dieu ! \nCarapuce : oh grand Arceus on est rien sans vous \nMew : bitch pleaz, tu existerait pas sans moi",
+        "joke_3": "Quelle programme télévisé de danse les Pokémon adorent ?\n\nDanse avec les Stari.",
+        "joke_4": "Quel est l'endroit préféré d'un fan de Pokémon à visiter en France ?\n\nParas !",
+        "joke_5": "Je rêverais que tu sois le sol et que je sois un Taupiqueur.\n\nComme ça je pourrais être à l'intérieur de toi.",
+        "joke_6": "Tu es probablement un Salamèche.\n\nCar tu me rends chaud.",
+        "joke_7": "Y a-t-il un Chétiflor dans ton pantalon ou es-tu juste content de me voir ?",
+        "joke_8": "Qu'a dit Pikachu quand Sacha est tombé de la falaise ?\n\n “Pikachu”, c'est tout ce qu'il sait dire.",
+        "joke_9": "Qu'est-ce qu'un Colossinge ? Un Férosinge devenu expert en trollage.",
+        "joke_10": "Hé madame t'es trop fraîche, j'ai envie de te Qulbutoker.",
+        "joke_11": "Quel bruit fait une arme à feu ? Rattata.",
+        "joke_12": "Que met un joueur de pokemon pour ne pas puer ? Du déo xys.",
+        "joke_13": "Viens faire Lippoutou sur mon Rondoudou.",
+        "joke_14": "Tu veux voir mes Poké Balls ?",
+        "joke_15": "C'est pas pour la team qu'on m'appelle le Rocket.",
+        "joke_16": "Coucou, tu veux voir mon Aspicot ?",
+        "joke_17": "Quand je te vois c'est Hydrocanon dans ma culotte.",
+        "joke_18": "J'ai entendu quelqu'un raconter des blagues Pokémon, mais je ne pouvais pas tous les attraper.",
+        "joke_19": "Selon des études récentes, le type préféré des fans de Pokémon est le type Electrique.\n\nCes résultats sont foudroyants.",
+        "joke_20": "Pourquoi devez-vous toujours amener un Salamèche avec vous pour le camping?\n\nParce qu'il est le Pokémon de départ de feu.",
+        "joke_21": "Comment appelle-t-on le lait d'un Écrémeuh drogué ?\n\nDu lait beubeu.",
+        "joke_22": "Comment appelle-t-on un papa Miaouss de couleur bleue ?\n\nUn père cyan.",
+        "joke_23": "Alors c'est Pikachu qui monte dans un car pour aller à l'école, mais quand il ressort il se gratte, pourquoi ?\n\nParce que c'était un car à puces.",
+        "joke_24": "Comment appelle-t-on une bande de 3 voyous qui volent des montres ? Un trio pique-heure.",
+        "joke_25": "Pourquoi Sacha ne prête jamais sa casquette aux pokemon chat ?\n\nParce qu'il a des poux, Sacha...",
+        "joke_26": "Le paresseux il est pas sympa, pourtant il paraît cool.",
+        "joke_27": "Comment appelle-t-on un lit qui brille ?\n\nUn lit néon.",
+        "joke_28": "- Bonjour Monsieur, est-ce que vous avez la figurine collector de Green Lanturn ? \n- Ah non, désolé mais elle est en rupture de Rhina-stock.",
+        "joke_29": "Comment appelle-t-on un enfant qui joue au Pôle Nord ?\n\n Un môme arctique.",
+        "joke_30": "- Alors les enfants, c'est quoi votre Régi préféré ? \n- Régisteel !\n- Moi c'est Régirock !\n- Régice ! C'est le meilleur !!\n- Et toi c'est lequel ? \n- Souriez, Régilait !",
+        "joke_31": "Comment appelle-t-on un gros poisson qui se déplace dans tous les sens ?\n\n Un Zigza-thon.",
+        "joke_32": "Un homme se promène et voit une femme qu'il trouve belle, que lui dit-il en l'abordant ?\n\nT'es LuCanon.",
+        "joke_33": "Que dit-on d'une personne lorsqu'elle est particulièrement forte dans un domaine ?\n\nQu'elle a Duskull. (nom anglais de Skelénox)",
+        "joke_34": "Quel est l'origine de MAC OS X et Linux ?\n\nOnix! (Unix)",
+        "joke_35": "Que fait un caillou lorsqu'on le jette dans l'eau ?\n\nTiiii plouf.",
+        "joke_36": "Bonjour infirmière Joëlle, je crois qu'on doit lui faire une radio du Coxy. (Coxys)",
+        "joke_37": "Quel est le poste d'un singe dans une équipe de football américain ?\n\nQuartermac. (Quarterback)",
+        "joke_38": "Quel pokémon la marque lacoste a-t-elle utilisé pour son logo ?\n\nCrocrodil!",
+        "joke_39": "Quel est le logo de la marque Lacoste ?\n\nUn crocrodil!",
+        "joke_40": "Ca sent mauvais, t'aurai un déonidoran ?",
+        "joke_41": "Pourquoi Grainipiot n'a pas fait ses devoirs ?\n\nCar c'est un glandeur.",
+        "joke_42": "Que dit Sacha quand il a faim ?\n\nOndine",
+        "joke_43": "Que dit Pierre quand il se prend un râteau ?\n\nPurée, j'ai la N!",
+        "joke_44": "Alors, t'as la pussy en feu ? (Poussifeu)",
+        "joke_45": "T'es une fille, t'as pas de shampoing ? Non mais Alola!",
+        "joke_46": "Tu lis quoi comme manga ?\nUn Entei.",
+        "joke_47": "Va voir ma salle de bain, je me suis acheté un nouveau Pohmotte de douche.",
+        "joke_48": "Client : Je viens vous acheter de nouvelles barrettes de RAM pour mon PC. Qu'avez-vous à me proposer ?\nVendeur : Nous avons des ReshiRAM 32Go.",
+        "joke_49": "Quelle est la capitale de l'Italie ?\n\nZekRom!",
+        "joke_50": "Quel bruit fait un chat quand il miaule ?\n\nMew!",
+        "joke_51": "Tu connais l'émission 'Qui veut gagner prismillon ?' ?",
+        "joke_52": "Quand j'ai une mauvaise note, mon père Moufouette 🥲",
+        "joke_53": "J'aime trop mangé du Riolu. (riz au lait)",
+        "joke_54": "Mince, j'ai Peterson ordinateur..",
+        "joke_55": "Pourquoi Pikachu est le pokémon préféré des japonais ?\n\nCar lui aussi est jaune."
+    },
+    "search_cmd": {
+        "name": "recherche",
+        "desc": "Recherche des cartes selon différents paramètres",
+        "not_found": "Aucun résultat ne correspond à la recherche `{1}`."
+    },
+    "collection_cmd": {
+        "name": "collection",
+        "desc": "Affiche la collection de cartes d'un joueur",
+        "title": "Collection",
+        "empty": "Vous n'avez pas encore de carte dans votre collection."
+    },
+    "search_cards_embed": {
+        "filter_by_name_label": "Filtrer par nom",
+        "card_name_input": "Nom de carte",
+        "filter_by_grade_label": "Filter by grade"
+    },
+    "ranking_cmd": {
+        "name": "classement",
+        "desc": "Affiche le classement des joueurs ayant le plus de cartes (différentes)",
+        "title": "Classement des joueurs par nombre de cartes"
+    },
+    "grade": {
+        "not_graded": "Non-évaluée",
+        "0": "Mauvaise",
+        "1": "Moyenne",
+        "2": "Bonne",
+        "3": "Excellente"
+    },
+    "grade_cmd": {
+        "name": "evaluation",
+        "desc": "Évaluer une carte ne l'ayant pas encore été",
+        "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
+        "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
+    },
+    "stock_grade_cmd": {
+        "name": "stocker_evaluation",
+        "desc": "Stocker l'évaluation gratuite pour plus tard",
+        "response_msg": "Votre évaluation gratuite a été ajouté à votre réserve."
+    },
+    "grade_rates_cmd": {
+        "name": "taux_evaluations",
+        "desc": "Table des taux d'obtention de chaque évaluation de carte",
+        "title": "Proportions des évaluations de carte",
+        "description": "Chance d'obtenir chacune des évaluations différentes lors de l'évaluation d'une carte"
+    }
 }
