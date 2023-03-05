@@ -3,6 +3,7 @@ import random
 import discord
 from discord import Embed, app_commands
 from discord.ext import commands
+from discord.app_commands import locale_str as _T
 
 from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
@@ -18,7 +19,7 @@ class MiniGamesCog(commands.Cog):
         self.settings_service = settings_service
         self.t = localization_service.get_string
 
-    @app_commands.command(name="joke", description="Get a (bad) Pokémon joke")
+    @app_commands.command(name=_T("joke_cmd-name"), description=_T("joke_cmd-desc"))
     async def joke_command(self, interaction: discord.Interaction) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
 

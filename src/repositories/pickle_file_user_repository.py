@@ -4,7 +4,6 @@ from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
-from src.utils.card_grade import CardGrade
 
 
 class PickleFileUserRepository(UserRepository):
@@ -40,6 +39,14 @@ class PickleFileUserRepository(UserRepository):
         users_by_id[user.id] = user
         PickleFileUserRepository._save_pickle_file(users_by_id)
         return True
+
+    def set_user_ban(self, user_id: int, is_banned: bool) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].is_banned = is_banned
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
 
     def change_money(self, user_id: int, money_change: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
@@ -86,6 +93,14 @@ class PickleFileUserRepository(UserRepository):
         PickleFileUserRepository._save_pickle_file(users_by_id)
         return True
 
+    def change_gradings_quantity(self, user_id: int, quantity: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].grading_quantity += quantity
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
+
     def change_user_language(self, user_id: int, new_language_id: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
@@ -106,7 +121,7 @@ class PickleFileUserRepository(UserRepository):
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             users_by_id[
-                user_id].settings.only_use_booster_stock_with_option = new_only_use_booster_stock_with_option_value
+                user_id].settings.only_use_action_from_stock_with_option = new_only_use_booster_stock_with_option_value
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
@@ -143,52 +158,54 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def add_cards_to_collection(self, user_id: int, card_ids_with_grade: list[tuple[str, str]]) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            for card_id in card_ids:
-                if card_id in user.cards:
-                    user.cards[card_id] += 1
+            for card_id_in_collection in card_ids_with_grade:
+                if card_id_in_collection in user.cards:
+                    user.cards[card_id_in_collection] += 1
                 else:
-                    user.cards[card_id] = 1
+                    user.cards[card_id_in_collection] = 1
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
 
-    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
+    def add_card_to_collection(self, user_id: int, card_id: str, grade_name: str = "ungraded") -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            if (card_id, grade.in_application_name) in user.graded_cards:
-                user.graded_cards[(card_id, grade.in_application_name)] += 1
+            card_id_in_collection = (card_id, grade_name)
+            if card_id_in_collection in user.cards:
+                user.cards[card_id_in_collection] += 1
             else:
-                user.graded_cards[(card_id, grade.in_application_name)] = 1
+                user.cards[card_id_in_collection] = 1
             PickleFileUserRepository._save_pickle_file(users_by_id)
             return True
         return False
 
-    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+    def remove_card_from_collection(self, user_id: int, card_id: str, grade_name: str = "ungraded") -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
             if card_id in user.cards:
-                user.cards[card_id] -= 1
-                if user.cards[card_id] == 0:
-                    del user.cards[card_id]
+                card_id_in_collection = (card_id, grade_name)
+                user.cards[card_id_in_collection] -= 1
+                if user.cards[card_id_in_collection] == 0:
+                    del user.cards[card_id_in_collection]
                 PickleFileUserRepository._save_pickle_file(users_by_id)
                 return True
         return False
 
-    def remove_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def remove_cards_from_collection(self, user_id: int, card_ids_with_grade: list[tuple[str, str]]) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            for card_id in card_ids:
-                if card_id in user.cards:
-                    user.cards[card_id] -= 1
-                    if user.cards[card_id] == 0:
-                        del user.cards[card_id]
+            for card_id_in_collection in card_ids_with_grade:
+                if card_id_in_collection in user.cards:
+                    user.cards[card_id_in_collection] -= 1
+                    if user.cards[card_id_in_collection] == 0:
+                        del user.cards[card_id_in_collection]
                 else:
                     return False
             PickleFileUserRepository._save_pickle_file(users_by_id)
@@ -198,5 +215,5 @@ class PickleFileUserRepository(UserRepository):
     def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         users: list[UserEntity] = list(users_by_id.values())
-        users.sort(key=lambda user: len(user.cards), reverse=True)
+        users.sort(key=lambda user: len(set([card_id[0] for card_id in user.cards.keys()])), reverse=True)
         return users[:number]

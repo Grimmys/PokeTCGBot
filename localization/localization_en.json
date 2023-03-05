@@ -8,7 +8,7 @@
     "basic_booster": "Basic Booster",
     "promo_booster": "Promo Booster",
     "grade": "grade",
-    "not_graded": "ungraded",
+    "grading": "Grading",
     "rarity": "rarity",
     "set": "set",
     "quantity": "quantity",
@@ -20,6 +20,8 @@
     "minutes": "minutes",
     "hours": "hours",
     "last_interaction": "Last interaction done date",
+    "quest_accomplished": "Congratulations! You accomplished the quest \"{quest_name}\"",
+    "user_banned": "You are banned",
     "user_not_found": "User not found",
     "user_or_card_not_found": "User not found or they don't have the card",
     "no_results": "No results found",
@@ -27,9 +29,13 @@
     "unknown_issue": "An unknown issue occurred during the process of the command"
   },
   "ping_cmd": {
+    "name": "ping",
+    "desc": "Get bot latency",
     "response_msg": "My ping is"
   },
   "bot_infos_cmd": {
+    "name": "bot_stats",
+    "desc": "Get various statistics about the bot",
     "title": "Bot metadata",
     "count_servers": "Number of servers using the Bot",
     "total_users": "Total players",
@@ -53,74 +59,129 @@
   "remove_card_cmd": {
     "response_msg": "User {user} lost card {card_id}"
   },
+  "ban_user_cmd": {
+    "name": "ban_user",
+    "desc": "Ban the given user to ever use the bot again",
+    "response_msg": "User {user} has been banned"
+  },
+  "unban_user_cmd": {
+    "name": "unban_user",
+    "desc": "Unban the given user (they will be able to play again)",
+    "response_msg": "User {user} has been unbanned"
+  },
   "settings_cmd": {
+    "name": "settings",
+    "desc": "Change user settings",
     "title": "Settings",
     "language_field_name": "Language",
     "booster_opening_with_image_field_name": "Booster opened with card images by default",
     "language_changed_response_msg": "Language changed to:",
     "booster_opening_with_image_response_msg": "Booster opening mode switched",
-    "booster_stock_use_field_name": "Only use stock boosters when called with option",
-    "booster_stock_use_response_msg": "Booster stock use changed",
-    "booster_stock_use_label": "Require option to use booster stock",
+    "command_stock_use_field_name": "Only use command stock when called with option",
+    "command_stock_use_response_msg": "Command stock use changed",
+    "command_stock_use_label": "Require option to use action from stock",
     "select_language_placeholder": "Change language",
     "switch_booster_opening_label": "Switch booster opening value"
   },
   "get_card_cmd": {
+    "name": "card",
+    "desc": "Get a card with its id",
     "card_not_found": "Card {1} does not exist."
   },
   "help_cmd": {
+    "name": "help",
+    "desc": "Display the list of available commands",
     "title": "Help",
     "description": "List of available commands"
   },
   "support_cmd": {
+    "name": "support",
+    "desc": "Information about how to join support in case of any issue",
     "title": "Support", 
     "description": "For any kind of support request, whether it is about a malfunctioning command, a feature request or any other issue related to the bot, we invite you to send a message on the #support channel of the official Discord server",
     "discord_server_invitation": "Discord server invitation link"
   },
   "daily_cmd": {
+    "name": "daily",
+    "desc": "Claim daily gift",
     "response_msg": "You earned {amount} Pokémon Dollars"
   },
   "booster_cmd": {
+    "name": "booster",
+    "desc": "Open a basic booster",
     "title": "Booster",
     "no_boosters_in_stock": "You have no boosters in stock"
   },
   "promo_booster_cmd": {
+    "name": "promo_booster",
+    "desc": "Open a Promo booster",
     "title": "Promo Booster",
     "no_boosters_in_stock": "You have no promo boosters in stock"
   },
   "market_booster_cmd": {
+    "name": "market_booster",
+    "desc": "Check available boosters with their prices",
     "title": "Booster Market"
   },
   "buy_boosters_cmd": {
+    "name": "buy_boosters",
+    "desc": "Buy some boosters from market",
     "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your boosters!",
     "not_enough_money": "You're too poor to buy these boosters",
     "success_buy": "Congratulations on your purchases"
   },
+  "buy_gradings_cmd": {
+    "name": "buy_gradings",
+    "desc": "Buy grading actions for cards",
+    "negative_quantity": "Nah, that's a shop, not a garage sale: I'm not going to buy your stock!",
+    "not_enough_money": "You're too poor to buy these gradings",
+    "success_buy": "Congratulations on your purchases"
+  },
   "send_cards_cmd": {
+    "name": "send_cards",
+    "desc": "Send card(s) to another player",
     "same_user": "You can't send your cards to... yourself",
     "missing_cards": "You do not own some of the cards you provided, transfer cancelled",
     "cards_transferred": "Cards have been sent to {user}"
   },
   "send_money_cmd": {
+    "name": "send_money",
+    "desc": "Send Pokémon Dollars to another player",
     "same_user": "You can't send money to... yourself",
-    "negative_amount": "No, you can't steal someone else Pokémon Dollars",
+    "negative_amount": "No, you can't steal someone else's Pokémon Dollars",
     "not_enough_money": "You don't have that much Pokémon Dollars",
     "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
   },
   "drop_rates_cmd": {
+    "name": "drop_rates",
+    "desc": "Get the probability for each tier of cards to be in a booster",
     "title": "Drop rates",
     "description": "Drop for the last card of a basic booster"
   },
   "profile_cmd": {
+    "name": "profile",
+    "desc": "Check user profile",
     "title": "Profile"
   },
   "cooldowns_cmd": {
+    "name": "cooldowns",
+    "desc": "Check the time you still have to wait for your next commands",
     "title": "Commands' cooldown",
     "time_between_cmds": "Default timeout: ",
     "midnight_reset": "Daily reset at midnight",
     "available": "Available"
   },
+  "quests_cmd": {
+    "name": "quests",
+    "desc": "Check your quests",
+    "title": "Quests",
+    "booster_description": "Open {number} Basic Boosters",
+    "grade_description": "Grade {number} cards",
+    "daily_claim_description": "Claim daily reward"
+  },
   "joke_cmd": {
+    "name": "joke",
+    "desc": "Get a (bad) Pokémon joke",
     "title": "Pokémon Joke",
     "description": "Warning: It's not because you don't find the joke funny that it is not a joke",
     "joke_1": "It is the tale of a wild Pikachu. He runs, runs and runs again when suddenly he stumbles on a rock, then he becomes a Raichu.",
@@ -156,30 +217,47 @@
     "joke_31": "What do you call a scout that likes to chew gum while climbing Pikes Peak?\n\n A Peak-A-Chewer!"
   },
   "search_cmd": {
+    "name": "search",
+    "desc": "Search card with several parameters",
     "not_found": "No result for search `{1}`."
   },
   "collection_cmd": {
+    "name": "collection",
+    "desc": "Search cards in a player collection",
     "title": "Collection",
     "empty": "You don't have any card in your collection yet."
   },
   "search_cards_embed": {
     "filter_by_name_label": "Filter by name",
-    "card_name_input": "Card name"
+    "card_name_input": "Card name",
+    "filter_by_grade_label": "Filter by grade"
   },
   "ranking_cmd": {
+    "name": "rankings",
+    "desc": "Get the top users having the most cards",
     "title": "User Collection Ranking"
   },
   "grade": {
+    "not_graded": "Ungraded",
     "0": "Poor",
     "1": "Average",
     "2": "Good",
     "3": "Excellent"
   },
   "grade_cmd": {
+    "name": "grade",
+    "desc": "Grade a given card",
     "no_available_copy": "You do not own any ungraded copy of this card.",
     "card_has_been_grade": "The card `{card_id}` has been graded as: {grade}."
   },
+  "stock_grade_cmd": {
+    "name": "stock_grade",
+    "desc": "Stock the free grade action for later use",
+    "response_msg": "Your free grade action has been added to your stock."
+  },
   "grade_rates_cmd": {
+    "name": "grade_rates",
+    "desc": "Get the probability for each card grade",
     "title": "Grade rates",
     "description": "Rates for the grade obtained after grading a card"
   }

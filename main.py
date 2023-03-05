@@ -6,6 +6,7 @@ from os import environ as env
 
 import discord
 from discord import Intents, Embed
+from discord.app_commands import locale_str as _T
 from discord.ext.commands import Bot
 
 import config
@@ -25,10 +26,12 @@ from src.components.paginated_embed import PaginatedEmbed
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
+from src.services.quest_service import QuestService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
+from src.utils.discord_tools import PTCGTranslator
 
 intents = Intents.default()
 intents.message_content = True
@@ -36,21 +39,22 @@ intents.message_content = True
 bot = Bot(intents=intents, command_prefix=str(uuid.uuid1()))
 
 
-@bot.tree.command(name="ping", description="Get bot latency")
+@bot.tree.command(name=_T("ping_cmd-name"), description=_T("ping_cmd-desc"))
 async def ping_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
     await interaction.response.send_message(
         f"{t(user_language_id, 'ping_cmd.response_msg')} **{round(bot.latency * 1000)}ms**")
 
 
-@bot.tree.command(name="bot_infos", description="Get various statistics about the bot")
+@bot.tree.command(name=_T("bot_infos_cmd-name"), description=_T("bot_infos_cmd-desc"))
 async def bot_infos_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
 
     emojis = {emoji.name: str(emoji) for emoji in bot.emojis}
 
     embed = Embed(title=f"---------- {t(user_language_id, 'bot_infos_cmd.title')} ----------", )
-    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.count_servers'), value=f"🗃️ {len(bot.guilds)}", inline=False)
+    embed.add_field(name=t(user_language_id, 'bot_infos_cmd.count_servers'), value=f"🗃️ {len(bot.guilds)}",
+                    inline=False)
     embed.add_field(name=t(user_language_id, 'bot_infos_cmd.total_users'),
                     value=f"👥 {user_service.get_number_users()}", inline=False)
     embed.add_field(name=t(user_language_id, 'bot_infos_cmd.total_money_in_circulation'),
@@ -58,17 +62,23 @@ async def bot_infos_command(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="help", description="Display the list of available commands")
+@bot.tree.command(name=_T("help_cmd-name"), description=_T("help_cmd-desc"))
 async def help_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
+
     embed = Embed(title=f"---------- {t(user_language_id, 'help_cmd.title')} ----------",
                   description=t(user_language_id, 'help_cmd.description'), color=BLUE)
     for command in bot.tree.get_commands():
-        embed.add_field(name=command.qualified_name, value=command.description, inline=False)
+        parsed_qualified_name = command.qualified_name.replace("-", ".")
+        localized_qualified_name = t(user_language_id, parsed_qualified_name)
+        parsed_description = command.description.replace("-", ".")
+        localized_description = t(user_language_id, parsed_description)
+        if localized_qualified_name and parsed_description:
+            embed.add_field(name=localized_qualified_name, value=localized_description, inline=False)
     await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="support", description="Information about how to join support in case of any issue")
+@bot.tree.command(name=_T("support_cmd-name"), description=_T("support_cmd-desc"))
 async def support_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)
     embed = Embed(title=f"---------- {t(user_language_id, 'support_cmd.title')} ----------",
@@ -96,16 +106,18 @@ def setup_logs():
 async def setup_cogs():
     await bot.add_cog(AdminCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service, user_service))
-    await bot.add_cog(DailyCog(bot, localization_service, user_service))
+    await bot.add_cog(DailyCog(bot, localization_service, user_service, quest_service))
     await bot.add_cog(
-        BoosterCog(bot, settings_service, localization_service, user_service, rarity_service, type_service))
+        BoosterCog(bot, settings_service, localization_service, user_service,
+                   rarity_service, type_service, quest_service))
     await bot.add_cog(ShoppingCog(bot, user_service, localization_service))
     await bot.add_cog(TradingCog(bot, user_service, localization_service))
-    await bot.add_cog(UserInfoCog(bot, user_service, localization_service))
+    await bot.add_cog(UserInfoCog(bot, user_service, localization_service, quest_service))
     await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service, card_service))
     await bot.add_cog(RankingCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
-    await bot.add_cog(GradeCog(bot, user_service, localization_service, card_service))
+    await bot.add_cog(GradeCog(bot, user_service, localization_service, card_service, quest_service))
+    await bot.tree.set_translator(PTCGTranslator(localization_service))
 
 
 async def main():
@@ -124,12 +136,14 @@ if __name__ == "__main__":
     random.seed()
 
     pickle_file_user_repository = PickleFileUserRepository()
-    user_service = UserService(pickle_file_user_repository)
+    localization_service = LocalizationService()
+    user_service = UserService(pickle_file_user_repository, localization_service)
     settings_service = SettingsService(pickle_file_user_repository)
     rarity_service = RarityService()
     card_service = CardService()
     type_service = TypeService()
-    localization_service = LocalizationService()
+    quest_service = QuestService(localization_service)
+
     t = localization_service.get_string
     PaginatedEmbed.setup_class(t)
 

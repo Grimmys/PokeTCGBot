@@ -8,7 +8,7 @@
     "basic_booster": "Booster de base",
     "promo_booster": "Booster Promo",
     "grade": "évaluation",
-    "not_graded": "non-évaluée",
+    "grading": "Évaluation",
     "rarity": "rareté",
     "set": "série",
     "quantity": "quantité",
@@ -20,6 +20,8 @@
     "minutes": "minutes",
     "hours": "heures",
     "last_interaction": "Date de la dernière interaction",
+    "quest_accomplished": "Félicitations ! Vous avez rempli la quête « {quest_name} »",
+    "user_banned": "Vous êtes banni",
     "user_not_found": "L'utilisateur n'a pas été trouvé",
     "user_or_card_not_found": "L'utilisateur n'a pas été trouvé ou il ne possède pas la carte",
     "no_results": "Aucun résultat",
@@ -27,9 +29,13 @@
     "unknown_issue": "Une erreur inconnue a eu lieu durant l'exécution de la commande"
   },
   "ping_cmd": {
+    "name": "ping",
+    "desc": "Voir le délai de réponse du bot",
     "response_msg": "Mon ping est de"
   },
   "bot_infos_cmd": {
+    "name": "infos_bot",
+    "desc": "Affiche des informations diverses à propos du bot",
     "title": "Métadonnées du bot",
     "count_servers": "Nombre de serveurs utilisants le Bot",
     "total_users": "Total de joueurs",
@@ -53,74 +59,129 @@
   "remove_card_cmd": {
     "response_msg": "L'utilisateur {user} a perdu la carte {card_id}"
   },
+  "ban_user_cmd": {
+    "name": "ban_utilisateur",
+    "desc": "Banni l'utilisateur du bot",
+    "response_msg": "L'utilisateur {user} a été banni"
+  },
+  "unban_user_cmd": {
+    "name": "deban_utilisateur",
+    "desc": "Débanni l'utilisateur du bot (il pourra jouer à nouveau)",
+    "response_msg": "L'utilisateur {user} a été débanni"
+  },
   "settings_cmd": {
+    "name": "parametres",
+    "desc": "Accès aux paramètres de votre profil",
     "title": "Préférences",
     "language_field_name": "Langue",
     "booster_opening_with_image_field_name": "Image des cartes affichées lors de l'ouverture d'un booster",
     "booster_opening_with_image_response_msg": "Mode d'ouverture d'un booster changé",
-    "booster_stock_use_field_name": "Toujours besoin de l'option pour utiliser les boosters du stock",
-    "booster_stock_use_response_msg": "Option d'utilisation des boosters du stock changée",
-    "booster_stock_use_label": "Besoin de l'option pour utiliser le stock",
+    "command_stock_use_field_name": "Toujours besoin de l'option pour utiliser des actions depuis le stock",
+    "command_stock_use_response_msg": "Option d'utilisation du stock changée",
+    "command_stock_use_label": "Besoin de l'option pour utiliser une action depuis le stock",
     "language_changed_response_msg": "Nouvelle langue configurée :",
     "select_language_placeholder": "Changer la langue",
     "switch_booster_opening_label": "Changer le mode d'ouverture d'un booster"
   },
   "get_card_cmd": {
+    "name": "carte",
+    "desc": "Affiche une carte selon son id",
     "card_not_found": "La carte {1} n'existe pas."
   },
   "help_cmd": {
+    "name": "aide",
+    "desc": "Affiche la liste des commandes disponibles",
     "title": "Aide", 
     "description": "Liste des commandes disponibles"
   },
   "support_cmd": {
+    "name": "support",
+    "desc": "Indications pour joindre le support en cas de besoin",
     "title": "Support", 
     "description": "Pour toute demande de support, par rapport à une commande ne fonctionnant pas correctement, une suggestion ou autre problème quelconque lié au bot, nous vous invitons à rejoindre le serveur Discord officiel du bot, et envoyer un message dans #support",
     "discord_server_invitation": "Lien d'invitation au serveur Discord"
   },
   "daily_cmd": {
+    "name": "daily",
+    "desc": "Récupère la récompense quotidienne",
     "response_msg": "Vous récupérez {amount} Pokédollars"
   },
   "booster_cmd": {
+    "name": "booster",
+    "desc": "Ouvre un booster de base",
     "title": "Booster",
     "no_boosters_in_stock": "Vous n'avez aucun booster en stock."
   },
   "promo_booster_cmd": {
+    "name": "booster_promo",
+    "desc": "Ouvre un booster Promo",
     "title": "Booster Promo",
     "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock."
   },
   "market_booster_cmd": {
+    "name": "boutique_boosters",
+    "desc": "Affiche les boosters disponibles à la boutique ainsi que leurs prix",
     "title": "Échoppe à Boosters"
   },
   "buy_boosters_cmd": {
+    "name": "achat_boosters",
+    "desc": "Achète des boosters depuis la boutique",
     "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter vos boosters !",
     "not_enough_money": "Vous êtes trop pauvre pour cet achat",
     "success_buy": "Félicitations pour vos achats"
   },
+  "buy_gradings_cmd": {
+    "name": "achat_evaluations",
+    "desc": "Achète des actions d'évaluation de cartes",
+    "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter votre stock !",
+    "not_enough_money": "Vous êtes trop pauvre pour cet achat",
+    "success_buy": "Félicitations pour vos achats"
+  },
   "send_cards_cmd": {
+    "name": "transferer_cartes",
+    "desc": "Transférer des cartes à un autre joueur",
     "same_user": "Vous ne pouvez pas envoyer des cartes à... vous-même",
     "missing_cards": "Vous ne possédez pas toutes les cartes, le transfert est annulé",
     "cards_transferred": "Cartes envoyées à {user}"
   },
   "send_money_cmd": {
+    "name": "transferer_argent",
+    "desc": "Transférer des Pokédollars à un autre joueur",
     "same_user": "Vous ne pouvez pas envoyer des Pokédollars à... vous-même",
     "negative_amount": "Non, vous ne pouvez pas voler les Pokédollars de quelqu'un d'autre",
     "not_enough_money": "Vous ne possédez pas autant de Pokédollars",
     "money_transferred": "{amount} Pokédollars ont été envoyé à {user}"
   },
   "drop_rates_cmd": {
+    "name": "taux_drop_cartes",
+    "desc": "Table des taux d'obtention pour chaque tier de carte d'être dans un booster",
     "title": "Taux de drop",
     "description": "Taux pour la dernière carte d'un booster de base"
   },
   "profile_cmd": {
+    "name": "profil",
+    "desc": "Affiche le profil du joueur",
     "title": "Profil"
   },
   "cooldowns_cmd": {
+    "name": "delai_commandes",
+    "desc": "Affiche le temps d'attente restant pour chaque commande à délai",
     "title": "Temps d'attente des commandes",
     "time_between_cmds": "Temps de récupération de base : ",
     "midnight_reset": "Récupération à minuit",
     "available": "Disponible"
   },
+  "quests_cmd": {
+    "name": "quetes",
+    "desc": "Affiche les quêtes actives",
+    "title": "Quêtes",
+    "booster_description": "Ouvrir {number} Boosters de base",
+    "grade_description": "Faire évaluer {number} cartes",
+    "daily_claim_description": "Réclamer sa récompense quotidienne"
+  },
   "joke_cmd": {
+    "name": "blague",
+    "desc": "Affiche une (terrible) blague Pokémon",
     "title": "Blague Pokémon",
     "description": "Avertissement : ce n'est pas parce que vous trouvez la blague pas drôle que ce n'est pas une blague",
     "joke_1": "C'est l'histoire d'un Pikachu, il cour il cour il cour et trébuche sur une pierre, puis c'est devenu un raichu",
@@ -156,30 +217,47 @@
     "joke_31": "Comment appelle-t-on un gros poisson qui se déplace dans tous les sens ?\n\n Un Zigza-thon."
   },
   "search_cmd": {
+    "name": "recherche",
+    "desc": "Recherche des cartes selon différents paramètres",
     "not_found": "Aucun résultat ne correspond à la recherche `{1}`."
   },
   "collection_cmd": {
+    "name": "collection",
+    "desc": "Affiche la collection de cartes d'un joueur",
     "title": "Collection",
     "empty": "Vous n'avez pas encore de carte dans votre collection."
   },
   "search_cards_embed": {
     "filter_by_name_label": "Filtrer par nom",
-    "card_name_input": "Nom de carte"
+    "card_name_input": "Nom de carte",
+    "filter_by_grade_label": "Filter by grade"
   },
   "ranking_cmd": {
+    "name": "classement",
+    "desc": "Affiche le classement des joueurs ayant le plus de cartes (différentes)",
     "title": "Classement des joueurs par nombre de cartes"
   },
   "grade": {
+    "not_graded": "Non-évaluée",
     "0": "Mauvaise",
     "1": "Moyenne",
     "2": "Bonne",
     "3": "Excellente"
   },
   "grade_cmd": {
+    "name": "evaluation",
+    "desc": "Évaluer une carte ne l'ayant pas encore été",
     "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
     "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
-  },  
+  },
+  "stock_grade_cmd": {
+    "name": "stocker_evaluation",
+    "desc": "Stocker l'évaluation gratuite pour plus tard",
+    "response_msg": "Votre évaluation gratuite a été ajouté à votre réserve."
+  },
   "grade_rates_cmd": {
+    "name": "taux_evaluations",
+    "desc": "Table des taux d'obtention de chaque évaluation de carte",
     "title": "Proportions des évaluations de carte",
     "description": "Chance d'obtenir chacune des évaluations différentes lors de l'évaluation d'une carte"
   }

@@ -17,6 +17,11 @@ BOOSTERS_PRICE: dict[str, int] = {
     "Basic": 100,
     "Promo": 100
 }
+<<<<<<< HEAD:config.py
+=======
+GRADING_PRICE: int = None
+
+>>>>>>> 9bc3219c42d3448f66b7216a0282fabe038043b3:config_sample.py
 # -- Discord related
 LOG_CHANNEL_ID: int = 0.01
 BOT_ADMIN_USER_IDS: List[int] = []

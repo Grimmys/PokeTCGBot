@@ -20,6 +20,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def set_user_ban(self, user_id: int, is_ban: bool) -> bool:
+        pass
+
+    @abstractmethod
     def change_money(self, user_id: int, money_change: int) -> bool:
         pass
 
@@ -41,6 +45,10 @@ class UserRepository(ABC):
 
     @abstractmethod
     def change_all_promo_boosters_quantity(self, quantity: int) -> bool:
+        pass
+
+    @abstractmethod
+    def change_gradings_quantity(self, user_id: int, quantity: int) -> bool:
         pass
 
     @abstractmethod
@@ -72,19 +80,19 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def add_cards_to_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def add_card_to_collection(self, user_id: int, card_id: str, grade_name: str = "ungraded") -> bool:
         pass
 
     @abstractmethod
-    def add_graded_card_to_collection(self, user_id: int, card_id: str, grade: CardGrade) -> bool:
+    def add_cards_to_collection(self, user_id: int, card_ids_with_grade: list[tuple[str, str]]) -> bool:
         pass
 
     @abstractmethod
-    def remove_card_from_collection(self, user_id: int, card_id: str) -> bool:
+    def remove_card_from_collection(self, user_id: int, card_id: str, grade_name: str = "ungraded") -> bool:
         pass
 
     @abstractmethod
-    def remove_cards_from_collection(self, user_id: int, card_ids: list[str]) -> bool:
+    def remove_cards_from_collection(self, user_id: int, card_ids_with_grade: list[tuple[str, str]]) -> bool:
         pass
 
     @abstractmethod
