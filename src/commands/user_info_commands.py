@@ -204,10 +204,11 @@ class UserInfoCog(commands.Cog):
             self._generate_new_gallery(user_gallery_path)
 
         card_position = (slot_id % FAV_LIST_HORIZONTAL_SIZE, slot_id // FAV_LIST_HORIZONTAL_SIZE)
-        user_gallery_image = Image.open(user_gallery_path)
         graded_card_path = f"assets/altered_cards/{card_id}_{grade_name}.png"
         graded_card_image = Image.open(graded_card_path)
         graded_card_image = graded_card_image.resize(EMPTY_SLOT_IMAGE.size)
+
+        user_gallery_image = Image.open(user_gallery_path)
         user_gallery_image.paste(graded_card_image, (card_position[0] * EMPTY_SLOT_IMAGE.size[0],
                                                      card_position[1] * EMPTY_SLOT_IMAGE.size[1]))
         user_gallery_image.save(user_gallery_path)
