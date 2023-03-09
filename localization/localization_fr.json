@@ -179,6 +179,13 @@
         "grade_description": "Faire évaluer {number} cartes",
         "daily_claim_description": "Réclamer sa récompense quotidienne"
     },
+    "set_favorite_card_cmd": {
+        "name": "ajouter_carte_favorite",
+        "desc": "Ajouter une de vos cartes évaluées à un emplacement dans votre liste de cartes préférées",
+        "invalid_slot_id": "Cet emplacement est invalide",
+        "missing_card": "Vous ne pouvez pas ajouter une carte que vous ne possédez pas à votre liste de cartes préférées",
+        "response_msg": "Carte ajoutée"
+    },
     "favorite_cards_cmd": {
         "name": "cartes_favorites",
         "desc": "Affiche votre liste de cartes évaluées préférées"

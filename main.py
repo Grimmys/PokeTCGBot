@@ -112,7 +112,7 @@ async def setup_cogs():
                    rarity_service, type_service, quest_service))
     await bot.add_cog(ShoppingCog(bot, user_service, localization_service))
     await bot.add_cog(TradingCog(bot, user_service, localization_service))
-    await bot.add_cog(UserInfoCog(bot, user_service, localization_service, quest_service))
+    await bot.add_cog(UserInfoCog(bot, user_service, localization_service, quest_service, card_service))
     await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service, card_service))
     await bot.add_cog(RankingCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(MiniGamesCog(bot, settings_service, localization_service))
@@ -137,10 +137,10 @@ if __name__ == "__main__":
 
     pickle_file_user_repository = PickleFileUserRepository()
     localization_service = LocalizationService()
-    user_service = UserService(pickle_file_user_repository, localization_service)
+    card_service = CardService(localization_service)
+    user_service = UserService(pickle_file_user_repository, card_service)
     settings_service = SettingsService(pickle_file_user_repository)
     rarity_service = RarityService()
-    card_service = CardService()
     type_service = TypeService()
     quest_service = QuestService(localization_service)
 

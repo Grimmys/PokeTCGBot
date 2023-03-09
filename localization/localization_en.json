@@ -179,6 +179,13 @@
         "grade_description": "Grade {number} cards",
         "daily_claim_description": "Claim daily reward"
     },
+    "set_favorite_card_cmd": {
+        "name": "set_favorite_card",
+        "desc": "Set a graded card in a slot of your favorite cards list",
+        "invalid_slot_id": "There is no such slot id available",
+        "missing_card": "You can't set a card that you don't own to your favorite cards list",
+        "response_msg": "Card set"
+    },
     "favorite_cards_cmd": {
         "name": "favorite_cards",
         "desc": "Display your list of favorite graded cards"

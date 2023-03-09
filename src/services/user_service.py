@@ -10,6 +10,7 @@ from src.entities.quest_entity import QuestEntity, QuestType, QuestReward
 from src.entities.user_entity import UserEntity
 from src.entities.user_settings_entity import UserSettingsEntity
 from src.repositories.user_repository import UserRepository
+from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.utils.card_grade import CardGrade, CARD_GRADE_NAMES
 from src.utils.discord_tools import get_language_id_from_locale
@@ -18,17 +19,9 @@ NUMBER_TOP_USERS = 50
 
 
 class UserService:
-    def __init__(self, user_repository: UserRepository, localization_service: LocalizationService):
+    def __init__(self, user_repository: UserRepository, card_service: CardService):
         self._user_repository = user_repository
-        self.t = localization_service.get_string
-        self.grade_names_by_language = []
-        for language in localization_service.supported_languages:
-            grade_names = [self.t(language.id, "grade.not_graded").lower(),
-                           self.t(language.id, "grade.0").lower(),
-                           self.t(language.id, "grade.1").lower(),
-                           self.t(language.id, "grade.2").lower(),
-                           self.t(language.id, "grade.3").lower()]
-            self.grade_names_by_language.append(grade_names)
+        self.card_service = card_service
 
     @staticmethod
     def _compute_next_midnight():
@@ -139,21 +132,8 @@ class UserService:
     def get_top_users_collection(self) -> list[UserEntity]:
         return self._user_repository.get_top_users_by_cards(NUMBER_TOP_USERS)
 
-    def _parse_card_id(self, input_card_id: str) -> tuple[str, str]:
-        if input_card_id.count("-") == 2:
-            actual_card_id, user_grade = input_card_id.rsplit("-", 1)
-            user_grade = user_grade.lower()
-            for grade_names in self.grade_names_by_language:
-                if user_grade in grade_names:
-                    actual_grade = CARD_GRADE_NAMES[grade_names.index(user_grade)]
-                    break
-            else:
-                actual_grade = "ungraded"
-            return actual_card_id, actual_grade
-        return input_card_id, "ungraded"
-
     def transfer_cards(self, sender_id: int, receiver_id: int, card_ids: list[str]) -> bool:
-        parsed_card_ids: list[tuple[str, str]] = [self._parse_card_id(card_id) for card_id in card_ids]
+        parsed_card_ids: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id) for card_id in card_ids]
 
         if self._user_repository.remove_cards_from_collection(sender_id, parsed_card_ids):
             self._user_repository.add_cards_to_collection(receiver_id, parsed_card_ids)

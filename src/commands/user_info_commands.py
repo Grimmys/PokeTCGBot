@@ -10,6 +10,7 @@ from discord.ext import commands
 from config import DEFAULT_GRADING_COOLDOWN
 from src.colors import YELLOW
 from src.entities.quest_entity import QuestEntity, QuestReward
+from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
 from src.services.user_service import UserService, DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
@@ -20,13 +21,18 @@ from src.utils.flags import is_dev_mode
 FAV_LIST_HORIZONTAL_SIZE = 3
 FAV_LIST_VERTICAL_SIZE = 3
 
+EMPTY_SLOT_IMAGE = Image.open("assets/card_background.png")
+
+
 class UserInfoCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService,
-                 localization_service: LocalizationService, quest_service: QuestService) -> None:
+                 localization_service: LocalizationService, quest_service: QuestService,
+                 card_service: CardService) -> None:
         self.bot = bot
         self.user_service = user_service
         self._t = localization_service.get_string
         self.quest_service = quest_service
+        self.card_service = card_service
         self._emojis = {}
 
     @property
@@ -48,14 +54,12 @@ class UserInfoCog(commands.Cog):
 
     @staticmethod
     def _generate_new_gallery(gallery_path: str) -> None:
-        empty_slot_image = Image.open("assets/card_background.png")
-
-        gallery_image = Image.new("RGBA", (FAV_LIST_HORIZONTAL_SIZE * empty_slot_image.size[0],
-                                           FAV_LIST_VERTICAL_SIZE * empty_slot_image.size[1]))
+        gallery_image = Image.new("RGBA", (FAV_LIST_HORIZONTAL_SIZE * EMPTY_SLOT_IMAGE.size[0],
+                                           FAV_LIST_VERTICAL_SIZE * EMPTY_SLOT_IMAGE.size[1]))
         for vertical_position in range(FAV_LIST_VERTICAL_SIZE):
             for horizontal_position in range(FAV_LIST_HORIZONTAL_SIZE):
-                gallery_image.paste(empty_slot_image, (horizontal_position * empty_slot_image.size[0],
-                                                       vertical_position * empty_slot_image.size[1]))
+                gallery_image.paste(EMPTY_SLOT_IMAGE, (horizontal_position * EMPTY_SLOT_IMAGE.size[0],
+                                                       vertical_position * EMPTY_SLOT_IMAGE.size[1]))
 
         gallery_image.save(gallery_path)
 
@@ -173,6 +177,43 @@ class UserInfoCog(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
+    @app_commands.command(name=_T("set_favorite_card_cmd-name"), description=_T("set_favorite_card_cmd-desc"))
+    async def set_favorite_card_command(self, interaction: discord.Interaction, card_id: str, slot_id: int) -> None:
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
+        user_language_id = user.settings.language_id
+
+        if not is_dev_mode():
+            await interaction.response.send_message(self._t(user_language_id, 'common.feature_disabled'))
+            return
+
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
+
+        if slot_id not in range(FAV_LIST_VERTICAL_SIZE * FAV_LIST_HORIZONTAL_SIZE):
+            await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.invalid_slot_id'))
+            return
+
+        card_id, grade_name = self.card_service.parse_card_id(card_id)
+        if (card_id, grade_name) not in user.cards:
+            await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.missing_card'))
+
+        gallery_name = f"{user.id}.png"
+        user_gallery_path = f"assets/user_fav_cards_list/{gallery_name}"
+        if not os.path.isfile(user_gallery_path):
+            self._generate_new_gallery(user_gallery_path)
+
+        card_position = (slot_id % FAV_LIST_HORIZONTAL_SIZE, slot_id // FAV_LIST_HORIZONTAL_SIZE)
+        user_gallery_image = Image.open(user_gallery_path)
+        graded_card_path = f"assets/altered_cards/{card_id}_{grade_name}.png"
+        graded_card_image = Image.open(graded_card_path)
+        graded_card_image = graded_card_image.resize(EMPTY_SLOT_IMAGE.size)
+        user_gallery_image.paste(graded_card_image, (card_position[0] * EMPTY_SLOT_IMAGE.size[0],
+                                                     card_position[1] * EMPTY_SLOT_IMAGE.size[1]))
+        user_gallery_image.save(user_gallery_path)
+
+        await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.response_msg'))
+
     @app_commands.command(name=_T("favorite_cards_cmd-name"), description=_T("favorite_cards_cmd-desc"))
     async def favorite_cards_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
@@ -180,6 +221,10 @@ class UserInfoCog(commands.Cog):
 
         if not is_dev_mode():
             await interaction.response.send_message(self._t(user_language_id, 'common.feature_disabled'))
+            return
+
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
             return
 
         await interaction.response.send_message(self._t(user_language_id, 'common.loading'))
