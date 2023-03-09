@@ -179,6 +179,10 @@
         "grade_description": "Grade {number} cards",
         "daily_claim_description": "Claim daily reward"
     },
+    "favorite_cards_cmd": {
+        "name": "favorite_cards",
+        "desc": "Display your list of favorite graded cards"
+    },
     "joke_cmd": {
         "name": "joke",
         "desc": "Get a (bad) Pokémon joke",

@@ -179,6 +179,10 @@
         "grade_description": "Faire évaluer {number} cartes",
         "daily_claim_description": "Réclamer sa récompense quotidienne"
     },
+    "favorite_cards_cmd": {
+        "name": "cartes_favorites",
+        "desc": "Affiche votre liste de cartes évaluées préférées"
+    },
     "joke_cmd": {
         "name": "blague",
         "desc": "Affiche une (terrible) blague Pokémon",

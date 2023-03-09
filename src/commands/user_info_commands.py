@@ -1,19 +1,24 @@
+import os
 import time
 
 import discord
-from discord import Embed, app_commands
-from discord.ext import commands
+from PIL import Image
+from discord import Embed, app_commands, File
 from discord.app_commands import locale_str as _T
+from discord.ext import commands
 
 from config import DEFAULT_GRADING_COOLDOWN
-from src.entities.quest_entity import QuestType, QuestEntity, QuestReward
+from src.colors import YELLOW
+from src.entities.quest_entity import QuestEntity, QuestReward
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
 from src.services.user_service import UserService, DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
-from src.colors import YELLOW
 from src.utils import discord_tools
 from src.utils.discord_tools import format_boolean_option_value
+from src.utils.flags import is_dev_mode
 
+FAV_LIST_HORIZONTAL_SIZE = 3
+FAV_LIST_VERTICAL_SIZE = 3
 
 class UserInfoCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService,
@@ -40,6 +45,19 @@ class UserInfoCog(commands.Cog):
                 return f"{quest.reward_amount} {self.emojis['pokedollar']}"
             case _:
                 return "Invalid Reward"
+
+    @staticmethod
+    def _generate_new_gallery(gallery_path: str) -> None:
+        empty_slot_image = Image.open("assets/card_background.png")
+
+        gallery_image = Image.new("RGBA", (FAV_LIST_HORIZONTAL_SIZE * empty_slot_image.size[0],
+                                           FAV_LIST_VERTICAL_SIZE * empty_slot_image.size[1]))
+        for vertical_position in range(FAV_LIST_VERTICAL_SIZE):
+            for horizontal_position in range(FAV_LIST_HORIZONTAL_SIZE):
+                gallery_image.paste(empty_slot_image, (horizontal_position * empty_slot_image.size[0],
+                                                       vertical_position * empty_slot_image.size[1]))
+
+        gallery_image.save(gallery_path)
 
     @app_commands.command(name=_T("profile_cmd-name"), description=_T("profile_cmd-desc"))
     async def profile_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
@@ -154,3 +172,25 @@ class UserInfoCog(commands.Cog):
                             inline=False)
 
         await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name=_T("favorite_cards_cmd-name"), description=_T("favorite_cards_cmd-desc"))
+    async def favorite_cards_command(self, interaction: discord.Interaction) -> None:
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
+        user_language_id = user.settings.language_id
+
+        if not is_dev_mode():
+            await interaction.response.send_message(self._t(user_language_id, 'common.feature_disabled'))
+            return
+
+        await interaction.response.send_message(self._t(user_language_id, 'common.loading'))
+
+        gallery_name = f"{user.id}.png"
+        user_gallery_path = f"assets/user_fav_cards_list/{gallery_name}"
+        if not os.path.isfile(user_gallery_path):
+            self._generate_new_gallery(user_gallery_path)
+
+        embed = Embed()
+        embed.set_image(url=f"attachment://{gallery_name}")
+
+        discord_attachment = File(user_gallery_path)
+        await interaction.edit_original_response(content="", embed=embed, attachments=[discord_attachment])
