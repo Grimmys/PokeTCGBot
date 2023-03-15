@@ -41,6 +41,11 @@
         "total_users": "Total de joueurs",
         "total_money_in_circulation": "Total de Pokédollars en circulation"
     },
+    "suggestion_cmd": {
+        "name": "suggestion",
+        "desc": "Envoyer une idée d'amélioration pour le bot",
+        "response_msg": "Votre suggestion a été transmise {emoji}"
+    },
     "give_money_cmd": {
         "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"
     },

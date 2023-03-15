@@ -41,6 +41,11 @@
         "total_users": "Total players",
         "total_money_in_circulation": "All Pokémon Dollars in circulation"
     },
+    "suggestion_cmd": {
+        "name": "suggestion",
+        "desc": "Submit an improvement idea for the bot",
+        "response_msg": "Your suggestion has been posted {emoji}"
+    },
     "give_money_cmd": {
         "response_msg": "User {user} received {amount} Pokémon Dollars"
     },

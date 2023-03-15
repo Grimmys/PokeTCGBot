@@ -20,6 +20,7 @@ from src.commands.rankings_command import RankingCog
 from src.commands.search_commands import SearchCog
 from src.commands.settings_command import SettingsCog
 from src.commands.shop_commands import ShoppingCog
+from src.commands.suggestion_commands import SuggestionCog
 from src.commands.trade_commands import TradingCog
 from src.commands.user_info_commands import UserInfoCog
 from src.components.paginated_embed import PaginatedEmbed
@@ -105,6 +106,7 @@ def setup_logs():
 
 async def setup_cogs():
     await bot.add_cog(AdminCog(bot, settings_service, localization_service, user_service))
+    await bot.add_cog(SuggestionCog(bot, user_service, localization_service))
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(DailyCog(bot, localization_service, user_service, quest_service))
     await bot.add_cog(
