@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import Optional, Sequence
 
 from src.entities.user_entity import UserEntity
-from src.utils.card_grade import CardGrade
 
 
 class UserRepository(ABC):

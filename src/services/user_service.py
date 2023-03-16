@@ -1,6 +1,6 @@
 import random
-from datetime import date, datetime, timedelta
 import time
+from datetime import date, datetime, timedelta
 from typing import Optional
 
 import discord
@@ -11,8 +11,7 @@ from src.entities.user_entity import UserEntity
 from src.entities.user_settings_entity import UserSettingsEntity
 from src.repositories.user_repository import UserRepository
 from src.services.card_service import CardService
-from src.services.localization_service import LocalizationService
-from src.utils.card_grade import CardGrade, CARD_GRADE_NAMES
+from src.utils.card_grade import CardGrade
 from src.utils.discord_tools import get_language_id_from_locale
 
 NUMBER_TOP_USERS = 50
