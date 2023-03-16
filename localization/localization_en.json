@@ -44,7 +44,13 @@
     "suggestion_cmd": {
         "name": "suggestion",
         "desc": "Submit an improvement idea for the bot",
-        "response_msg": "Your suggestion has been posted {emoji}"
+        "response_msg": "Your suggestion has been posted {emoji}",
+        "error_msg": "Your suggestion has not been posted {emoji} Make sure it is not because it is too big (max size: {max_size})"
+    },
+    "check_suggestions_cmd": {
+        "name": "check_suggestions",
+        "desc": "Check and vote for the improvement ideas for the bot",
+        "title": "Suggestions"
     },
     "give_money_cmd": {
         "response_msg": "User {user} received {amount} Pokémon Dollars"

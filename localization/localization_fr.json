@@ -44,7 +44,13 @@
     "suggestion_cmd": {
         "name": "suggestion",
         "desc": "Envoyer une idée d'amélioration pour le bot",
-        "response_msg": "Votre suggestion a été transmise {emoji}"
+        "response_msg": "Votre suggestion a été transmise {emoji}",
+        "error_msg": "Votre suggestion n'a pas pu être transmise {emoji} Vérifiez si elle n'est pas trop longue (taille max : {max_size})"
+    },
+    "check_suggestions_cmd": {
+        "name": "voir_suggestions",
+        "desc": "Consulter et voter pour les suggestions d'amélioration du bot",
+        "title": "Suggestions"
     },
     "give_money_cmd": {
         "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"

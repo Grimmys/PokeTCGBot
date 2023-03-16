@@ -24,12 +24,14 @@ from src.commands.suggestion_commands import SuggestionCog
 from src.commands.trade_commands import TradingCog
 from src.commands.user_info_commands import UserInfoCog
 from src.components.paginated_embed import PaginatedEmbed
+from src.repositories.pickle_file_suggestion_repository import PickleFileSuggestionRepository
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
 from src.services.rarity_service import RarityService
 from src.services.settings_service import SettingsService
+from src.services.suggestion_service import SuggestionService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
 from src.utils.discord_tools import PTCGTranslator
@@ -106,7 +108,7 @@ def setup_logs():
 
 async def setup_cogs():
     await bot.add_cog(AdminCog(bot, settings_service, localization_service, user_service))
-    await bot.add_cog(SuggestionCog(bot, user_service, localization_service))
+    await bot.add_cog(SuggestionCog(bot, localization_service, user_service, suggestion_service))
     await bot.add_cog(SettingsCog(bot, settings_service, localization_service, user_service))
     await bot.add_cog(DailyCog(bot, localization_service, user_service, quest_service))
     await bot.add_cog(
@@ -138,7 +140,9 @@ if __name__ == "__main__":
     random.seed()
 
     pickle_file_user_repository = PickleFileUserRepository()
+    pickle_file_suggestion_repository = PickleFileSuggestionRepository()
     localization_service = LocalizationService()
+    suggestion_service = SuggestionService(pickle_file_suggestion_repository)
     card_service = CardService(localization_service)
     user_service = UserService(pickle_file_user_repository, card_service)
     settings_service = SettingsService(pickle_file_user_repository)
