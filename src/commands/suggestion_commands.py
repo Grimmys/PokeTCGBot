@@ -10,6 +10,8 @@ from src.services.suggestion_service import SuggestionService, MAX_SUGGESTION_CO
 from src.services.user_service import UserService
 from src.utils.flags import is_dev_mode
 
+DISCORD_RESPONSE_MESSAGE_MAX_SIZE = 2000
+
 
 class SuggestionCog(commands.Cog):
     def __init__(self, bot: commands.Bot, localization_service: LocalizationService, user_service: UserService,
@@ -41,8 +43,10 @@ class SuggestionCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'suggestion_cmd.response_msg')
                                                     .format(emoji="✉️"))
         else:
-            await self.log_channel.send(
-                f"{user.id} ({user.name_tag}) tried to make a suggestion: '{suggestion}', but it didn't work")
+            log_message = f"{user.id} ({user.name_tag}) tried to make a suggestion: '{suggestion}', but it didn't work"
+            if len(log_message) > DISCORD_RESPONSE_MESSAGE_MAX_SIZE:
+                log_message = f"{user.id} ({user.name_tag}) tried to make a suggestion, but it was too long"
+            await self.log_channel.send(log_message)
             await interaction.response.send_message(self._t(user_language_id, 'suggestion_cmd.error_msg').format(emoji="❌", max_size=MAX_SUGGESTION_CONTENT_SIZE))
 
     @app_commands.command(name=_T("check_suggestions_cmd-name"), description=_T("check_suggestions_cmd-desc"))
