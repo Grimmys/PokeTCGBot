@@ -12,3 +12,7 @@ class SuggestionRepository(ABC):
     @abstractmethod
     def save_suggestion(self, suggestion: SuggestionEntity) -> bool:
         pass
+
+    @abstractmethod
+    def remove_suggestion(self, suggestion_id: str) -> bool:
+        pass

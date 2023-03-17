@@ -52,6 +52,9 @@
         "desc": "Check and vote for the improvement ideas for the bot",
         "title": "Suggestions"
     },
+    "suggestions_embed": {
+        "suggestion_deleted": "The suggestion has been deleted"
+    },
     "give_money_cmd": {
         "response_msg": "User {user} received {amount} Pokémon Dollars"
     },

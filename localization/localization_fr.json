@@ -52,6 +52,9 @@
         "desc": "Consulter et voter pour les suggestions d'amélioration du bot",
         "title": "Suggestions"
     },
+    "suggestions_embed": {
+        "suggestion_deleted": "La suggestion a été supprimée"
+    },
     "give_money_cmd": {
         "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"
     },

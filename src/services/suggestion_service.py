@@ -20,3 +20,6 @@ class SuggestionService:
 
     def get_all_suggestions(self) -> Sequence[SuggestionEntity]:
         return self._suggestion_repository.get_all()
+
+    def remove_suggestion(self, suggestion_id: str) -> bool:
+        return self._suggestion_repository.remove_suggestion(suggestion_id)

@@ -1,10 +1,10 @@
 import discord
 from discord import app_commands
-from discord.ext import commands
 from discord.app_commands import locale_str as _T
+from discord.ext import commands
 
 from config import LOG_CHANNEL_ID
-from src.components.paginated_embed import PaginatedEmbed
+from src.components.check_suggestions_embed import CheckSuggestionsEmbed
 from src.services.localization_service import LocalizationService
 from src.services.suggestion_service import SuggestionService, MAX_SUGGESTION_CONTENT_SIZE
 from src.services.user_service import UserService
@@ -47,7 +47,9 @@ class SuggestionCog(commands.Cog):
             if len(log_message) > DISCORD_RESPONSE_MESSAGE_MAX_SIZE:
                 log_message = f"{user.id} ({user.name_tag}) tried to make a suggestion, but it was too long"
             await self.log_channel.send(log_message)
-            await interaction.response.send_message(self._t(user_language_id, 'suggestion_cmd.error_msg').format(emoji="❌", max_size=MAX_SUGGESTION_CONTENT_SIZE))
+            await interaction.response.send_message(
+                self._t(user_language_id, 'suggestion_cmd.error_msg').format(emoji="❌",
+                                                                             max_size=MAX_SUGGESTION_CONTENT_SIZE))
 
     @app_commands.command(name=_T("check_suggestions_cmd-name"), description=_T("check_suggestions_cmd-desc"))
     async def check_suggestions_command(self, interaction: discord.Interaction) -> None:
@@ -62,11 +64,13 @@ class SuggestionCog(commands.Cog):
         suggestions_for_embed = []
         for suggestion in suggestions:
             if len(suggestion.content) <= MAX_SUGGESTION_CONTENT_SIZE:
-                suggestions_for_embed.append({"name": suggestion.author,
-                                              "value": suggestion.content})
+                suggestions_for_embed.append({
+                                              "suggestion": suggestion,
+                                              "name": suggestion.author,
+                                              "value": suggestion.content
+                                             })
 
-        paginated_embed = PaginatedEmbed(interaction, suggestions_for_embed, False, user_language_id, 1,
-                                         title=f"---------- {self._t(user_language_id, 'check_suggestions_cmd.title')} ----------",
-                                         inline=True)
+        paginated_embed = CheckSuggestionsEmbed(interaction, suggestions_for_embed, user_language_id, interaction.user, self.suggestion_service.remove_suggestion,
+                                                title=f"---------- {self._t(user_language_id, 'check_suggestions_cmd.title')} ----------")
 
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)

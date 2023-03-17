@@ -32,3 +32,11 @@ class PickleFileSuggestionRepository(SuggestionRepository):
         suggestions.append(suggestion)
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
         return True
+
+    def remove_suggestion(self, suggestion_id: str) -> bool:
+        suggestions = PickleFileSuggestionRepository._load_pickle_file()
+        filtered_suggestions = list(filter(lambda suggestion: suggestion.id != suggestion_id, suggestions))
+        if len(suggestions) == len(filtered_suggestions):
+            return False
+        PickleFileSuggestionRepository._save_pickle_file(filtered_suggestions)
+        return True
