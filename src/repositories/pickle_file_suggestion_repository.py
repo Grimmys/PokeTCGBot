@@ -43,14 +43,14 @@ class PickleFileSuggestionRepository(SuggestionRepository):
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
         return True
 
-    def add_up_vote_to(self, user_id: int, suggestion_id: str) -> bool:
+    def add_up_vote_to(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
         suggestions = PickleFileSuggestionRepository._load_pickle_file()
         suggestions[suggestion_id].up_votes.add(user_id)
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
-        return True
+        return suggestions[suggestion_id]
 
-    def add_down_vote_to(self, user_id: int, suggestion_id: str) -> bool:
+    def add_down_vote_to(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
         suggestions = PickleFileSuggestionRepository._load_pickle_file()
         suggestions[suggestion_id].down_votes.add(user_id)
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
-        return True
+        return suggestions[suggestion_id]

@@ -19,12 +19,12 @@ class CheckSuggestionsEmbed(PaginatedEmbed):
         self.add_vote_callback = add_vote_callback
         self.remove_suggestion_callback = remove_suggestion_callback
 
-        add_up_vote_button = Button(emoji="⏫")
+        add_up_vote_button = Button(emoji="👍")
         add_up_vote_button.callback = lambda click_interaction: self.up_vote_active_suggestion(
             click_interaction)
         self.view.add_item(add_up_vote_button)
 
-        add_down_vote_button = Button(emoji="⏬")
+        add_down_vote_button = Button(emoji="👎")
         add_down_vote_button.callback = lambda click_interaction: self.down_vote_active_suggestion(
             click_interaction)
         self.view.add_item(add_down_vote_button)
@@ -43,15 +43,19 @@ class CheckSuggestionsEmbed(PaginatedEmbed):
             delete_after=2)
 
     async def up_vote_active_suggestion(self, interaction: Interaction) -> None:
-        suggestion = self.content[self.current_page]["suggestion"]
-        self.add_vote_callback(self.user.id, suggestion.id, True)
+        active_element = self.content[self.current_page]
+        active_element["suggestion"] = self.add_vote_callback(self.user.id, active_element["suggestion"].id, True)
+        self.refresh_page()
+        await self.original_interaction.edit_original_response(embed=self.embed)
         await interaction.response.send_message(
             PaginatedEmbed._t(self.user_language_id, 'suggestions_embed.suggestion_up_voted'),
             delete_after=2)
 
     async def down_vote_active_suggestion(self, interaction: Interaction) -> None:
-        suggestion = self.content[self.current_page]["suggestion"]
-        self.add_vote_callback(self.user.id, suggestion.id, False)
+        active_element = self.content[self.current_page]
+        active_element["suggestion"] = self.add_vote_callback(self.user.id, active_element["suggestion"].id, False)
+        self.refresh_page()
+        await self.original_interaction.edit_original_response(embed=self.embed)
         await interaction.response.send_message(
             PaginatedEmbed._t(self.user_language_id, 'suggestions_embed.suggestion_down_voted'),
             delete_after=2)
