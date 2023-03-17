@@ -33,10 +33,6 @@ class SuggestionCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
-        if not is_dev_mode():
-            await interaction.response.send_message(self._t(user_language_id, 'common.feature_disabled'))
-            return
-
         if self.suggestion_service.add_suggestion(interaction.user, suggestion):
             await self.log_channel.send(
                 f"{user.id} ({user.name_tag}) made a suggestion: {suggestion}")
@@ -55,10 +51,6 @@ class SuggestionCog(commands.Cog):
     async def check_suggestions_command(self, interaction: discord.Interaction) -> None:
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
-
-        if not is_dev_mode():
-            await interaction.response.send_message(self._t(user_language_id, 'common.feature_disabled'))
-            return
 
         suggestions = self.suggestion_service.get_all_suggestions()
         suggestions_for_embed = []
