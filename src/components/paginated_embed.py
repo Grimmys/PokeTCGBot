@@ -67,17 +67,22 @@ class PaginatedEmbed:
         else:
             self.display_list(displayed)
 
-    def display_list(self, displayed: Sequence[dict[str, any]]):
+    def display_element(self, element: dict[str, any]) -> None:
+        self.embed.add_field(
+            name=element["name"], value=element["value"], inline=self.inline)
+        if self.image_mode:
+            url = element["image"]
+            if not url.startswith("http"):
+                self.attachments.append(File(f"assets/altered_cards/{element['image']}"))
+                url = f"attachment://{element['image']}"
+            self.embed.set_image(url=url)
+
+    def display_list(self, displayed: Sequence[dict[str, any]]) -> None:
         self.attachments = []
+
         for element in displayed:
-            self.embed.add_field(
-                name=element["name"], value=element["value"], inline=self.inline)
-            if self.image_mode:
-                url = element["image"]
-                if not url.startswith("http"):
-                    self.attachments.append(File(f"assets/altered_cards/{element['image']}"))
-                    url = f"attachment://{element['image']}"
-                self.embed.set_image(url=url)
+            self.display_element(element)
+
         footer_text = f'{self.current_page + 1}/{math.ceil(len(self.content) / self.page_size)}'
         if not self.image_mode:
             footer_text += f'   ({self.current_page * self.page_size + 1}-{min((self.current_page + 1) * self.page_size, len(self.content))}/{len(self.content)})'

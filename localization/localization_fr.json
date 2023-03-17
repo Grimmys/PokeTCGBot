@@ -53,7 +53,11 @@
         "title": "Suggestions"
     },
     "suggestions_embed": {
-        "suggestion_deleted": "La suggestion a été supprimée"
+        "suggestion_deleted": "La suggestion a été supprimée",
+        "suggestion_up_voted": "Vous avez voté pour la suggestion",
+        "suggestion_down_voted": "Vous avez voté contre la suggestion",
+        "up_votes": "Votes positifs",
+        "down_votes": "Votes négatifs"
     },
     "give_money_cmd": {
         "response_msg": "L'utilisateur {user} a reçu {amount} Pokédollars"

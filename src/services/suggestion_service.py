@@ -23,3 +23,9 @@ class SuggestionService:
 
     def remove_suggestion(self, suggestion_id: str) -> bool:
         return self._suggestion_repository.remove_suggestion(suggestion_id)
+
+    def add_vote_to_suggestion(self, user_id: int, suggestion_id: str, is_positive: bool) -> bool:
+        if is_positive:
+            return self._suggestion_repository.add_up_vote_to(user_id, suggestion_id)
+        else:
+            return self._suggestion_repository.add_down_vote_to(user_id, suggestion_id)

@@ -16,3 +16,11 @@ class SuggestionRepository(ABC):
     @abstractmethod
     def remove_suggestion(self, suggestion_id: str) -> bool:
         pass
+
+    @abstractmethod
+    def add_up_vote_to(self, user_id: int, suggestion_id: str) -> bool:
+        pass
+
+    @abstractmethod
+    def add_down_vote_to(self, user_id: int, suggestion_id: str) -> bool:
+        pass

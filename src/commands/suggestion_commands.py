@@ -70,7 +70,9 @@ class SuggestionCog(commands.Cog):
                                               "value": suggestion.content
                                              })
 
-        paginated_embed = CheckSuggestionsEmbed(interaction, suggestions_for_embed, user_language_id, interaction.user, self.suggestion_service.remove_suggestion,
+        paginated_embed = CheckSuggestionsEmbed(interaction, suggestions_for_embed, user_language_id, interaction.user,
+                                                self.suggestion_service.add_vote_to_suggestion,
+                                                self.suggestion_service.remove_suggestion,
                                                 title=f"---------- {self._t(user_language_id, 'check_suggestions_cmd.title')} ----------")
 
         await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
