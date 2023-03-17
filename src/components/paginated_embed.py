@@ -6,11 +6,11 @@ from discord.ui import Button, View
 
 
 class PaginatedEmbed:
-    t: Optional[Callable] = None
+    _t: Optional[Callable] = None
 
     @staticmethod
     def setup_class(get_localized_string_method: Callable):
-        PaginatedEmbed.t = get_localized_string_method
+        PaginatedEmbed._t = get_localized_string_method
 
     def __init__(self, original_interaction: Interaction, content: Sequence[dict[str, any]], image_mode: bool,
                  user_language_id: int, page_size: int = 1, inline: bool = False, title: str = None,
@@ -23,11 +23,11 @@ class PaginatedEmbed:
         if discord_user is not None:
             self.embed.set_author(name=discord_user.display_name, icon_url=discord_user.display_avatar.url)
         self.original_interaction = original_interaction
-        self.content = content
-        self.image_mode = image_mode
+        self.content: Sequence[dict[str, any]] = content
+        self.image_mode: bool = image_mode
         self.attachments: list[File] = []
         self.page_size = page_size if not image_mode else 1
-        self.inline = inline
+        self.inline: bool = inline
         self.display_list(content[:page_size])
 
         self.view = View()
@@ -63,7 +63,7 @@ class PaginatedEmbed:
         self.embed.set_footer(text="")
         displayed = self.content[self.current_page * self.page_size:(self.current_page + 1) * self.page_size]
         if len(displayed) == 0:
-            self.embed.add_field(name=PaginatedEmbed.t(self.user_language_id, 'common.no_results'), value="")
+            self.embed.add_field(name=PaginatedEmbed._t(self.user_language_id, 'common.no_results'), value="")
         else:
             self.display_list(displayed)
 

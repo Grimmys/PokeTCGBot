@@ -14,8 +14,8 @@ class _NameFilterQueryPopup(Modal, title="Filter by name"):
     def __init__(self, related_embed: "SearchCardsEmbed"):
         super().__init__()
         self.related_embed = related_embed
-        self.name.label = SearchCardsEmbed.t(related_embed.user_language_id, 'search_cards_embed.card_name_input')
-        self.title = SearchCardsEmbed.t(related_embed.user_language_id, 'search_cards_embed.filter_by_name_label')
+        self.name.label = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.card_name_input')
+        self.title = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.filter_by_name_label')
 
     async def on_submit(self, interaction: Interaction):
         await self.related_embed.filter_on_cards_name_action(interaction, self.name.value)
@@ -43,13 +43,13 @@ class SearchCardsEmbed(PaginatedEmbed):
         self.view.add_item(reset_filters_button)
 
         open_name_filter_button = Button(
-            label=SearchCardsEmbed.t(user_language_id, 'search_cards_embed.filter_by_name_label'))
+            label=SearchCardsEmbed._t(user_language_id, 'search_cards_embed.filter_by_name_label'))
         open_name_filter_button.callback = lambda click_interaction: self.open_name_filter_popup(click_interaction)
         self.view.add_item(open_name_filter_button)
 
         grade_filter_select = Select(
-            placeholder=SearchCardsEmbed.t(user_language_id, 'search_cards_embed.filter_by_grade_label'),
-            options=[SelectOption(label=SearchCardsEmbed.t(user_language_id, grade.translation_key),
+            placeholder=SearchCardsEmbed._t(user_language_id, 'search_cards_embed.filter_by_grade_label'),
+            options=[SelectOption(label=SearchCardsEmbed._t(user_language_id, grade.translation_key),
                                   value=grade.in_application_name) for grade in GRADES])
         grade_filter_select.callback = self.filter_on_cards_grade_action
         grade_filter_select.disabled = grade_filter_disabled
