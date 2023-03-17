@@ -18,9 +18,9 @@ class SuggestionRepository(ABC):
         pass
 
     @abstractmethod
-    def add_up_vote_to(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
+    def switch_up_vote_for(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
         pass
 
     @abstractmethod
-    def add_down_vote_to(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
+    def switch_down_vote_for(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
         pass

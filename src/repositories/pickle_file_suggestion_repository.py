@@ -43,14 +43,20 @@ class PickleFileSuggestionRepository(SuggestionRepository):
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
         return True
 
-    def add_up_vote_to(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
+    def switch_up_vote_for(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
         suggestions = PickleFileSuggestionRepository._load_pickle_file()
-        suggestions[suggestion_id].up_votes.add(user_id)
+        if user_id not in suggestions[suggestion_id].up_votes:
+            suggestions[suggestion_id].up_votes.add(user_id)
+        else:
+            suggestions[suggestion_id].up_votes.remove(user_id)
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
         return suggestions[suggestion_id]
 
-    def add_down_vote_to(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
+    def switch_down_vote_for(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
         suggestions = PickleFileSuggestionRepository._load_pickle_file()
-        suggestions[suggestion_id].down_votes.add(user_id)
+        if user_id not in suggestions[suggestion_id].down_votes:
+            suggestions[suggestion_id].down_votes.add(user_id)
+        else:
+            suggestions[suggestion_id].down_votes.remove(user_id)
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
         return suggestions[suggestion_id]

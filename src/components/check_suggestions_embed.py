@@ -10,13 +10,13 @@ from src.utils.types import EntryCard
 
 class CheckSuggestionsEmbed(PaginatedEmbed):
     def __init__(self, original_interaction: Interaction, content: Sequence[EntryCard],
-                 user_language_id: int, discord_user: User, add_vote_callback: Callable,
+                 user_language_id: int, discord_user: User, update_vote_callback: Callable,
                  remove_suggestion_callback: Callable, title: str = None) -> None:
         super().__init__(original_interaction, content, False, user_language_id, 1, False, title,
                          discord_user)
         self.user = discord_user
         self.full_content = content
-        self.add_vote_callback = add_vote_callback
+        self.update_vote_callback = update_vote_callback
         self.remove_suggestion_callback = remove_suggestion_callback
 
         add_up_vote_button = Button(emoji="👍")
@@ -44,7 +44,7 @@ class CheckSuggestionsEmbed(PaginatedEmbed):
 
     async def up_vote_active_suggestion(self, interaction: Interaction) -> None:
         active_element = self.content[self.current_page]
-        active_element["suggestion"] = self.add_vote_callback(self.user.id, active_element["suggestion"].id, True)
+        active_element["suggestion"] = self.update_vote_callback(self.user.id, active_element["suggestion"].id, True)
         self.refresh_page()
         await self.original_interaction.edit_original_response(embed=self.embed)
         await interaction.response.send_message(
@@ -53,7 +53,7 @@ class CheckSuggestionsEmbed(PaginatedEmbed):
 
     async def down_vote_active_suggestion(self, interaction: Interaction) -> None:
         active_element = self.content[self.current_page]
-        active_element["suggestion"] = self.add_vote_callback(self.user.id, active_element["suggestion"].id, False)
+        active_element["suggestion"] = self.update_vote_callback(self.user.id, active_element["suggestion"].id, False)
         self.refresh_page()
         await self.original_interaction.edit_original_response(embed=self.embed)
         await interaction.response.send_message(
