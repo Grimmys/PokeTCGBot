@@ -18,6 +18,7 @@ BOOSTERS_PRICE: dict[str, int] = {
     "Promo": None
 }
 GRADING_PRICE: int = None
+FAV_GALLERY_PAGES: int = None
 
 # -- Discord related
 LOG_CHANNEL_ID: int = None

@@ -7,7 +7,7 @@ from discord import Embed, app_commands, File
 from discord.app_commands import locale_str as _T
 from discord.ext import commands
 
-from config import DEFAULT_GRADING_COOLDOWN
+from config import DEFAULT_GRADING_COOLDOWN, FAV_GALLERY_PAGES
 from src.colors import YELLOW
 from src.entities.quest_entity import QuestEntity, QuestReward
 from src.services.card_service import CardService
@@ -62,6 +62,11 @@ class UserInfoCog(commands.Cog):
                                                        vertical_position * EMPTY_SLOT_IMAGE.size[1]))
 
         gallery_image.save(gallery_path)
+
+    @staticmethod
+    def _generate_new_galleries(gallery_base_path: str) -> None:
+        for i in range(FAV_GALLERY_PAGES):
+            UserInfoCog._generate_new_gallery(f"{gallery_base_path}_{i}.png")
 
     @app_commands.command(name=_T("profile_cmd-name"), description=_T("profile_cmd-desc"))
     async def profile_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
@@ -198,20 +203,20 @@ class UserInfoCog(commands.Cog):
         if (card_id, grade_name) not in user.cards:
             await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.missing_card'))
 
-        gallery_name = f"{user.id}.png"
-        user_gallery_path = f"assets/user_fav_cards_list/{gallery_name}"
-        if not os.path.isfile(user_gallery_path):
-            self._generate_new_gallery(user_gallery_path)
+        user_gallery_path = f"assets/user_fav_cards_list/{user.id}"
+        first_page_gallery_path = f"{user_gallery_path}_0.png"
+        if not os.path.isfile(first_page_gallery_path):
+            self._generate_new_galleries(user_gallery_path)
 
         card_position = (slot_id % FAV_LIST_HORIZONTAL_SIZE, slot_id // FAV_LIST_HORIZONTAL_SIZE)
         graded_card_path = f"assets/altered_cards/{card_id}_{grade_name}.png"
         graded_card_image = Image.open(graded_card_path)
         graded_card_image = graded_card_image.resize(EMPTY_SLOT_IMAGE.size)
 
-        user_gallery_image = Image.open(user_gallery_path)
+        user_gallery_image = Image.open(first_page_gallery_path)
         user_gallery_image.paste(graded_card_image, (card_position[0] * EMPTY_SLOT_IMAGE.size[0],
                                                      card_position[1] * EMPTY_SLOT_IMAGE.size[1]))
-        user_gallery_image.save(user_gallery_path)
+        user_gallery_image.save(first_page_gallery_path)
 
         await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.response_msg'))
 
@@ -230,13 +235,13 @@ class UserInfoCog(commands.Cog):
 
         await interaction.response.send_message(self._t(user_language_id, 'common.loading'))
 
-        gallery_name = f"{user.id}.png"
-        user_gallery_path = f"assets/user_fav_cards_list/{gallery_name}"
-        if not os.path.isfile(user_gallery_path):
-            self._generate_new_gallery(user_gallery_path)
+        first_page_gallery_name = f"{user.id}_0.png"
+        first_page_gallery_path = f"assets/user_fav_cards_list/{first_page_gallery_name}"
+        if not os.path.isfile(first_page_gallery_path):
+            self._generate_new_galleries(f"assets/user_fav_cards_list/{user.id}")
 
         embed = Embed()
-        embed.set_image(url=f"attachment://{gallery_name}")
+        embed.set_image(url=f"attachment://{first_page_gallery_name}")
 
-        discord_attachment = File(user_gallery_path)
+        discord_attachment = File(first_page_gallery_path)
         await interaction.edit_original_response(content="", embed=embed, attachments=[discord_attachment])
