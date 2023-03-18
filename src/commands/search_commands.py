@@ -68,7 +68,7 @@ class SearchCog(commands.Cog):
             entry_card["value"] += f"{spliter_chain}{formatted_own}"
 
         if with_image:
-            if grade is not None:
+            if grade is not None and grade.in_application_name != "ungraded":
                 entry_card["image"] = f"{card.id}_{grade.in_application_name}.png"
             else:
                 entry_card["image"] = card.images.large if card.images.large else card.images.small

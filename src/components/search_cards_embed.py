@@ -28,7 +28,7 @@ class SearchCardsEmbed(PaginatedEmbed):
                  discord_user: User = None, own_cards_filter_disabled: bool = False,
                  grade_filter_disabled: bool = False) -> None:
         super().__init__(original_interaction, content, image_mode, user_language_id, page_size, inline, title,
-                         discord_user)
+                         discord_user, assets_path="altered_cards")
         self.full_content = content
         self.are_owned_cards_displayed = False
 

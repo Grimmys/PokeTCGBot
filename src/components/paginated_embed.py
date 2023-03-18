@@ -14,7 +14,7 @@ class PaginatedEmbed:
 
     def __init__(self, original_interaction: Interaction, content: Sequence[dict[str, any]], image_mode: bool,
                  user_language_id: int, page_size: int = 1, inline: bool = False, title: str = None,
-                 discord_user: User = None) -> None:
+                 discord_user: User = None, assets_path: str = None) -> None:
         self.user_language_id = user_language_id
         self.current_page = 0
         self.embed = Embed()
@@ -28,6 +28,7 @@ class PaginatedEmbed:
         self.attachments: list[File] = []
         self.page_size = page_size if not image_mode else 1
         self.inline: bool = inline
+        self.assets_path = assets_path
         self.display_list(content[:page_size])
 
         self.view = View()
@@ -73,7 +74,7 @@ class PaginatedEmbed:
         if self.image_mode:
             url = element["image"]
             if not url.startswith("http"):
-                self.attachments.append(File(f"assets/altered_cards/{element['image']}"))
+                self.attachments.append(File(f"assets/{self.assets_path}/{element['image']}"))
                 url = f"attachment://{element['image']}"
             self.embed.set_image(url=url)
 
