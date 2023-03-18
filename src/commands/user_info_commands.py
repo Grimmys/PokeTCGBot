@@ -208,6 +208,11 @@ class UserInfoCog(commands.Cog):
         card_id, grade_name = self.card_service.parse_card_id(card_id)
         if (card_id, grade_name) not in user.cards:
             await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.missing_card'))
+            return
+
+        if grade_name == "ungraded":
+            await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.ungraded_card'))
+            return
 
         user_gallery_path = f"assets/user_fav_cards_list/{user.id}"
         page_gallery_path = f"{user_gallery_path}_{page_id - 1}.png"

@@ -203,6 +203,7 @@
         "invalid_slot_id": "There is no such slot id available",
         "invalid_page_id": "There is no such page available",
         "missing_card": "You can't set a card that you don't own to your favorite cards list",
+        "ungraded_card": "You can't set a card that is ungraded to you favorite cards list",
         "response_msg": "Card set"
     },
     "favorite_cards_cmd": {
