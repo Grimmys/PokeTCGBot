@@ -9,6 +9,7 @@ from discord.ext import commands
 
 from config import DEFAULT_GRADING_COOLDOWN, FAV_GALLERY_PAGES
 from src.colors import YELLOW
+from src.components.paginated_embed import PaginatedEmbed
 from src.entities.quest_entity import QuestEntity, QuestReward
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
@@ -240,8 +241,11 @@ class UserInfoCog(commands.Cog):
         if not os.path.isfile(first_page_gallery_path):
             self._generate_new_galleries(f"assets/user_fav_cards_list/{user.id}")
 
-        embed = Embed()
-        embed.set_image(url=f"attachment://{first_page_gallery_name}")
+        gallery_entries = [{"name": "", "value": "", "image": f"{user.id}_{i}.png"}
+                           for i in range(FAV_GALLERY_PAGES)]
 
-        discord_attachment = File(first_page_gallery_path)
-        await interaction.edit_original_response(content="", embed=embed, attachments=[discord_attachment])
+        paginated_embed = PaginatedEmbed(interaction, gallery_entries, True, user_language_id,
+                                         title=f"---------- {self._t(user_language_id, 'favorite_cards_cmd.title')} ----------",
+                                         assets_path="user_fav_cards_list")
+        await interaction.edit_original_response(content="", embed=paginated_embed.embed, view=paginated_embed.view,
+                                                 attachments=paginated_embed.attachments)

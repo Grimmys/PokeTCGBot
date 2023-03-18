@@ -55,8 +55,8 @@ class PaginatedEmbed:
             if self.current_page * self.page_size == len(self.content):
                 self.current_page -= 1
         self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
         await click_interaction.response.defer()
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
 
     def refresh_page(self):
         self.embed.clear_fields()

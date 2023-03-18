@@ -206,7 +206,8 @@
     },
     "favorite_cards_cmd": {
         "name": "favorite_cards",
-        "desc": "Display your list of favorite graded cards"
+        "desc": "Display your list of favorite graded cards",
+        "title": "Favorite graded cards"
     },
     "joke_cmd": {
         "name": "joke",

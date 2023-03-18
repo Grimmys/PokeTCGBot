@@ -206,7 +206,8 @@
     },
     "favorite_cards_cmd": {
         "name": "cartes_favorites",
-        "desc": "Affiche votre liste de cartes évaluées préférées"
+        "desc": "Affiche votre liste de cartes évaluées préférées",
+        "title": "Cartes évaluées favorites"
     },
     "joke_cmd": {
         "name": "blague",
