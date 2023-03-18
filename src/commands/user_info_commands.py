@@ -184,7 +184,8 @@ class UserInfoCog(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name=_T("set_favorite_card_cmd-name"), description=_T("set_favorite_card_cmd-desc"))
-    async def set_favorite_card_command(self, interaction: discord.Interaction, card_id: str, slot_id: int) -> None:
+    async def set_favorite_card_command(self, interaction: discord.Interaction, card_id: str,
+                                        slot_id: int, page_id: int = 1) -> None:
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
@@ -200,13 +201,17 @@ class UserInfoCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.invalid_slot_id'))
             return
 
+        if page_id not in range(1, FAV_GALLERY_PAGES + 1):
+            await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.invalid_page_id'))
+            return
+
         card_id, grade_name = self.card_service.parse_card_id(card_id)
         if (card_id, grade_name) not in user.cards:
             await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.missing_card'))
 
         user_gallery_path = f"assets/user_fav_cards_list/{user.id}"
-        first_page_gallery_path = f"{user_gallery_path}_0.png"
-        if not os.path.isfile(first_page_gallery_path):
+        page_gallery_path = f"{user_gallery_path}_{page_id - 1}.png"
+        if not os.path.isfile(page_gallery_path):
             self._generate_new_galleries(user_gallery_path)
 
         card_position = (slot_id % FAV_LIST_HORIZONTAL_SIZE, slot_id // FAV_LIST_HORIZONTAL_SIZE)
@@ -214,10 +219,10 @@ class UserInfoCog(commands.Cog):
         graded_card_image = Image.open(graded_card_path)
         graded_card_image = graded_card_image.resize(EMPTY_SLOT_IMAGE.size)
 
-        user_gallery_image = Image.open(first_page_gallery_path)
+        user_gallery_image = Image.open(page_gallery_path)
         user_gallery_image.paste(graded_card_image, (card_position[0] * EMPTY_SLOT_IMAGE.size[0],
                                                      card_position[1] * EMPTY_SLOT_IMAGE.size[1]))
-        user_gallery_image.save(first_page_gallery_path)
+        user_gallery_image.save(page_gallery_path)
 
         await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.response_msg'))
 
