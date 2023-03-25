@@ -210,7 +210,7 @@ class UserInfoCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.missing_card'))
             return
 
-        if grade_name == "ungraded":
+        if grade_name == "UNGRADED":
             await interaction.response.send_message(self._t(user_language_id, 'set_favorite_card_cmd.ungraded_card'))
             return
 

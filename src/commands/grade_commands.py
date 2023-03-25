@@ -52,7 +52,7 @@ class GradeCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
             return
 
-        if (card_id, "ungraded") not in user.cards:
+        if (card_id, "UNGRADED") not in user.cards:
             await interaction.response.send_message(self._t(user_language_id, 'grade_cmd.no_available_copy'))
             return
 

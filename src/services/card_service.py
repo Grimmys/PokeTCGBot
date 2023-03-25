@@ -54,6 +54,6 @@ class CardService:
                     actual_grade = CARD_GRADE_NAMES[grade_names.index(user_grade)]
                     break
             else:
-                actual_grade = "ungraded"
+                actual_grade = "UNGRADED"
             return actual_card_id, actual_grade
-        return input_card_id, "ungraded"
+        return input_card_id, "UNGRADED"
