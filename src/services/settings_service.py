@@ -19,7 +19,7 @@ class SettingsService:
         else:
             user_entity.name_tag = str(user)
             user_entity.last_interaction_date = int(time.time())
-            self._user_repository.save_user(user_entity)
+            self._user_repository.update_user(user_entity)
         return user_entity.settings.language_id
 
     def update_user_language(self, user_id: int, new_language_id: int):

@@ -70,13 +70,16 @@ class UserService:
                                      next_daily_quests_refresh=self._compute_next_midnight(),
                                      user_settings_entity=user_settings)
             self._user_repository.save_user(user_entity)
+            self._user_repository.save_user_quests(user_entity.id, user_entity.daily_quests)
         else:
             user_entity.last_interaction_date = int(time.time())
             user_entity.name_tag = str(user)
             if user_entity.next_daily_quests_refresh < time.time():
                 user_entity.daily_quests = self._compute_new_daily_quests()
                 user_entity.next_daily_quests_refresh = self._compute_next_midnight()
-            self._user_repository.save_user(user_entity)
+                self._user_repository.remove_user_quests(user_entity.id)
+                self._user_repository.save_user_quests(user_entity.id, user_entity.daily_quests)
+            self._user_repository.update_user(user_entity)
         return user_entity
 
     def give_money(self, user_id: int, amount: int) -> bool:
@@ -176,7 +179,9 @@ class UserService:
                             user_entity.promo_boosters_quantity += quest.reward_amount
                         case QuestReward.MONEY:
                             user_entity.money += quest.reward_amount
-        self._user_repository.save_user(user_entity)
+        if len(accomplished_quests) > 0:
+            self._user_repository.update_user(user_entity)
+        self._user_repository.update_user_quests(user_entity.daily_quests)
         return accomplished_quests
 
     def ban_user(self, user_id: int) -> bool:

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Sequence
 
+from src.entities.quest_entity import QuestEntity
 from src.entities.user_entity import UserEntity
 
 
@@ -19,7 +20,19 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def set_user_ban(self, user_id: int, is_ban: bool) -> bool:
+    def save_user_quests(self, user_id: int, daily_quests: Sequence[QuestEntity]) -> bool:
+        pass
+
+    @abstractmethod
+    def update_user(self, user: UserEntity) -> bool:
+        pass
+
+    @abstractmethod
+    def update_user_quests(self, quest_entities: Sequence[QuestEntity]) -> bool:
+        pass
+
+    @abstractmethod
+    def set_user_ban(self, user_id: int, is_banned: bool) -> bool:
         pass
 
     @abstractmethod
@@ -95,5 +108,9 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
+    def remove_user_quests(self, user_id: int) -> bool:
+        pass
+
+    @abstractmethod
+    def get_top_users_by_cards(self, number: int) -> Sequence[UserEntity]:
         pass

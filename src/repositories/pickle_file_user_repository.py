@@ -2,6 +2,7 @@ import pickle
 from pathlib import Path
 from typing import Optional, Sequence
 
+from src.entities.quest_entity import QuestEntity
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
 
@@ -38,6 +39,15 @@ class PickleFileUserRepository(UserRepository):
         users_by_id = PickleFileUserRepository._load_pickle_file()
         users_by_id[user.id] = user
         PickleFileUserRepository._save_pickle_file(users_by_id)
+        return True
+
+    def save_user_quests(self, user_id: int, daily_quests: Sequence[QuestEntity]) -> bool:
+        return True
+
+    def update_user(self, user: UserEntity) -> bool:
+        return self.save_user(user)
+
+    def update_user_quests(self, quest_entities: Sequence[QuestEntity]) -> bool:
         return True
 
     def set_user_ban(self, user_id: int, is_banned: bool) -> bool:
@@ -214,7 +224,10 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def get_top_users_by_cards(self, number: int) -> list[UserEntity]:
+    def remove_user_quests(self, user_id: int) -> bool:
+        return True
+
+    def get_top_users_by_cards(self, number: int) -> Sequence[UserEntity]:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         users: list[UserEntity] = list(users_by_id.values())
         users.sort(key=lambda user: len(set([card_id[0] for card_id in user.cards.keys()])), reverse=True)
