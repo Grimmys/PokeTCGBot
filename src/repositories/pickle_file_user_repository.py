@@ -47,8 +47,13 @@ class PickleFileUserRepository(UserRepository):
     def update_user(self, user: UserEntity) -> bool:
         return self.save_user(user)
 
-    def update_user_quests(self, quest_entities: Sequence[QuestEntity]) -> bool:
-        return True
+    def update_user_quests(self, quest_entities: Sequence[QuestEntity], user_id: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        if user_id in users_by_id:
+            users_by_id[user_id].daily_quests = quest_entities
+            PickleFileUserRepository._save_pickle_file(users_by_id)
+            return True
+        return False
 
     def set_user_ban(self, user_id: int, is_banned: bool) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()

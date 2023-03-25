@@ -181,7 +181,7 @@ class UserService:
                             user_entity.money += quest.reward_amount
         if len(accomplished_quests) > 0:
             self._user_repository.update_user(user_entity)
-        self._user_repository.update_user_quests(user_entity.daily_quests)
+        self._user_repository.update_user_quests(user_entity.daily_quests, user_id)
         return accomplished_quests
 
     def ban_user(self, user_id: int) -> bool:

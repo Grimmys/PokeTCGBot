@@ -217,7 +217,7 @@ class PostgresUserRepository(UserRepository):
             print(f"Error while updating user {user.id}: {e}")
         return False
 
-    def update_user_quests(self, quest_entities: Sequence[QuestEntity]) -> bool:
+    def update_user_quests(self, quest_entities: Sequence[QuestEntity], _) -> bool:
         try:
             with get_cursor(self.connection_pool) as cursor:
                 user_quest_table = Table("player_quest")

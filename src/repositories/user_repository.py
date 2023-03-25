@@ -28,7 +28,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def update_user_quests(self, quest_entities: Sequence[QuestEntity]) -> bool:
+    def update_user_quests(self, quest_entities: Sequence[QuestEntity], user_id: int) -> bool:
         pass
 
     @abstractmethod
