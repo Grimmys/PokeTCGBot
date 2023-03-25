@@ -2,8 +2,9 @@ import uuid
 
 
 class SuggestionEntity:
-    def __init__(self, author: str, content: str, up_votes: set[int] = None, down_votes: set[int] = None):
-        self.id: str = str(uuid.uuid4())
+    def __init__(self, author: str, content: str, suggestion_id: str = None,
+                 up_votes: set[int] = None, down_votes: set[int] = None):
+        self.id: str = str(uuid.uuid4()) if suggestion_id is None else suggestion_id
         self.author: str = author
         self.content: str = content
         self.up_votes: set[int] = up_votes if up_votes is not None else set()
