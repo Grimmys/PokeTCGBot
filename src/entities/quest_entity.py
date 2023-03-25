@@ -15,7 +15,8 @@ class QuestReward(Enum):
 
 class QuestEntity:
     def __init__(self, kind: QuestType, goal_value: int, reward_kind: QuestReward, reward_amount: int,
-                 progress: int = 0, accomplished: bool = False):
+                 progress: int = 0, accomplished: bool = False, quest_id: int = 0):
+        self.id = quest_id
         self.kind = kind
         self.goal_value = goal_value
         self.progress = progress
@@ -24,6 +25,7 @@ class QuestEntity:
         self.accomplished = accomplished
 
     def __setstate__(self, state):
+        self.id = state.get("id", 0)
         self.kind = state.get("kind")
         self.goal_value = state.get("goal_value")
         self.progress = state.get("progress", 0)
