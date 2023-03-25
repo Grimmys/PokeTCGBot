@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence
+from typing import Sequence, Optional
 
 from src.entities.suggestion_entity import SuggestionEntity
 
@@ -18,9 +18,9 @@ class SuggestionRepository(ABC):
         pass
 
     @abstractmethod
-    def switch_up_vote_for(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
+    def switch_up_vote_for(self, user_id: int, suggestion_id: str) -> Optional[SuggestionEntity]:
         pass
 
     @abstractmethod
-    def switch_down_vote_for(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
+    def switch_down_vote_for(self, user_id: int, suggestion_id: str) -> Optional[SuggestionEntity]:
         pass

@@ -56,6 +56,8 @@
         "suggestion_deleted": "The suggestion has been deleted",
         "suggestion_up_voted": "You upvoted the suggestion",
         "suggestion_down_voted": "You downvoted the suggestion",
+        "upvote_downvoted_suggestion_error": "You can't upvote a suggestion you already downvoted",
+        "downvote_upvoted_suggestion_error": "You can't downvote a suggestion you already upvoted",
         "up_votes": "Upvotes",
         "down_votes": "Downvotes"
     },

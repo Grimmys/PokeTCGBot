@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 import discord
 
@@ -24,7 +24,7 @@ class SuggestionService:
     def remove_suggestion(self, suggestion_id: str) -> bool:
         return self._suggestion_repository.remove_suggestion(suggestion_id)
 
-    def update_vote_to_suggestion(self, user_id: int, suggestion_id: str, is_positive: bool) -> SuggestionEntity:
+    def update_vote_to_suggestion(self, user_id: int, suggestion_id: str, is_positive: bool) -> Optional[SuggestionEntity]:
         if is_positive:
             return self._suggestion_repository.switch_up_vote_for(user_id, suggestion_id)
         else:

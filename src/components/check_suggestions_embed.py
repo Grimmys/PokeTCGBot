@@ -44,7 +44,13 @@ class CheckSuggestionsEmbed(PaginatedEmbed):
 
     async def up_vote_active_suggestion(self, interaction: Interaction) -> None:
         active_element = self.content[self.current_page]
-        active_element["suggestion"] = self.update_vote_callback(self.user.id, active_element["suggestion"].id, True)
+        optional_suggestion = self.update_vote_callback(self.user.id, active_element["suggestion"].id, True)
+        if optional_suggestion is None:
+            await interaction.response.send_message(
+                PaginatedEmbed._t(self.user_language_id, 'suggestions_embed.upvote_downvoted_suggestion_error'),
+                delete_after=2)
+            return
+        active_element["suggestion"] = optional_suggestion
         self.refresh_page()
         await self.original_interaction.edit_original_response(embed=self.embed)
         await interaction.response.send_message(
@@ -53,7 +59,13 @@ class CheckSuggestionsEmbed(PaginatedEmbed):
 
     async def down_vote_active_suggestion(self, interaction: Interaction) -> None:
         active_element = self.content[self.current_page]
-        active_element["suggestion"] = self.update_vote_callback(self.user.id, active_element["suggestion"].id, False)
+        optional_suggestion = self.update_vote_callback(self.user.id, active_element["suggestion"].id, False)
+        if optional_suggestion is None:
+            await interaction.response.send_message(
+                PaginatedEmbed._t(self.user_language_id, 'suggestions_embed.downvote_upvoted_suggestion_error'),
+                delete_after=2)
+            return
+        active_element["suggestion"] = optional_suggestion
         self.refresh_page()
         await self.original_interaction.edit_original_response(embed=self.embed)
         await interaction.response.send_message(

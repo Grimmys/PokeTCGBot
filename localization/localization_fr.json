@@ -56,6 +56,8 @@
         "suggestion_deleted": "La suggestion a été supprimée",
         "suggestion_up_voted": "Vous avez voté pour la suggestion",
         "suggestion_down_voted": "Vous avez voté contre la suggestion",
+        "upvote_downvoted_suggestion_error": "Vous ne pouvez pas voter pour une suggestion à laquelle vous avez déjà voté contre",
+        "downvote_upvoted_suggestion_error": "Vous ne pouvez pas voter contre une suggestion à laquelle vous avez déjà voté pour",
         "up_votes": "Votes positifs",
         "down_votes": "Votes négatifs"
     },

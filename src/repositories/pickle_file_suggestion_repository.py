@@ -1,6 +1,6 @@
 import pickle
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, Optional
 
 from src.entities.suggestion_entity import SuggestionEntity
 from src.repositories.suggestion_repository import SuggestionRepository
@@ -43,8 +43,10 @@ class PickleFileSuggestionRepository(SuggestionRepository):
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
         return True
 
-    def switch_up_vote_for(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
+    def switch_up_vote_for(self, user_id: int, suggestion_id: str) -> Optional[SuggestionEntity]:
         suggestions = PickleFileSuggestionRepository._load_pickle_file()
+        if user_id in suggestions[suggestion_id].down_votes:
+            return None
         if user_id not in suggestions[suggestion_id].up_votes:
             suggestions[suggestion_id].up_votes.add(user_id)
         else:
@@ -52,8 +54,10 @@ class PickleFileSuggestionRepository(SuggestionRepository):
         PickleFileSuggestionRepository._save_pickle_file(suggestions)
         return suggestions[suggestion_id]
 
-    def switch_down_vote_for(self, user_id: int, suggestion_id: str) -> SuggestionEntity:
+    def switch_down_vote_for(self, user_id: int, suggestion_id: str) -> Optional[SuggestionEntity]:
         suggestions = PickleFileSuggestionRepository._load_pickle_file()
+        if user_id in suggestions[suggestion_id].up_votes:
+            return None
         if user_id not in suggestions[suggestion_id].down_votes:
             suggestions[suggestion_id].down_votes.add(user_id)
         else:
