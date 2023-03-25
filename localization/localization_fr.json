@@ -73,6 +73,9 @@
     "give_boosters_cmd": {
         "response_msg": "L'utilisateur {user} a reçu {quantity} booster(s) {kind}"
     },
+    "give_gradings_cmd": {
+        "response_msg": "L'utilisateur {user} a reçu {quantity} action(s) d'évaluation"
+    },
     "give_all_boosters_cmd": {
         "response_msg": "Tous les utilisateurs ont reçu {quantity} booster(s) {kind}"
     },

@@ -117,6 +117,23 @@ class AdminCog(commands.Cog):
             await interaction.response.send_message(
                 self.t(user_language_id, 'common.unknown_issue'))
 
+    @app_commands.command(name="give_gradings", description="Give some grading actions to the user")
+    async def give_gradings_command(self, interaction: discord.Interaction, member: discord.User,
+                                    quantity: int) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
+
+        if interaction.user.id not in BOT_ADMIN_USER_IDS:
+            await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        if self.user_service.give_gradings(member.id, quantity):
+            await interaction.response.send_message(
+                self.t(user_language_id, 'give_gradings_cmd.response_msg').format(user=f"{member.id} ({member.name})",
+                                                                                  quantity=quantity))
+        else:
+            await interaction.response.send_message(
+                self.t(user_language_id, 'common.user_not_found'))
+
     @app_commands.command(name=_T("ban_user_cmd-name"), description=_T("ban_user_cmd-desc"))
     async def ban_user_command(self, interaction: discord.Interaction, member: discord.User) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
