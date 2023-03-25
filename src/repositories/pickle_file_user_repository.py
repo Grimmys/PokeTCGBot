@@ -109,7 +109,8 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def change_booster_opening_with_image_by_default(self, user_id, new_booster_opening_with_image_value):
+    def change_booster_opening_with_image_by_default(self, user_id: int,
+                                                     new_booster_opening_with_image_value: bool) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             users_by_id[user_id].settings.booster_opening_with_image = new_booster_opening_with_image_value
@@ -117,7 +118,8 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
-    def change_only_use_booster_stock_with_option(self, user_id, new_only_use_booster_stock_with_option_value):
+    def change_only_use_booster_stock_with_option(self, user_id: int,
+                                                  new_only_use_booster_stock_with_option_value: bool) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             users_by_id[
