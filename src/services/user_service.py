@@ -1,11 +1,12 @@
 import random
 import time
 from datetime import date, datetime, timedelta
-from typing import Optional
+from typing import Optional, Sequence
 
 import discord
 
 from config import DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN, DEFAULT_GRADING_COOLDOWN
+from src.entities.badge_entity import BadgeEntity
 from src.entities.quest_entity import QuestEntity, QuestType, QuestReward
 from src.entities.user_entity import UserEntity
 from src.entities.user_settings_entity import UserSettingsEntity
@@ -81,6 +82,9 @@ class UserService:
                 self._user_repository.save_user_quests(user_entity.id, user_entity.daily_quests)
             self._user_repository.update_user(user_entity)
         return user_entity
+
+    def get_user_badges(self, user_id: int) -> Sequence[BadgeEntity]:
+        return self._user_repository.get_user_badges(user_id)
 
     def give_money(self, user_id: int, amount: int) -> bool:
         return self._user_repository.change_money(user_id, amount)

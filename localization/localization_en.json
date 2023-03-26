@@ -185,7 +185,14 @@
         "name": "profile",
         "desc": "Check user profile",
         "main_title": "Profile",
-        "badges_title": "Badges Collection"
+        "badges_title": "Badges Collection",
+        "badges_general_section": "General badges"
+    },
+    "badge": {
+        "beta_tester": {
+            "name": "Beta Tester",
+            "desc": "Involvement into the beta version of the bot"
+        }
     },
     "cooldowns_cmd": {
         "name": "cooldowns",

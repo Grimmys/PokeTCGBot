@@ -1,5 +1,6 @@
 import os
 import time
+from typing import Sequence
 
 import discord
 from PIL import Image
@@ -11,7 +12,9 @@ from config import DEFAULT_GRADING_COOLDOWN, FAV_GALLERY_PAGES, LOG_CHANNEL_ID
 from src.colors import YELLOW
 from src.components.custom_pages_embed import CustomPagesEmbed, Page, Field
 from src.components.paginated_embed import PaginatedEmbed
+from src.entities.badge_entity import BadgeCategory
 from src.entities.quest_entity import QuestEntity, QuestReward
+from src.entities.user_entity import UserEntity
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
@@ -77,6 +80,18 @@ class UserInfoCog(commands.Cog):
         for i in range(FAV_GALLERY_PAGES):
             UserInfoCog._generate_new_gallery(f"{gallery_base_path}_{i}.png")
 
+    def _format_user_badges(self, user: UserEntity, user_language_id: int) -> Sequence[Field]:
+        badges = self.user_service.get_user_badges(user.id)
+
+        general_badges = Field(name=f"{self._t(user_language_id, 'profile_cmd.badges_general_section')}", value="")
+        for badge in badges:
+            if badge.category == BadgeCategory.GENERAL:
+                badge_name_key = f'badge.{badge.localization_key}.name'
+                badge_desc_key = f'badge.{badge.localization_key}.desc'
+                general_badges.value += f"{badge.emoji} {self._t(user_language_id, badge_name_key)} - {self._t(user_language_id, badge_desc_key)}\n"
+
+        return [general_badges]
+
     @app_commands.command(name=_T("profile_cmd-name"), description=_T("profile_cmd-desc"))
     async def profile_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
@@ -108,7 +123,8 @@ class UserInfoCog(commands.Cog):
                        Field(name=self._t(user_language_id, 'common.last_interaction'),
                              value=discord_tools.timestamp_to_relative_time_format(user.last_interaction_date),
                              inline=False)]),
-                 Page("🛡️", f"---------- {self._t(user_language_id, 'profile_cmd.badges_title')} ----------", [],
+                 Page("🛡️", f"---------- {self._t(user_language_id, 'profile_cmd.badges_title')} ----------",
+                      self._format_user_badges(user, user_language_id),
                       disable_check=lambda: not is_dev_mode())]
         custom_pages_embed = CustomPagesEmbed(interaction, pages, discord_user, color=YELLOW)
 

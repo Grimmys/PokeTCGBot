@@ -1,5 +1,6 @@
 import time
 
+from src.entities.badge_entity import BadgeEntity
 from src.entities.quest_entity import QuestEntity
 from src.entities.user_cooldowns_entity import UserCooldownsEntity
 from src.entities.user_settings_entity import UserSettingsEntity
@@ -11,7 +12,8 @@ class UserEntity:
                  boosters_quantity: int = 0, promo_boosters_quantity: int = 0, grading_quantity: int = 0,
                  cards_by_id: dict[str, int] = None,
                  user_settings_entity: UserSettingsEntity = None,
-                 user_cooldowns_entity: UserCooldownsEntity = None, daily_quests: list[QuestEntity] = None, next_daily_quests_refresh: int = 0):
+                 user_cooldowns_entity: UserCooldownsEntity = None, daily_quests: list[QuestEntity] = None,
+                 next_daily_quests_refresh: int = 0, badges: list[BadgeEntity] = None):
         self.id: int = user_id
         self.name_tag: str = name_tag
         self.is_banned: bool = is_banned
@@ -25,6 +27,7 @@ class UserEntity:
         self.cooldowns: UserCooldownsEntity = user_cooldowns_entity if user_cooldowns_entity is not None else UserCooldownsEntity()
         self.daily_quests: list[QuestEntity] = daily_quests if daily_quests is not None else []
         self.next_daily_quests_refresh: int = next_daily_quests_refresh
+        self.badges: list[BadgeEntity] = badges if badges is not None else []
 
     def count_quantity_of_card(self, card_id: str) -> int:
         quantity = 0
@@ -48,4 +51,5 @@ class UserEntity:
         self.cooldowns = state.get("cooldowns", UserCooldownsEntity())
         self.daily_quests: list[QuestEntity] = state.get("daily_quests", [])
         self.next_daily_quests_refresh: int = state.get("next_daily_quests_refresh", 0)
+        self.badges: list[BadgeEntity] = state.get("badges", [])
 

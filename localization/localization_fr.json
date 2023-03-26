@@ -185,7 +185,14 @@
         "name": "profil",
         "desc": "Affiche le profil du joueur",
         "main_title": "Profil",
-        "badges_title": "Collection de Badges"
+        "badges_title": "Collection de Badges",
+        "badges_general_section": "Badges globaux"
+    },
+    "badge": {
+        "beta_tester": {
+            "name": "Bêta-testeur",
+            "desc": "Participation à la version bêta du bot"
+        }
     },
     "cooldowns_cmd": {
         "name": "delai_commandes",

@@ -2,6 +2,7 @@ import pickle
 from pathlib import Path
 from typing import Optional, Sequence
 
+from src.entities.badge_entity import BadgeEntity
 from src.entities.quest_entity import QuestEntity
 from src.entities.user_entity import UserEntity
 from src.repositories.user_repository import UserRepository
@@ -34,6 +35,10 @@ class PickleFileUserRepository(UserRepository):
         if user_id in users_by_id:
             return users_by_id[user_id]
         return None
+
+    def get_user_badges(self, user_id: int) -> Sequence[BadgeEntity]:
+        user = self.get_user(user_id)
+        return user.badges
 
     def save_user(self, user: UserEntity) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Sequence
 
+from src.entities.badge_entity import BadgeEntity
 from src.entities.quest_entity import QuestEntity
 from src.entities.user_entity import UserEntity
 
@@ -13,6 +14,10 @@ class UserRepository(ABC):
 
     @abstractmethod
     def get_user(self, user_id: int) -> Optional[UserEntity]:
+        pass
+
+    @abstractmethod
+    def get_user_badges(self, user_id: int) -> Sequence[BadgeEntity]:
         pass
 
     @abstractmethod

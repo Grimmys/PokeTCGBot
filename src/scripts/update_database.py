@@ -31,6 +31,8 @@ def update_database_schema(connection_pool):
                 for query in patch_queries:
                     cursor.execute(query)
 
+                print(f"Executed patch {patch_name}")
+
                 patch_number = _get_patch_number(patch_name)
                 if patch_number > current_database_patch_version:
                     update_patch_version_query: QueryBuilder = Query.update(patch_version_table).set(

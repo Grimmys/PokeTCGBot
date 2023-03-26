@@ -9,6 +9,7 @@ from pypika.terms import Tuple
 
 from config import HOSTNAME, DB_NAME, USERNAME, PASSWORD, PORT_ID, CONNECTION_POOL_MIN_CONNECTIONS, \
     CONNECTION_POOL_MAX_CONNECTIONS
+from src.entities.badge_entity import BadgeEntity, BadgeCategory
 from src.entities.quest_entity import QuestEntity, QuestType, QuestReward
 from src.entities.user_cooldowns_entity import UserCooldownsEntity
 from src.entities.user_entity import UserEntity
@@ -26,7 +27,7 @@ class PostgresUserRepository(UserRepository):
         self.fetch_users_query: QueryBuilder = self.build_fetch_users_query()
 
     @staticmethod
-    def table_entry_to_entity(table_entry: DictRow) -> UserEntity:
+    def table_entry_to_user(table_entry: DictRow) -> UserEntity:
         user_settings_entity = UserSettingsEntity(table_entry["language_id"], table_entry["booster_opening_with_image"],
                                                   table_entry["only_use_stocked_action_with_option"])
         user_cooldowns_entity = UserCooldownsEntity(table_entry["timestamp_for_next_basic_booster"],
@@ -48,6 +49,11 @@ class PostgresUserRepository(UserRepository):
                           table_entry["last_interaction_date"], table_entry["money"], table_entry["boosters_quantity"],
                           table_entry["promo_boosters_quantity"], table_entry["grading_quantity"], cards,
                           user_settings_entity, user_cooldowns_entity, quests, table_entry["next_daily_quests_refresh"])
+
+    @staticmethod
+    def table_entry_to_badge(table_entry: DictRow) -> BadgeEntity:
+        return BadgeEntity(table_entry["id"], table_entry["emoji"],
+                           BadgeCategory[table_entry["category"]], table_entry["localization_key"])
 
     @staticmethod
     def build_fetch_users_query() -> QueryBuilder:
@@ -107,7 +113,7 @@ class PostgresUserRepository(UserRepository):
                 get_all_query: QueryBuilder = self.fetch_users_query
                 cursor.execute(get_all_query.get_sql())
                 result_set = cursor.fetchall()
-                return [self.table_entry_to_entity(entry) for entry in result_set]
+                return [self.table_entry_to_user(entry) for entry in result_set]
         except Exception as e:
             print(f"Error while fetching all users: {e}")
         return []
@@ -121,10 +127,30 @@ class PostgresUserRepository(UserRepository):
                 entry = cursor.fetchone()
                 if entry is None:
                     return None
-                return self.table_entry_to_entity(entry)
+                return self.table_entry_to_user(entry)
         except Exception as e:
             print(f"Error while getting user {user_id}: {e}")
         return None
+
+    def get_user_badges(self, user_id: int) -> Sequence[BadgeEntity]:
+        try:
+            with get_cursor(self.connection_pool) as cursor:
+                badge_table = Table("badge")
+                user_badge_table = Table("player_badge")
+                get_query: QueryBuilder = Query.select(badge_table.id, badge_table.emoji, badge_table.category,
+                                                       badge_table.localization_key) \
+                    .from_(badge_table) \
+                    .inner_join(user_badge_table) \
+                    .on(badge_table.id == user_badge_table.badge_id) \
+                    .where(user_badge_table.player_id == user_id)
+                cursor.execute(get_query.get_sql())
+                result_set = cursor.fetchall()
+                if result_set is None:
+                    return []
+                return [self.table_entry_to_badge(entry) for entry in result_set]
+        except Exception as e:
+            print(f"Error while getting user {user_id}: {e}")
+        return []
 
     def save_user(self, user: UserEntity) -> bool:
         try:
@@ -552,7 +578,7 @@ class PostgresUserRepository(UserRepository):
                     .limit(number)
                 cursor.execute(get_all_query.get_sql())
                 result_set = cursor.fetchall()
-                return [self.table_entry_to_entity(entry) for entry in result_set]
+                return [self.table_entry_to_user(entry) for entry in result_set]
         except Exception as e:
             print(f"Error while fetching all users: {e}")
         return []
