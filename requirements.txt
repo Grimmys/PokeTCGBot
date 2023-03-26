@@ -2,5 +2,5 @@ discord.py~=2.1.0
 pokemontcgsdk~=3.4.0
 requests~=2.28.2
 Pillow~=9.4.0
-psycopg2~=2.9.0
 pypika~=0.48.0
+psycopg2~=2.9.0
