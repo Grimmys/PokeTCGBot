@@ -10,6 +10,7 @@ from discord.app_commands import locale_str as _T
 from discord.ext.commands import Bot
 
 import config
+from config_sample import DATABASE_MODE_ENABLED
 from src.colors import BLUE
 from src.commands.admin_commands import AdminCog
 from src.commands.booster_command import BoosterCog
@@ -26,6 +27,7 @@ from src.commands.user_info_commands import UserInfoCog
 from src.components.paginated_embed import PaginatedEmbed
 from src.repositories.pickle_file_suggestion_repository import PickleFileSuggestionRepository
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
+from src.scripts.update_database import update_database_schema
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
@@ -139,13 +141,16 @@ async def main():
 if __name__ == "__main__":
     random.seed()
 
-    pickle_file_user_repository = PickleFileUserRepository()
-    pickle_file_suggestion_repository = PickleFileSuggestionRepository()
+    if DATABASE_MODE_ENABLED:
+        update_database_schema()
+
+    user_repository = PickleFileUserRepository()
+    suggestion_repository = PickleFileSuggestionRepository()
     localization_service = LocalizationService()
-    suggestion_service = SuggestionService(pickle_file_suggestion_repository)
+    suggestion_service = SuggestionService(suggestion_repository)
     card_service = CardService(localization_service)
-    user_service = UserService(pickle_file_user_repository, card_service)
-    settings_service = SettingsService(pickle_file_user_repository)
+    user_service = UserService(user_repository, card_service)
+    settings_service = SettingsService(user_repository)
     rarity_service = RarityService()
     type_service = TypeService()
     quest_service = QuestService(localization_service)

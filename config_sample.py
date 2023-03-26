@@ -25,6 +25,7 @@ LOG_CHANNEL_ID: int = None
 BOT_ADMIN_USER_IDS: List[int] = []
 
 # -- Database related
+DATABASE_MODE_ENABLED = False
 HOSTNAME: str = None
 DB_NAME: str = None
 USERNAME: str = None

@@ -44,7 +44,7 @@ CREATE TABLE player_card (
     card_id varchar(64) NOT NULL,
     grade grade_type NOT NULL,
     quantity int NOT NULL,
-    PRIMARY KEY (player_id, card_id, grade),
+    PRIMARY KEY (player_id, card_id, grade)
 );
 CREATE INDEX ON player_card (
     card_id,
