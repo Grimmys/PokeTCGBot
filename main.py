@@ -8,9 +8,10 @@ import discord
 from discord import Intents, Embed
 from discord.app_commands import locale_str as _T
 from discord.ext.commands import Bot
+from psycopg2.pool import SimpleConnectionPool
 
-import config
-from config_sample import DATABASE_MODE_ENABLED
+from config import HOSTNAME, DB_NAME, USERNAME, PASSWORD, PORT_ID, CONNECTION_POOL_MIN_CONNECTIONS, \
+    CONNECTION_POOL_MAX_CONNECTIONS, DISCORD_TOKEN, DATABASE_MODE_ENABLED
 from src.colors import BLUE
 from src.commands.admin_commands import AdminCog
 from src.commands.booster_command import BoosterCog
@@ -27,6 +28,8 @@ from src.commands.user_info_commands import UserInfoCog
 from src.components.paginated_embed import PaginatedEmbed
 from src.repositories.pickle_file_suggestion_repository import PickleFileSuggestionRepository
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
+from src.repositories.postgres_suggestion_repository import PostgresSuggestionRepository
+from src.repositories.postgres_user_repository import PostgresUserRepository
 from src.scripts.update_database import update_database_schema
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
@@ -130,7 +133,7 @@ async def main():
     setup_logs()
     async with bot:
         bot.loop.create_task(setup_cogs())
-        discord_token = env.get("DISCORD_TOKEN") if env.get("DISCORD_TOKEN") is not None else config.DISCORD_TOKEN
+        discord_token = env.get("DISCORD_TOKEN") if env.get("DISCORD_TOKEN") is not None else DISCORD_TOKEN
         print("Bot starting")
         try:
             await bot.start(discord_token)
@@ -142,7 +145,9 @@ if __name__ == "__main__":
     random.seed()
 
     if DATABASE_MODE_ENABLED:
-        update_database_schema(None)
+        update_database_schema(SimpleConnectionPool(CONNECTION_POOL_MIN_CONNECTIONS, CONNECTION_POOL_MAX_CONNECTIONS,
+                                                    host=HOSTNAME, dbname=DB_NAME, user=USERNAME,
+                                                    password=PASSWORD, port=PORT_ID))
 
     user_repository = PickleFileUserRepository()
     suggestion_repository = PickleFileSuggestionRepository()
