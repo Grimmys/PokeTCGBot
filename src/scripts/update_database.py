@@ -3,14 +3,13 @@ import os
 from pathlib import Path
 from typing import Sequence
 
-from psycopg2.pool import AbstractConnectionPool
 from pypika import Query
 from pypika.queries import QueryBuilder, Table
 
 from src.utils.database_tools import get_cursor
 
 
-def update_database_schema(connection_pool: AbstractConnectionPool):
+def update_database_schema(connection_pool):
     try:
         with get_cursor(connection_pool) as cursor:
             patch_version_table = Table("patch_version")
