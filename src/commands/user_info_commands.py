@@ -3,12 +3,13 @@ import time
 
 import discord
 from PIL import Image
-from discord import Embed, app_commands, File
+from discord import Embed, app_commands
 from discord.app_commands import locale_str as _T
 from discord.ext import commands
 
-from config import DEFAULT_GRADING_COOLDOWN, FAV_GALLERY_PAGES
+from config import DEFAULT_GRADING_COOLDOWN, FAV_GALLERY_PAGES, LOG_CHANNEL_ID
 from src.colors import YELLOW
+from src.components.custom_pages_embed import CustomPagesEmbed, Page, Field
 from src.components.paginated_embed import PaginatedEmbed
 from src.entities.quest_entity import QuestEntity, QuestReward
 from src.services.card_service import CardService
@@ -35,12 +36,19 @@ class UserInfoCog(commands.Cog):
         self.quest_service = quest_service
         self.card_service = card_service
         self._emojis = {}
+        self._log_channel = None
 
     @property
     def emojis(self):
         if not self._emojis:
             self._emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
         return self._emojis
+
+    @property
+    def log_channel(self):
+        if self._log_channel is None:
+            self._log_channel = self.bot.get_channel(LOG_CHANNEL_ID)
+        return self._log_channel
 
     def _compute_quest_reward(self, quest: QuestEntity) -> str:
         match quest.reward_kind:
@@ -86,27 +94,25 @@ class UserInfoCog(commands.Cog):
             if user is None:
                 await interaction.response.send_message(self._t(user_language_id, 'common.user_not_found'))
 
-        emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
+        pages = [Page("🪪", f"---------- {self._t(user_language_id, 'profile_cmd.main_title')} ----------",
+                      [Field(name=f"{self._t(user_language_id, 'common.pokedollar')}s",
+                             value=f"{self.emojis['pokedollar']} {user.money}"),
+                       Field(name=f"{self._t(user_language_id, 'common.basic_booster')}",
+                             value=f"{self.emojis['booster']} {user.boosters_quantity}"),
+                       Field(name=f"{self._t(user_language_id, 'common.promo_booster')}",
+                             value=f"{self.emojis['booster_promo']} {user.promo_boosters_quantity}"),
+                       Field(name=f"{self._t(user_language_id, 'common.grading')}s",
+                             value=f"🔬 {user.grading_quantity}"),
+                       Field(name=self._t(user_language_id, 'common.collection').capitalize(),
+                             value=f"{self.emojis['card']} {len(user.cards)}"),
+                       Field(name=self._t(user_language_id, 'common.last_interaction'),
+                             value=discord_tools.timestamp_to_relative_time_format(user.last_interaction_date),
+                             inline=False)]),
+                 Page("🛡️", f"---------- {self._t(user_language_id, 'profile_cmd.badges_title')} ----------", [],
+                      disable_check=lambda: not is_dev_mode())]
+        custom_pages_embed = CustomPagesEmbed(interaction, pages, discord_user, color=YELLOW)
 
-        embed = Embed(
-            title=f"---------- {self._t(user_language_id, 'profile_cmd.title')} ----------",
-            color=YELLOW)
-        embed.set_author(name=discord_user.display_name, icon_url=discord_user.display_avatar.url)
-
-        embed.add_field(name=f"{self._t(user_language_id, 'common.pokedollar')}s",
-                        value=f"{emojis['pokedollar']} {user.money}")
-        embed.add_field(name=f"{self._t(user_language_id, 'common.basic_booster')}",
-                        value=f"{emojis['booster']} {user.boosters_quantity}")
-        embed.add_field(name=f"{self._t(user_language_id, 'common.promo_booster')}",
-                        value=f"{emojis['booster_promo']} {user.promo_boosters_quantity}")
-        embed.add_field(name=f"{self._t(user_language_id, 'common.grading')}s",
-                        value=f"🔬 {user.grading_quantity}")
-        embed.add_field(name=self._t(user_language_id, 'common.collection').capitalize(),
-                        value=f"{emojis['card']} {len(user.cards)}")
-        embed.add_field(name=self._t(user_language_id, 'common.last_interaction'),
-                        value=discord_tools.timestamp_to_relative_time_format(user.last_interaction_date), inline=False)
-
-        await interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=custom_pages_embed.embed, view=custom_pages_embed.view)
 
     @app_commands.command(name=_T("cooldowns_cmd-name"), description=_T("cooldowns_cmd-desc"))
     async def cooldowns_command(self, interaction: discord.Interaction) -> None:

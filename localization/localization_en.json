@@ -184,7 +184,8 @@
     "profile_cmd": {
         "name": "profile",
         "desc": "Check user profile",
-        "title": "Profile"
+        "main_title": "Profile",
+        "badges_title": "Badges Collection"
     },
     "cooldowns_cmd": {
         "name": "cooldowns",

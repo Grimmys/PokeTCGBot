@@ -184,7 +184,8 @@
     "profile_cmd": {
         "name": "profil",
         "desc": "Affiche le profil du joueur",
-        "title": "Profil"
+        "main_title": "Profil",
+        "badges_title": "Collection de Badges"
     },
     "cooldowns_cmd": {
         "name": "delai_commandes",
