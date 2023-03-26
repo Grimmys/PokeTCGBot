@@ -3,19 +3,14 @@ import os
 from pathlib import Path
 from typing import Sequence
 
-from psycopg2.pool import SimpleConnectionPool
+from psycopg2.pool import AbstractConnectionPool
 from pypika import Query
 from pypika.queries import QueryBuilder, Table
 
-from config import CONNECTION_POOL_MIN_CONNECTIONS, CONNECTION_POOL_MAX_CONNECTIONS, HOSTNAME, PASSWORD, DB_NAME, \
-    USERNAME, PORT_ID
 from src.utils.database_tools import get_cursor
 
 
-def update_database_schema():
-    connection_pool = SimpleConnectionPool(CONNECTION_POOL_MIN_CONNECTIONS, CONNECTION_POOL_MAX_CONNECTIONS,
-                                           host=HOSTNAME, dbname=DB_NAME, user=USERNAME,
-                                           password=PASSWORD, port=PORT_ID)
+def update_database_schema(connection_pool: AbstractConnectionPool):
     try:
         with get_cursor(connection_pool) as cursor:
             patch_version_table = Table("patch_version")

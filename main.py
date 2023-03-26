@@ -142,7 +142,7 @@ if __name__ == "__main__":
     random.seed()
 
     if DATABASE_MODE_ENABLED:
-        update_database_schema()
+        update_database_schema(None)
 
     user_repository = PickleFileUserRepository()
     suggestion_repository = PickleFileSuggestionRepository()
