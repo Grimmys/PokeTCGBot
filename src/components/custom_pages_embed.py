@@ -4,7 +4,7 @@ import discord
 from discord import Interaction, User, Embed
 from discord.ui import View, Button
 
-from src.colors import YELLOW, BLACK
+from src.colors import BLACK
 
 
 class Field:
