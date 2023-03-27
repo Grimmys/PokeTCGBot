@@ -173,5 +173,6 @@ class AdminCog(commands.Cog):
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
             return
 
+        await interaction.response.defer()
         await self.bot.tree.sync()
-        await interaction.response.send_message("All commands have been synced on every servers ✅")
+        await interaction.edit_original_response(content="All commands have been synced on every servers ✅")
