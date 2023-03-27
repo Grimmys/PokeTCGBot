@@ -29,7 +29,7 @@ class CardService:
         return {card.id: card for card in self._all_cards}
 
     def generate_grade_for_card(self, card: Card, grade: CardGrade) -> None:
-        card_name = f"{card.id}_{grade.in_application_name}.png"
+        card_name = f"{card.id}_{grade.in_application_name.lower()}.png"
         altered_image_path = f"assets/altered_cards/{card_name}"
         card_not_already_computed = not os.path.isfile(altered_image_path)
 

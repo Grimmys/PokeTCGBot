@@ -69,7 +69,7 @@ class SearchCog(commands.Cog):
 
         if with_image:
             if grade is not None and grade.in_application_name != "UNGRADED":
-                entry_card["image"] = f"{card.id}_{grade.in_application_name}.png"
+                entry_card["image"] = f"{card.id}_{grade.in_application_name.lower()}.png"
             else:
                 entry_card["image"] = card.images.large if card.images.large else card.images.small
 
@@ -190,7 +190,7 @@ class SearchCog(commands.Cog):
         random_card: Card = random.choice(list(self.cards_by_id.values()))
         self.card_service.generate_grade_for_card(random_card, grade)
 
-        card_name = f"{random_card.id}_{grade.in_application_name}.png"
+        card_name = f"{random_card.id}_{grade.in_application_name.lower()}.png"
         discord_attachment = File(f"assets/altered_cards/{card_name}")
         embed = Embed(title=random_card.id)
         embed.add_field(name="Grade", value=self._t(user_language_id, grade.translation_key))
