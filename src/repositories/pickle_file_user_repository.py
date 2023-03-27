@@ -210,8 +210,8 @@ class PickleFileUserRepository(UserRepository):
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
             user = users_by_id[user_id]
-            if card_id in user.cards:
-                card_id_in_collection = (card_id, grade_name)
+            card_id_in_collection = (card_id, grade_name)
+            if card_id_in_collection in user.cards:
                 user.cards[card_id_in_collection] -= 1
                 if user.cards[card_id_in_collection] == 0:
                     del user.cards[card_id_in_collection]
