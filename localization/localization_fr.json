@@ -93,7 +93,7 @@
         "response_msg": "L'utilisateur {user} a été débanni"
     },
     "settings_cmd": {
-        "name": "parametres",
+        "name": "paramètres",
         "desc": "Accès aux paramètres de votre profil",
         "title": "Préférences",
         "language_field_name": "Langue",
@@ -154,21 +154,21 @@
         "success_buy": "Félicitations pour vos achats"
     },
     "buy_gradings_cmd": {
-        "name": "achat_evaluations",
+        "name": "achat_évaluations",
         "desc": "Achète des actions d'évaluation de cartes",
         "negative_quantity": "Nah, c'est un magasin, pas un vide-grenier: je ne vais pas acheter votre stock !",
         "not_enough_money": "Vous êtes trop pauvre pour cet achat",
         "success_buy": "Félicitations pour vos achats"
     },
     "send_cards_cmd": {
-        "name": "transferer_cartes",
+        "name": "transférer_cartes",
         "desc": "Transférer des cartes à un autre joueur",
         "same_user": "Vous ne pouvez pas envoyer des cartes à... vous-même",
         "missing_cards": "Vous ne possédez pas toutes les cartes, le transfert est annulé",
         "cards_transferred": "Cartes envoyées à {user}"
     },
     "send_money_cmd": {
-        "name": "transferer_argent",
+        "name": "transférer_argent",
         "desc": "Transférer des Pokédollars à un autre joueur",
         "same_user": "Vous ne pouvez pas envoyer des Pokédollars à... vous-même",
         "negative_amount": "Non, vous ne pouvez pas voler les Pokédollars de quelqu'un d'autre",
@@ -204,7 +204,7 @@
         }
     },
     "cooldowns_cmd": {
-        "name": "delai_commandes",
+        "name": "délai_commandes",
         "desc": "Affiche le temps d'attente restant pour chaque commande à délai",
         "title": "Temps d'attente des commandes",
         "time_between_cmds": "Temps de récupération de base : ",
@@ -212,7 +212,7 @@
         "available": "Disponible"
     },
     "quests_cmd": {
-        "name": "quetes",
+        "name": "quêtes",
         "desc": "Affiche les quêtes actives",
         "title": "Quêtes",
         "booster_description": "Ouvrir {number} Boosters de base",
@@ -323,7 +323,7 @@
         "3": "Excellente"
     },
     "grade_cmd": {
-        "name": "evaluation",
+        "name": "évaluation",
         "desc": "Évaluer une carte ne l'ayant pas encore été",
         "no_available_copy": "Vous ne possédez pas de copie non-évaluée de cette carte.",
         "card_has_been_grade": "La carte `{card_id}` a été évaluée comme étant « {grade} »."
