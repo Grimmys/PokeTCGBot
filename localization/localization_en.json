@@ -175,6 +175,15 @@
         "not_enough_money": "You don't have that much Pokémon Dollars",
         "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
     },
+    "secured_trade_cmd": {
+        "name": "secured_trade",
+        "desc": "Trading of cards and/or money with another player, with confirmation required",
+        "title": "Trade proposition",
+        "confirmation_label": "Confirm",
+        "trade_confirmed_response_msg": "Trade has been confirmed and processed",
+        "same_user": "You can't trade with... yourself",
+        "wrong_confirmation_user": "Only {user} can confirm the trade"
+    },
     "drop_rates_cmd": {
         "name": "drop_rates",
         "desc": "Get the probability for each tier of cards to be in a booster",

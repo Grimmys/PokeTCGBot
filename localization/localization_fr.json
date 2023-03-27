@@ -175,6 +175,15 @@
         "not_enough_money": "Vous ne possédez pas autant de Pokédollars",
         "money_transferred": "{amount} Pokédollars ont été envoyé à {user}"
     },
+    "secured_trade_cmd": {
+        "name": "échange_sécurisé",
+        "desc": "Échange de cartes et/ou d'argent entre deux joueurs avec confirmation requise",
+        "title": "Proposition d'échange",
+        "confirmation_label": "Valider",
+        "trade_confirmed_response_msg": "L'échange a été validé et réalisé",
+        "same_user": "Vous ne pouvez pas échanger avec... vous-même",
+        "wrong_confirmation_user": "Uniquement {user} peut valider l'échange"
+    },
     "drop_rates_cmd": {
         "name": "taux_drop_cartes",
         "desc": "Table des taux d'obtention pour chaque tier de carte d'être dans un booster",
