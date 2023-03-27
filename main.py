@@ -100,6 +100,7 @@ async def support_command(interaction: discord.Interaction) -> None:
 async def on_ready():
     type_service.load_emojis({emoji.name: str(emoji) for emoji in bot.emojis})
 
+
 def setup_logs():
     logger = logging.getLogger("discord")
     logger.setLevel(logging.DEBUG)
