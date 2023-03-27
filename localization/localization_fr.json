@@ -182,6 +182,8 @@
         "confirmation_label": "Valider",
         "trade_confirmed_response_msg": "L'échange a été validé et réalisé",
         "same_user": "Vous ne pouvez pas échanger avec... vous-même",
+        "author_missing_cards": "Vous ne possédez pas toutes les cartes mentionnées",
+        "other_player_missing_cards": "{user} ne possède pas toutes les cartes mentionnées",
         "wrong_confirmation_user": "Uniquement {user} peut valider l'échange"
     },
     "drop_rates_cmd": {
@@ -225,7 +227,7 @@
         "invalid_slot_id": "Cet emplacement est invalide",
         "invalid_page_id": "Cette page n'existe pas",
         "missing_card": "Vous ne pouvez pas ajouter une carte que vous ne possédez pas à votre liste de cartes préférées",
-                "ungraded_card": "Vous ne pouvez pas ajouter une carte non-évaluée à votre liste de cartes préférées",
+        "ungraded_card": "Vous ne pouvez pas ajouter une carte non-évaluée à votre liste de cartes préférées",
         "response_msg": "Carte ajoutée"
     },
     "favorite_cards_cmd": {

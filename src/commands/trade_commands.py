@@ -109,7 +109,15 @@ class TradingCog(commands.Cog):
             return
 
         own_card_ids_split: list[str] = own_card_ids.split()
+        if not self.user_service.user_has_cards(user, own_card_ids_split):
+            await interaction.response.send_message(self._t(user_language_id, 'secured_trade_cmd.author_missing_cards'))
+            return
+
         other_player_card_ids_split: list[str] = other_player_card_ids.split()
+        if not self.user_service.user_has_cards(other_user, other_player_card_ids_split):
+            await interaction.response.send_message(self._t(user_language_id,
+                                                            'secured_trade_cmd.other_player_missing_cards')
+                                                    .format(user=other_user.name_tag))
 
         embed = Embed(
             title=f"---------- {self._t(user_language_id, 'secured_trade_cmd.title')} ----------",
@@ -122,7 +130,8 @@ class TradingCog(commands.Cog):
         async def validate_trade(confirm_interaction: discord.Interaction):
             if confirm_interaction.user.id != other_user.id:
                 await confirm_interaction.response.send_message(
-                    self._t(user_language_id, 'secured_trade_cmd.wrong_confirmation_user').format(user=other_user.name_tag),
+                    self._t(user_language_id, 'secured_trade_cmd.wrong_confirmation_user').format(
+                        user=other_user.name_tag),
                     delete_after=2
                 )
 

@@ -182,6 +182,8 @@
         "confirmation_label": "Confirm",
         "trade_confirmed_response_msg": "Trade has been confirmed and processed",
         "same_user": "You can't trade with... yourself",
+        "author_missing_cards": "Your don't own all the cards listed",
+        "other_player_missing_cards": "{user} doesn't own all the cards listed",
         "wrong_confirmation_user": "Only {user} can confirm the trade"
     },
     "drop_rates_cmd": {

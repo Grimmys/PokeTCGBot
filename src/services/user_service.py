@@ -155,6 +155,14 @@ class UserService:
         self._user_repository.change_money(receiver_id, amount)
         return True
 
+    def user_has_cards(self, user: UserEntity, card_ids: list[str]) -> bool:
+        parsed_card_ids: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id) for card_id in card_ids]
+
+        for card in parsed_card_ids:
+            if card not in user.cards:
+                return False
+        return True
+
     def get_number_users(self):
         return len(self._user_repository.get_all())
 
