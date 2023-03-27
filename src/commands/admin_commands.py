@@ -163,3 +163,15 @@ class AdminCog(commands.Cog):
         else:
             await interaction.response.send_message(
                 self.t(user_language_id, 'common.user_not_found'))
+
+    @app_commands.command(name="sync", description="Admin command to refresh the commands on each server the bot "
+                                                   "currently is")
+    async def sync_command(self, interaction: discord.Interaction) -> None:
+        user_language_id = self.settings_service.get_user_language_id(interaction.user)
+
+        if interaction.user.id not in BOT_ADMIN_USER_IDS:
+            await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        await self.bot.tree.sync()
+        await interaction.response.send_message("All commands have been synced on every servers ✅")
