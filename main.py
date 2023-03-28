@@ -119,7 +119,7 @@ async def setup_cogs():
         BoosterCog(bot, settings_service, localization_service, user_service,
                    rarity_service, type_service, quest_service))
     await bot.add_cog(ShoppingCog(bot, user_service, localization_service))
-    await bot.add_cog(TradingCog(bot, user_service, localization_service))
+    await bot.add_cog(TradingCog(bot, user_service, card_service, localization_service))
     await bot.add_cog(UserInfoCog(bot, user_service, localization_service, quest_service, card_service))
     await bot.add_cog(SearchCog(bot, settings_service, localization_service, user_service, card_service))
     await bot.add_cog(RankingCog(bot, settings_service, localization_service, user_service))

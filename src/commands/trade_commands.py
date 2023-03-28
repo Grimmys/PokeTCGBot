@@ -6,17 +6,20 @@ from discord.ui import View, Button
 
 from config import LOG_CHANNEL_ID
 from src.colors import GREEN
+from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
+from src.utils.card_grade import card_grade_from
 from src.utils.flags import is_dev_mode
 
 
 class TradingCog(commands.Cog):
-    def __init__(self, bot: commands.Bot, user_service: UserService,
+    def __init__(self, bot: commands.Bot, user_service: UserService, card_service: CardService,
                  localization_service: LocalizationService) -> None:
         self.bot = bot
         self._log_channel = None
         self.user_service = user_service
+        self.card_service = card_service
         self._t = localization_service.get_string
 
     @property
@@ -44,8 +47,9 @@ class TradingCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'send_cards_cmd.same_user'))
             return
 
-        card_ids_list: list[str] = card_ids.split()
-        success_transfer = self.user_service.transfer_cards(user.id, other_user.id, card_ids_list)
+        parsed_card_ids: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id)
+                                                  for card_id in card_ids.split()]
+        success_transfer = self.user_service.transfer_cards(user.id, other_user.id, parsed_card_ids)
         if not success_transfer:
             await interaction.response.send_message(self._t(user_language_id, 'send_cards_cmd.missing_cards'))
             return
@@ -84,6 +88,14 @@ class TradingCog(commands.Cog):
         await interaction.response.send_message(self._t(user_language_id, 'send_money_cmd.money_transferred')
                                                 .format(user=other_user.name_tag, amount=amount))
 
+    def _format_card_for_trade(self, card_id: str, grade_name: str, user_language_id: int) -> str:
+        card = self.card_service.get_card_by_id(card_id)
+        grade_part = ""
+        if grade_name != "UNGRADED":
+            grade = card_grade_from(grade_name)
+            grade_part = f", {self._t(user_language_id, grade.translation_key)}"
+        return f"{card_id} ({card.rarity}{grade_part})"
+
     @app_commands.command(name=_T("secured_trade_cmd-name"), description=_T("secured_trade_cmd-desc"))
     async def secured_trade_command(self, interaction: discord.Interaction, member: discord.User, own_card_ids: str,
                                     other_player_card_ids: str) -> None:
@@ -108,12 +120,14 @@ class TradingCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'secured_trade_cmd.same_user'))
             return
 
-        own_card_ids_split: list[str] = own_card_ids.split()
+        own_card_ids_split: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id) for
+                                                     card_id in own_card_ids.split()]
         if not self.user_service.user_has_cards(user, own_card_ids_split):
             await interaction.response.send_message(self._t(user_language_id, 'secured_trade_cmd.author_missing_cards'))
             return
 
-        other_player_card_ids_split: list[str] = other_player_card_ids.split()
+        other_player_card_ids_split: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id) for
+                                                              card_id in other_player_card_ids.split()]
         if not self.user_service.user_has_cards(other_user, other_player_card_ids_split):
             await interaction.response.send_message(self._t(user_language_id,
                                                             'secured_trade_cmd.other_player_missing_cards')
@@ -124,8 +138,12 @@ class TradingCog(commands.Cog):
             color=GREEN)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-        embed.add_field(name=f"{user.name_tag}:", value=", ".join(own_card_ids_split), inline=False)
-        embed.add_field(name=f"{other_user.name_tag}:", value=", ".join(other_player_card_ids_split), inline=False)
+        formatted_own_card_ids = [self._format_card_for_trade(card_id, grade, user_language_id)
+                                  for (card_id, grade) in own_card_ids_split]
+        embed.add_field(name=f"{user.name_tag}:", value=", ".join(formatted_own_card_ids), inline=False)
+        formatted_other_player_card_ids = [self._format_card_for_trade(card_id, grade, user_language_id)
+                                           for (card_id, grade) in other_player_card_ids_split]
+        embed.add_field(name=f"{other_user.name_tag}:", value=", ".join(formatted_other_player_card_ids), inline=False)
 
         async def validate_trade(confirm_interaction: discord.Interaction):
             if confirm_interaction.user.id != other_user.id:
@@ -134,6 +152,9 @@ class TradingCog(commands.Cog):
                         user=other_user.name_tag),
                     delete_after=2
                 )
+
+            self.user_service.transfer_cards(user.id, other_user.id, own_card_ids_split)
+            self.user_service.transfer_cards(other_user.id, user.id, other_player_card_ids_split)
 
             await confirm_interaction.response.send_message(
                 self._t(user_language_id, 'secured_trade_cmd.trade_confirmed_response_msg'),

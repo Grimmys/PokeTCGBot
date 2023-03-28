@@ -15,6 +15,7 @@ CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
 class CardService:
     def __init__(self, localization_service: LocalizationService):
         self._all_cards = pickle.load(open(CARDS_PICKLE_FILE_LOCATION, "rb"))
+        self._all_cards_by_id = {card.id: card for card in self._all_cards}
         self.grade_names_by_language = []
         self.t = localization_service.get_string
         for language in localization_service.supported_languages:
@@ -25,8 +26,11 @@ class CardService:
                            self.t(language.id, "grade.3").lower()]
             self.grade_names_by_language.append(grade_names)
 
+    def get_card_by_id(self, card_id: str) -> Card:
+        return self._all_cards_by_id[card_id]
+
     def get_all_cards_by_id(self) -> dict[str, Card]:
-        return {card.id: card for card in self._all_cards}
+        return self._all_cards_by_id
 
     def generate_grade_for_card(self, card: Card, grade: CardGrade) -> None:
         card_name = f"{card.id}_{grade.in_application_name.lower()}.png"

@@ -138,11 +138,9 @@ class UserService:
     def get_top_users_collection(self) -> list[UserEntity]:
         return self._user_repository.get_top_users_by_cards(NUMBER_TOP_USERS)
 
-    def transfer_cards(self, sender_id: int, receiver_id: int, card_ids: list[str]) -> bool:
-        parsed_card_ids: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id) for card_id in card_ids]
-
-        if self._user_repository.remove_cards_from_collection(sender_id, parsed_card_ids):
-            self._user_repository.add_cards_to_collection(receiver_id, parsed_card_ids)
+    def transfer_cards(self, sender_id: int, receiver_id: int, card_ids: list[tuple[str, str]]) -> bool:
+        if self._user_repository.remove_cards_from_collection(sender_id, card_ids):
+            self._user_repository.add_cards_to_collection(receiver_id, card_ids)
             return True
         return False
 
@@ -155,10 +153,8 @@ class UserService:
         self._user_repository.change_money(receiver_id, amount)
         return True
 
-    def user_has_cards(self, user: UserEntity, card_ids: list[str]) -> bool:
-        parsed_card_ids: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id) for card_id in card_ids]
-
-        for card in parsed_card_ids:
+    def user_has_cards(self, user: UserEntity, card_with_grade_ids: list[tuple[str, str]]) -> bool:
+        for card in card_with_grade_ids:
             if card not in user.cards:
                 return False
         return True
