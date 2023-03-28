@@ -1,7 +1,7 @@
 import random
 import time
 from datetime import date, datetime, timedelta
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Iterable
 
 import discord
 
@@ -153,7 +153,7 @@ class UserService:
         self._user_repository.change_money(receiver_id, amount)
         return True
 
-    def user_has_cards(self, user: UserEntity, card_with_grade_ids: list[tuple[str, str]]) -> bool:
+    def user_has_cards(self, user: UserEntity, card_with_grade_ids: Iterable[tuple[str, str]]) -> bool:
         for card in card_with_grade_ids:
             if card not in user.cards:
                 return False

@@ -120,14 +120,14 @@ class TradingCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'secured_trade_cmd.same_user'))
             return
 
-        own_card_ids_split: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id) for
-                                                     card_id in own_card_ids.split()]
+        own_card_ids_split: set[tuple[str, str]] = set(self.card_service.parse_card_id(card_id) for
+                                                       card_id in own_card_ids.split())
         if not self.user_service.user_has_cards(user, own_card_ids_split):
             await interaction.response.send_message(self._t(user_language_id, 'secured_trade_cmd.author_missing_cards'))
             return
 
-        other_player_card_ids_split: list[tuple[str, str]] = [self.card_service.parse_card_id(card_id) for
-                                                              card_id in other_player_card_ids.split()]
+        other_player_card_ids_split: set[tuple[str, str]] = set(self.card_service.parse_card_id(card_id) for
+                                                              card_id in other_player_card_ids.split())
         if not self.user_service.user_has_cards(other_user, other_player_card_ids_split):
             await interaction.response.send_message(self._t(user_language_id,
                                                             'secured_trade_cmd.other_player_missing_cards')
@@ -154,8 +154,8 @@ class TradingCog(commands.Cog):
                 )
                 return
 
-            self.user_service.transfer_cards(user.id, other_user.id, own_card_ids_split)
-            self.user_service.transfer_cards(other_user.id, user.id, other_player_card_ids_split)
+            self.user_service.transfer_cards(user.id, other_user.id, list(own_card_ids_split))
+            self.user_service.transfer_cards(other_user.id, user.id, list(other_player_card_ids_split))
 
             await confirm_interaction.response.send_message(
                 self._t(user_language_id, 'secured_trade_cmd.trade_confirmed_response_msg'),
