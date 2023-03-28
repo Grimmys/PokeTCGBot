@@ -152,6 +152,7 @@ class TradingCog(commands.Cog):
                         user=other_user.name_tag),
                     delete_after=2
                 )
+                return
 
             self.user_service.transfer_cards(user.id, other_user.id, own_card_ids_split)
             self.user_service.transfer_cards(other_user.id, user.id, other_player_card_ids_split)
