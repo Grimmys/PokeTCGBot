@@ -12,6 +12,8 @@ from src.services.user_service import UserService
 from src.utils.card_grade import card_grade_from
 from src.utils.flags import is_dev_mode
 
+TRADE_CARDS_LIMIT = 20
+
 
 class TradingCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService, card_service: CardService,
@@ -122,12 +124,23 @@ class TradingCog(commands.Cog):
 
         own_card_ids_split: set[tuple[str, str]] = set(self.card_service.parse_card_id(card_id) for
                                                        card_id in own_card_ids.split())
+        if len(own_card_ids_split) > TRADE_CARDS_LIMIT:
+            await interaction.response.send_message(
+                self._t(user_language_id, 'secured_trade_cmd.author_too_many_cards').format(limit=TRADE_CARDS_LIMIT))
+            return
+
         if not self.user_service.user_has_cards(user, own_card_ids_split):
             await interaction.response.send_message(self._t(user_language_id, 'secured_trade_cmd.author_missing_cards'))
             return
 
         other_player_card_ids_split: set[tuple[str, str]] = set(self.card_service.parse_card_id(card_id) for
-                                                              card_id in other_player_card_ids.split())
+                                                                card_id in other_player_card_ids.split())
+        if len(other_player_card_ids_split) > TRADE_CARDS_LIMIT:
+            await interaction.response.send_message(self._t(
+                user_language_id, 'secured_trade_cmd.other_player_too_many_cards').format(user=other_user.name_tag,
+                                                                                          limit=TRADE_CARDS_LIMIT))
+            return
+
         if not self.user_service.user_has_cards(other_user, other_player_card_ids_split):
             await interaction.response.send_message(self._t(user_language_id,
                                                             'secured_trade_cmd.other_player_missing_cards')
