@@ -167,8 +167,33 @@ class TradingCog(commands.Cog):
                 )
                 return
 
-            self.user_service.transfer_cards(user.id, other_user.id, list(own_card_ids_split))
-            self.user_service.transfer_cards(other_user.id, user.id, list(other_player_card_ids_split))
+            success_transfer = self.user_service.transfer_cards(user.id, other_user.id, list(own_card_ids_split))
+            if not success_transfer:
+                await confirm_interaction.response.send_message(
+                    self._t(user_language_id, 'secured_trade_cmd.author_missing_cards'))
+                await self.log_channel.send(
+                    f"{user.id} ({user.name_tag}) cannot send '{own_card_ids_split}' card(s) to "
+                    f"{other_user.id} ({other_user.name_tag}) in confirmation step of secured trade")
+                return
+
+            success_second_transfer = self.user_service.transfer_cards(other_user.id, user.id,
+                                                                       list(other_player_card_ids_split))
+            if not success_second_transfer:
+                await confirm_interaction.response.send_message(
+                    self._t(user_language_id, 'secured_trade_cmd.other_player_missing_cards'))
+                self.user_service.transfer_cards(other_user.id, user.id, list(own_card_ids_split))
+                await self.log_channel.send(
+                    f"{other_user.id} ({other_user.name_tag}) cannot send '{other_player_card_ids_split}' card(s) to "
+                    f"{user.id} ({user.name_tag}) in confirmation step of secured trade, "
+                    f"reverting first part of the trade")
+                return
+
+            await self.log_channel.send(
+                f"{user.id} ({user.name_tag}) sent '{own_card_ids_split}' card(s) to "
+                f"{other_user.id} ({other_user.name_tag}) through secured trade")
+            await self.log_channel.send(
+                f"{other_user.id} ({other_user.name_tag}) sent '{other_player_card_ids_split}' card(s) to "
+                f"{user.id} ({user.name_tag}) through secured trade")
 
             await confirm_interaction.response.send_message(
                 self._t(user_language_id, 'secured_trade_cmd.trade_confirmed_response_msg'),
