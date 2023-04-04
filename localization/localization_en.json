@@ -172,7 +172,7 @@
         "desc": "Send Pokémon Dollars to another player",
         "same_user": "You can't send money to... yourself",
         "negative_amount": "No, you can't steal someone else's Pokémon Dollars",
-        "not_enough_money": "You don't have that much Pokémon Dollars",
+        "not_enough_money": "You don't have that many Pokémon Dollars",
         "money_transferred": "{amount} Pokémon Dollars have been sent to {user}"
     },
     "secured_trade_cmd": {
@@ -182,8 +182,12 @@
         "confirmation_label": "Confirm",
         "trade_confirmed_response_msg": "Trade has been confirmed and processed",
         "same_user": "You can't trade with... yourself",
+        "author_negative_amount": "No, you can't steal someone else's Pokémon Dollars",
+        "author_not_enough_money": "You don't have that many Pokémon Dollars",
         "author_too_many_cards": "You can't send more than {limit} cards at a time",
         "author_missing_cards": "Your don't own all the cards listed",
+        "other_player_negative_amount": "{user} can't steal someone else's Pokémon Dollars",
+        "other_player_not_enough_money": "{user} doesn't have that many Pokémon Dollars",
         "other_player_too_many_cards": "{user} can't send more than {limit} cards at a time",
         "other_player_missing_cards": "{user} doesn't own all the cards listed",
         "wrong_confirmation_user": "Only {user} can confirm the trade"

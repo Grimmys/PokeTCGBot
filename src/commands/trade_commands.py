@@ -19,10 +19,17 @@ class TradingCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService, card_service: CardService,
                  localization_service: LocalizationService) -> None:
         self.bot = bot
+        self._emojis = {}
         self._log_channel = None
         self.user_service = user_service
         self.card_service = card_service
         self._t = localization_service.get_string
+
+    @property
+    def emojis(self):
+        if not self._emojis:
+            self._emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
+        return self._emojis
 
     @property
     def log_channel(self):
@@ -113,7 +120,6 @@ class TradingCog(commands.Cog):
             return
 
         other_user = self.user_service.get_user(member)
-
         if other_user is None:
             await interaction.response.send_message(self._t(user_language_id, 'common.user_not_found'))
             return
@@ -122,25 +128,51 @@ class TradingCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'secured_trade_cmd.same_user'))
             return
 
-        own_card_ids_split: set[tuple[str, str]] = set(self.card_service.parse_card_id(card_id) for
-                                                       card_id in own_card_ids.split())
+        own_card_ids_split: set[tuple[str, str]] = set()
+        own_money: int = 0
+        for item in own_card_ids.split():
+            if item.isdigit():
+                own_money = int(item)
+            else:
+                own_card_ids_split.add(self.card_service.parse_card_id(item))
         if len(own_card_ids_split) > TRADE_CARDS_LIMIT:
             await interaction.response.send_message(
                 self._t(user_language_id, 'secured_trade_cmd.author_too_many_cards').format(limit=TRADE_CARDS_LIMIT))
             return
-
+        if own_money < 0:
+            await interaction.response.send_message(
+                self._t(user_language_id, 'secured_trade_cmd.author_negative_amount'))
+            return
+        if own_money > user.money:
+            await interaction.response.send_message(self._t(user_language_id,
+                                                            'secured_trade_cmd.author_not_enough_money'))
+            return
         if not self.user_service.user_has_cards(user, own_card_ids_split):
             await interaction.response.send_message(self._t(user_language_id, 'secured_trade_cmd.author_missing_cards'))
             return
 
-        other_player_card_ids_split: set[tuple[str, str]] = set(self.card_service.parse_card_id(card_id) for
-                                                                card_id in other_player_card_ids.split())
+        other_player_card_ids_split: set[tuple[str, str]] = set()
+        other_player_money: int = 0
+        for item in other_player_card_ids.split():
+            if item.isdigit():
+                other_player_money = int(item)
+            else:
+                own_card_ids_split.add(self.card_service.parse_card_id(item))
         if len(other_player_card_ids_split) > TRADE_CARDS_LIMIT:
             await interaction.response.send_message(self._t(
                 user_language_id, 'secured_trade_cmd.other_player_too_many_cards').format(user=other_user.name_tag,
                                                                                           limit=TRADE_CARDS_LIMIT))
             return
-
+        if other_player_money < 0:
+            await interaction.response.send_message(self._t(user_language_id,
+                                                            'secured_trade_cmd.other_player_negative_amount')
+                                                    .format(user=other_user.name_tag))
+            return
+        if other_player_money > other_user.money:
+            await interaction.response.send_message(self._t(user_language_id,
+                                                            'secured_trade_cmd.other_player_not_enough_money')
+                                                    .format(user=other_user.name_tag))
+            return
         if not self.user_service.user_has_cards(other_user, other_player_card_ids_split):
             await interaction.response.send_message(self._t(user_language_id,
                                                             'secured_trade_cmd.other_player_missing_cards')
@@ -153,10 +185,15 @@ class TradingCog(commands.Cog):
 
         formatted_own_card_ids = [self._format_card_for_trade(card_id, grade, user_language_id)
                                   for (card_id, grade) in own_card_ids_split]
-        embed.add_field(name=f"{user.name_tag}:", value=", ".join(formatted_own_card_ids), inline=False)
+        embed.add_field(name=f"{user.name_tag}:",
+                        value=", ".join(formatted_own_card_ids) + f", {own_money} {self.emojis['pokedollar']}",
+                        inline=False)
         formatted_other_player_card_ids = [self._format_card_for_trade(card_id, grade, user_language_id)
                                            for (card_id, grade) in other_player_card_ids_split]
-        embed.add_field(name=f"{other_user.name_tag}:", value=", ".join(formatted_other_player_card_ids), inline=False)
+        embed.add_field(name=f"{other_user.name_tag}:",
+                        value=", ".join(
+                            formatted_other_player_card_ids) + f", {other_player_money} {self.emojis['pokedollar']}",
+                        inline=False)
 
         async def validate_trade(confirm_interaction: discord.Interaction):
             if confirm_interaction.user.id != other_user.id:
@@ -167,7 +204,8 @@ class TradingCog(commands.Cog):
                 )
                 return
 
-            success_transfer = self.user_service.transfer_cards(user.id, other_user.id, list(own_card_ids_split))
+            success_transfer = self.user_service.transfer_cards_and_money(user.id, other_user.id,
+                                                                          list(own_card_ids_split), own_money)
             if not success_transfer:
                 await confirm_interaction.response.send_message(
                     self._t(user_language_id, 'secured_trade_cmd.author_missing_cards'))
@@ -176,12 +214,13 @@ class TradingCog(commands.Cog):
                     f"{other_user.id} ({other_user.name_tag}) in confirmation step of secured trade")
                 return
 
-            success_second_transfer = self.user_service.transfer_cards(other_user.id, user.id,
-                                                                       list(other_player_card_ids_split))
+            success_second_transfer = self.user_service.transfer_cards_and_money(other_user.id, user.id,
+                                                                                 list(other_player_card_ids_split),
+                                                                                 other_player_money)
             if not success_second_transfer:
-                await confirm_interaction.response.send_message(
-                    self._t(user_language_id, 'secured_trade_cmd.other_player_missing_cards'))
-                self.user_service.transfer_cards(other_user.id, user.id, list(own_card_ids_split))
+                self.user_service.transfer_cards_and_money(other_user.id, user.id, list(own_card_ids_split), own_money)
+                await confirm_interaction.response.send_message(self._t(user_language_id,
+                                                                        'secured_trade_cmd.other_player_missing_cards'))
                 await self.log_channel.send(
                     f"{other_user.id} ({other_user.name_tag}) cannot send '{other_player_card_ids_split}' card(s) to "
                     f"{user.id} ({user.name_tag}) in confirmation step of secured trade, "

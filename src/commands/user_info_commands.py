@@ -34,12 +34,12 @@ class UserInfoCog(commands.Cog):
                  localization_service: LocalizationService, quest_service: QuestService,
                  card_service: CardService) -> None:
         self.bot = bot
+        self._emojis = {}
+        self._log_channel = None
         self.user_service = user_service
         self._t = localization_service.get_string
         self.quest_service = quest_service
         self.card_service = card_service
-        self._emojis = {}
-        self._log_channel = None
 
     @property
     def emojis(self):

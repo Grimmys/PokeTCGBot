@@ -182,8 +182,12 @@
         "confirmation_label": "Valider",
         "trade_confirmed_response_msg": "L'échange a été validé et réalisé",
         "same_user": "Vous ne pouvez pas échanger avec... vous-même",
+        "author_negative_amount": "Non, vous ne pouvez pas voler les Pokédollars de quelqu'un d'autre",
+        "author_not_enough_money": "Vous ne possédez pas autant de Pokédollars",
         "author_too_many_cards": "Vous ne pouvez pas envoyer plus de {limit} cartes à la fois",
         "author_missing_cards": "Vous ne possédez pas toutes les cartes mentionnées",
+        "other_player_negative_amount": "{user} ne peut pas voler les Pokédollars de quelqu'un d'autre",
+        "other_player_not_enough_money": "{user} ne possède pas autant de Pokédollars",
         "other_player_too_many_cards": "{user} ne peut pas envoyer plus de {limit} cartes à la fois",
         "other_player_missing_cards": "{user} ne possède pas toutes les cartes mentionnées",
         "wrong_confirmation_user": "Uniquement {user} peut valider l'échange"

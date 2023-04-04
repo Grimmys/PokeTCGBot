@@ -153,6 +153,20 @@ class UserService:
         self._user_repository.change_money(receiver_id, amount)
         return True
 
+    def transfer_cards_and_money(self, sender_id: int, receiver_id: int, card_ids: list[tuple[str, str]],
+                                 amount: int) -> bool:
+        sender = self._user_repository.get_user(sender_id)
+        if sender.money < amount:
+            return False
+
+        if self._user_repository.remove_cards_from_collection(sender_id, card_ids):
+            self._user_repository.add_cards_to_collection(receiver_id, card_ids)
+            self._user_repository.change_money(sender_id, - amount)
+            self._user_repository.change_money(receiver_id, amount)
+            return True
+        
+        return False
+
     def user_has_cards(self, user: UserEntity, card_with_grade_ids: Iterable[tuple[str, str]]) -> bool:
         for card in card_with_grade_ids:
             if card not in user.cards:
