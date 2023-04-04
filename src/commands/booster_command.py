@@ -197,7 +197,8 @@ class BoosterCog(commands.Cog):
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
         if with_image:
-            formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
+            formatted_cards = [self._format_card_for_embed(card, user_language_id,
+                                                           user.count_quantity_of_card(card.id) == 0)
                                for card in drawn_cards]
 
             paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
@@ -211,7 +212,7 @@ class BoosterCog(commands.Cog):
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
             for card in drawn_cards:
-                self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
+                self._display_full_booster_in_embed(card, embed, user.count_quantity_of_card(card.id) == 0)
 
             await interaction.response.send_message(embed=embed)
 
