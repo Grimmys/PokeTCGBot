@@ -25,7 +25,7 @@ For easier handling of your environment variables, you can put them in a ```.env
 
 Fill also the required config values in the "Required config parameters to replace" section in `config.py` file.
 
-Before the first start-up, you also need to manually fetch the collection of cards by running `scripts/fetch_cards.py`.
+Before the first start-up, you may want to manually fetch the collection of cards to have the latest updated version by running `scripts/fetch_cards.py`.
 
 > :warning: **It will take some time to fetch the whole collection of cards**, so be patient
 
