@@ -49,7 +49,7 @@ class ShoppingCog(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name=_T("buy_boosters_cmd-name"), description=_T("buy_boosters_cmd-desc"))
-    async def buy_boosters_command(self, interaction: discord.Interaction, kind: Literal["Basic", "Promo"],
+    async def buy_boosters_command(self, interaction: discord.Interaction, kind: Literal["basic", "promo"],
                                    quantity: int) -> None:
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
