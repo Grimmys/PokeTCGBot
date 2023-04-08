@@ -4,6 +4,7 @@ from discord import Interaction, User, TextStyle, SelectOption
 from discord.ui import Button, Modal, TextInput, Select
 
 from src.components.paginated_embed import PaginatedEmbed
+from src.services.rarity_service import RarityService
 from src.utils.card_grade import GRADES
 from src.utils.types import EntryCard
 
@@ -23,6 +24,13 @@ class _NameFilterQueryPopup(Modal, title="Filter by name"):
 
 
 class SearchCardsEmbed(PaginatedEmbed):
+
+    rarity_service = None
+
+    @staticmethod
+    def setup_class(rarity_service: RarityService):
+        SearchCardsEmbed.rarity_service = rarity_service
+
     def __init__(self, original_interaction: Interaction, content: Sequence[EntryCard], image_mode: bool,
                  user_language_id: int, page_size: int = 1, inline: bool = False, title: str = None,
                  discord_user: User = None, own_cards_filter_disabled: bool = False,
@@ -54,6 +62,14 @@ class SearchCardsEmbed(PaginatedEmbed):
         grade_filter_select.callback = self.filter_on_cards_grade_action
         grade_filter_select.disabled = grade_filter_disabled
         self.view.add_item(grade_filter_select)
+
+        rarity_filter_select = Select(
+            placeholder=SearchCardsEmbed._t(user_language_id, 'search_cards_embed.filter_by_rarity_label'),
+            options=[SelectOption(label=rarity.upper(),
+                                  value=rarity) for rarity in SearchCardsEmbed.rarity_service.get_all_rarity_names()])
+        rarity_filter_select.callback = self.filter_on_cards_rarity_action
+        rarity_filter_select.disabled = grade_filter_disabled
+        self.view.add_item(rarity_filter_select)
 
     async def filter_on_cards_owned_action(self, interaction: Interaction):
         if interaction.user != self.original_interaction.user:
@@ -97,7 +113,18 @@ class SearchCardsEmbed(PaginatedEmbed):
             return
         self.current_page = 0
         grade_name = interaction.data["values"][0]
-        filter_method = lambda entry_card: self._is_card_matching_rarity(entry_card, grade_name)
+        filter_method = lambda entry_card: self._is_card_matching_grade(entry_card, grade_name)
+        self.content = list(filter(filter_method, self.content))
+        self.refresh_page()
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
+        await interaction.response.defer()
+
+    async def filter_on_cards_rarity_action(self, interaction: Interaction):
+        if interaction.user != self.original_interaction.user:
+            return
+        self.current_page = 0
+        rarity_name = interaction.data["values"][0]
+        filter_method = lambda entry_card: self._is_card_matching_rarity(entry_card, rarity_name)
         self.content = list(filter(filter_method, self.content))
         self.refresh_page()
         await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
@@ -116,9 +143,13 @@ class SearchCardsEmbed(PaginatedEmbed):
         return name.lower() in entry_card["name"].lower()
 
     @staticmethod
-    def _is_card_matching_rarity(entry_card: EntryCard, grade_name: Optional[str]) -> bool:
+    def _is_card_matching_grade(entry_card: EntryCard, grade_name: Optional[str]) -> bool:
         if not grade_name:
             return entry_card["grade"] is None
         if entry_card["grade"] is not None:
             return entry_card["grade"].in_application_name == grade_name
         return False
+
+    @staticmethod
+    def _is_card_matching_rarity(entry_card: EntryCard, rarity_name: str) -> bool:
+        return entry_card["card"].rarity == rarity_name.capitalize()

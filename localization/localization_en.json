@@ -316,7 +316,8 @@
     "search_cards_embed": {
         "filter_by_name_label": "Filter by name",
         "card_name_input": "Card name",
-        "filter_by_grade_label": "Filter by grade"
+        "filter_by_grade_label": "Filter by grade",
+        "filter_by_rarity_label": "Filter by rarity"
     },
     "ranking_cmd": {
         "name": "rankings",

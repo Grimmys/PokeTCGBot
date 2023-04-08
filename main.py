@@ -26,10 +26,9 @@ from src.commands.suggestion_commands import SuggestionCog
 from src.commands.trade_commands import TradingCog
 from src.commands.user_info_commands import UserInfoCog
 from src.components.paginated_embed import PaginatedEmbed
+from src.components.search_cards_embed import SearchCardsEmbed
 from src.repositories.pickle_file_suggestion_repository import PickleFileSuggestionRepository
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
-from src.repositories.postgres_suggestion_repository import PostgresSuggestionRepository
-from src.repositories.postgres_user_repository import PostgresUserRepository
 from src.scripts.update_database import update_database_schema
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
@@ -161,5 +160,6 @@ if __name__ == "__main__":
 
     t = localization_service.get_string
     PaginatedEmbed.setup_class(t)
+    SearchCardsEmbed.setup_class(rarity_service)
 
     asyncio.run(main())

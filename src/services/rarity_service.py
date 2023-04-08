@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from src.entities.rarity_entity import RarityEntity
 
@@ -27,3 +27,6 @@ class RarityService:
         if rarity_name in self._rarities:
             return self._rarities[rarity_name]
         return None
+
+    def get_all_rarity_names(self) -> Sequence[str]:
+        return list(self._rarities.keys())
