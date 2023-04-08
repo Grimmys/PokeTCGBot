@@ -19,17 +19,30 @@ class _NameFilterQueryPopup(Modal, title="Filter by name"):
         self.title = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.filter_by_name_label')
 
     async def on_submit(self, interaction: Interaction):
-        await self.related_embed.filter_on_cards_name_action(interaction, self.name.value)
+        await self.related_embed.filter_on_card_name_action(interaction, self.name.value)
+        await interaction.response.defer()
+
+
+class _SetFilterQueryPopup(Modal, title="Filter by set"):
+    set_name = TextInput(label="Set name", style=TextStyle.short, required=True)
+
+    def __init__(self, related_embed: "SearchCardsEmbed"):
+        super().__init__()
+        self.related_embed = related_embed
+        self.set_name.label = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.set_name_input')
+        self.title = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.filter_by_set_name_label')
+
+    async def on_submit(self, interaction: Interaction):
+        await self.related_embed.filter_on_set_name_action(interaction, self.set_name.value)
         await interaction.response.defer()
 
 
 class SearchCardsEmbed(PaginatedEmbed):
-
-    rarity_service = None
+    _rarity_service = None
 
     @staticmethod
     def setup_class(rarity_service: RarityService):
-        SearchCardsEmbed.rarity_service = rarity_service
+        SearchCardsEmbed._rarity_service = rarity_service
 
     def __init__(self, original_interaction: Interaction, content: Sequence[EntryCard], image_mode: bool,
                  user_language_id: int, page_size: int = 1, inline: bool = False, title: str = None,
@@ -55,6 +68,12 @@ class SearchCardsEmbed(PaginatedEmbed):
         open_name_filter_button.callback = lambda click_interaction: self.open_name_filter_popup(click_interaction)
         self.view.add_item(open_name_filter_button)
 
+        open_set_name_filter_button = Button(
+            label=SearchCardsEmbed._t(user_language_id, 'search_cards_embed.filter_by_set_name_label'))
+        open_set_name_filter_button.callback = lambda click_interaction: self.open_set_name_filter_popup(
+            click_interaction)
+        self.view.add_item(open_set_name_filter_button)
+
         grade_filter_select = Select(
             placeholder=SearchCardsEmbed._t(user_language_id, 'search_cards_embed.filter_by_grade_label'),
             options=[SelectOption(label=SearchCardsEmbed._t(user_language_id, grade.translation_key),
@@ -66,9 +85,8 @@ class SearchCardsEmbed(PaginatedEmbed):
         rarity_filter_select = Select(
             placeholder=SearchCardsEmbed._t(user_language_id, 'search_cards_embed.filter_by_rarity_label'),
             options=[SelectOption(label=rarity.upper(),
-                                  value=rarity) for rarity in SearchCardsEmbed.rarity_service.get_all_rarity_names()])
+                                  value=rarity) for rarity in SearchCardsEmbed._rarity_service.get_all_rarity_names()])
         rarity_filter_select.callback = self.filter_on_cards_rarity_action
-        rarity_filter_select.disabled = grade_filter_disabled
         self.view.add_item(rarity_filter_select)
 
     async def filter_on_cards_owned_action(self, interaction: Interaction):
@@ -98,11 +116,27 @@ class SearchCardsEmbed(PaginatedEmbed):
         name_filter_popup = _NameFilterQueryPopup(self)
         await interaction.response.send_modal(name_filter_popup)
 
-    async def filter_on_cards_name_action(self, interaction: Interaction, name_input: str):
+    async def filter_on_card_name_action(self, interaction: Interaction, name_input: str):
         if interaction.user != self.original_interaction.user:
             return
         self.current_page = 0
         filter_method = lambda entry_card: self._is_card_matching_name(entry_card, name_input)
+        self.content = list(filter(filter_method, self.content))
+        self.refresh_page()
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
+        await interaction.response.defer()
+
+    async def open_set_name_filter_popup(self, interaction: Interaction):
+        if interaction.user != self.original_interaction.user:
+            return
+        set_filter_popup = _SetFilterQueryPopup(self)
+        await interaction.response.send_modal(set_filter_popup)
+
+    async def filter_on_set_name_action(self, interaction: Interaction, name_input: str):
+        if interaction.user != self.original_interaction.user:
+            return
+        self.current_page = 0
+        filter_method = lambda entry_card: self._is_card_matching_set(entry_card, name_input)
         self.content = list(filter(filter_method, self.content))
         self.refresh_page()
         await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
@@ -141,6 +175,10 @@ class SearchCardsEmbed(PaginatedEmbed):
     @staticmethod
     def _is_card_matching_name(entry_card: EntryCard, name: str) -> bool:
         return name.lower() in entry_card["name"].lower()
+
+    @staticmethod
+    def _is_card_matching_set(entry_card: EntryCard, set_name: str) -> bool:
+        return set_name.lower() in entry_card["card"].set.name.lower()
 
     @staticmethod
     def _is_card_matching_grade(entry_card: EntryCard, grade_name: Optional[str]) -> bool:
