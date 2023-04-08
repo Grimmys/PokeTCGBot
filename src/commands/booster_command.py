@@ -187,7 +187,7 @@ class BoosterCog(commands.Cog):
             self.user_service.reset_basic_booster_cooldown(user.id)
 
         drawn_cards = self._generate_booster_cards()
-        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id, drawn_cards))
+        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id.lower(), drawn_cards))
 
         accomplished_quests = self.user_service.update_progress_on_quests(user.id, QuestType.BOOSTER)
         self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
@@ -248,7 +248,7 @@ class BoosterCog(commands.Cog):
             self.user_service.reset_promo_booster_cooldown(user.id)
 
         drawn_cards = self._generate_promo_booster_cards()
-        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id, drawn_cards))
+        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id.lower(), drawn_cards))
 
         self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 

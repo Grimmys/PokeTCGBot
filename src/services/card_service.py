@@ -15,7 +15,7 @@ CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
 class CardService:
     def __init__(self, localization_service: LocalizationService):
         self._all_cards = pickle.load(open(CARDS_PICKLE_FILE_LOCATION, "rb"))
-        self._all_cards_by_id = {card.id: card for card in self._all_cards}
+        self._all_cards_by_id = {card.id.lower(): card for card in self._all_cards}
         self.grade_names_by_language = []
         self.t = localization_service.get_string
         for language in localization_service.supported_languages:
@@ -59,5 +59,5 @@ class CardService:
                     break
             else:
                 actual_grade = "UNGRADED"
-            return actual_card_id, actual_grade
-        return input_card_id, "UNGRADED"
+            return actual_card_id.lower(), actual_grade
+        return input_card_id.lower(), "UNGRADED"

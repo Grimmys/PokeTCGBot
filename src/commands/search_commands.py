@@ -85,14 +85,15 @@ class SearchCog(commands.Cog):
             return
 
         try:
-            card = Card.find(card_id)
+            card_id = card_id.lower()
+            card = self.card_service.get_card_by_id(card_id)
             formatted_card = self._format_card_for_embed(card, True, user_language_id,
                                                          user.count_quantity_of_card(card_id),
                                                          owned_flag=True)
             embed = Embed(title=formatted_card["name"], description=formatted_card["value"], color=ORANGE)
             embed.set_image(url=card.images.large if card.images.large else card.images.small)
             await interaction.response.send_message(embed=embed)
-        except PokemonTcgException:
+        except KeyError:
             await interaction.response.send_message(
                 self._t(user_language_id, 'get_card_cmd.card_not_found').replace("{1}", card_id))
 

@@ -58,6 +58,7 @@ class AdminCog(commands.Cog):
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
             return
 
+        card_id = card_id.lower()
         if self.user_service.add_cards_to_collection(member.id, [card_id]):
             await interaction.response.send_message(
                 self.t(user_language_id, 'give_card_cmd.response_msg').format(user=f"{member.id} ({member.name})",
@@ -74,6 +75,7 @@ class AdminCog(commands.Cog):
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
             return
 
+        card_id = card_id.lower()
         if self.user_service.remove_card_from_collection(member.id, card_id):
             await interaction.response.send_message(
                 self.t(user_language_id, 'remove_card_cmd.response_msg').format(user=f"{member.id} ({member.name})",

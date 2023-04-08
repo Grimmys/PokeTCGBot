@@ -46,7 +46,7 @@ class UserEntity:
         self.promo_boosters_quantity = state.get("promo_boosters_quantity", 0)
         self.grading_quantity: int = state.get("grading_quantity", 0)
         self.cards = state.get("cards", {})
-        self.cards = {(card_id, grade.upper()): quantity for (card_id, grade), quantity in self.cards.items()}
+        self.cards = {(card_id.lower(), grade): quantity for (card_id, grade), quantity in self.cards.items()}
         self.settings = state.get("settings", UserSettingsEntity())
         self.cooldowns = state.get("cooldowns", UserCooldownsEntity())
         self.daily_quests: list[QuestEntity] = state.get("daily_quests", [])

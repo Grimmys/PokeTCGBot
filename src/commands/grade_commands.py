@@ -44,7 +44,8 @@ class GradeCog(commands.Cog):
         return self._log_channel
 
     @app_commands.command(name=_T("grade_cmd-name"), description=_T("grade_cmd-desc"))
-    async def grade_command(self, interaction: discord.Interaction, card_id: str, use_grading_stock: Optional[bool] = False) -> None:
+    async def grade_command(self, interaction: discord.Interaction, card_id: str,
+                            use_grading_stock: Optional[bool] = False) -> None:
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
@@ -52,6 +53,7 @@ class GradeCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
             return
 
+        card_id = card_id.lower()
         if (card_id, "UNGRADED") not in user.cards:
             await interaction.response.send_message(self._t(user_language_id, 'grade_cmd.no_available_copy'))
             return
@@ -88,7 +90,7 @@ class GradeCog(commands.Cog):
         await self.log_channel.send(
             f"{user.id} ({user.name_tag}) graded card {card.id} as '{grade.in_application_name}'")
         await interaction.edit_original_response(content=self._t(user_language_id, 'grade_cmd.card_has_been_grade')
-                                                 .format(card_id=card_id,
+                                                 .format(card_id=card.id,
                                                          grade=self._t(user_language_id, grade.translation_key)))
 
         for quest in accomplished_quests:
