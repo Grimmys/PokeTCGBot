@@ -149,6 +149,12 @@
         "title": "Promo Booster",
         "no_boosters_in_stock": "You have no promo boosters in stock"
     },
+    "set_booster_cmd": {
+        "name": "set_booster",
+        "desc": "Open a booster from a given set",
+        "title": "Set Booster",
+        "no_boosters_in_stock": "You have no {set_id} boosters in stock"
+    },
     "market_booster_cmd": {
         "name": "market_booster",
         "desc": "Check available boosters with their prices",

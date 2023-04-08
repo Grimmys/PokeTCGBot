@@ -1,7 +1,7 @@
 import pickle
 import random
 import time
-from typing import Optional
+from typing import Optional, List
 
 import discord
 from discord import Embed, app_commands
@@ -16,6 +16,7 @@ from src.entities.quest_entity import QuestType
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
 from src.services.rarity_service import RarityService
+from src.services.set_service import SetService
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
@@ -37,8 +38,29 @@ TIER_DROP_RATES = [
 ]
 
 
+async def booster_kind_autocomplete(
+    interaction: discord.Interaction,
+    current: str,
+) -> List[app_commands.Choice[str]]:
+    return [
+               booster_kind
+               for booster_kind in BoosterCog.booster_kinds_choices if current.lower() in booster_kind.name.lower()
+           ][:25]
+
+
 class BoosterCog(commands.Cog):
     CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
+
+    booster_kinds_choices = []
+    booster_kinds = set()
+
+    @staticmethod
+    def setup_class(set_service: SetService):
+        sets = set_service.get_all_sets_by_id()
+        for card_set in sets.values():
+            BoosterCog.booster_kinds_choices.append(app_commands.Choice(name=card_set.name, value=card_set.id))
+        BoosterCog.booster_kinds.update({booster_kind_choice.value for booster_kind_choice in
+                                         BoosterCog.booster_kinds_choices})
 
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
                  localization_service: LocalizationService, user_service: UserService, rarity_service: RarityService,
@@ -112,20 +134,32 @@ class BoosterCog(commands.Cog):
             entry_card["value"] += f"\n{emojis['new']}"
         return entry_card
 
-    def _draw_rare_card(self) -> Card:
-        card_tier = random.choices(["tier_0", "tier_1", "tier_2", "tier_3", "tier_4"], weights=TIER_DROP_RATES)[0]
-        return random.choice(self.cards_by_rarity[card_tier])
+    def _draw_rare_card(self, set_id: Optional[str] = None) -> Card:
+        rare_pool = []
+        while len(rare_pool) == 0:
+            card_tier = random.choices(["tier_0", "tier_1", "tier_2", "tier_3", "tier_4"], weights=TIER_DROP_RATES)[0]
+            rare_pool = self.cards_by_rarity[card_tier]
+            if set_id is not None:
+                rare_pool = list(filter(lambda card: card.set.id == set_id, rare_pool))
+        return random.choice(rare_pool)
 
     @staticmethod
     def _formatted_tier_list(rarity_tier: set[str]) -> str:
         return "\n* ".join(rarity_tier)
 
-    def _generate_booster_cards(self) -> list[Card]:
+    def _generate_booster_cards(self, set_id: Optional[str] = None) -> list[Card]:
         drawn_cards = []
+
+        common_pool = self.cards_by_rarity["common"]
+        uncommon_pool = self.cards_by_rarity["uncommon"]
+
+        if set_id is not None:
+            common_pool = list(filter(lambda card: card.set.id == set_id, common_pool))
+            uncommon_pool = list(filter(lambda card: card.set.id == set_id, uncommon_pool))
 
         # Draw the 5 common cards
         for _ in range(5):
-            card = random.choice(self.cards_by_rarity["common"])
+            card = random.choice(common_pool)
             drawn_cards.append(card)
 
         # Draw the 3 uncommon cards
@@ -133,13 +167,13 @@ class BoosterCog(commands.Cog):
         for _ in range(3):
             if not uncommon_upgrade_triggered and random.random() < config.UNCOMMON_UPGRADE_RATE:
                 uncommon_upgrade_triggered = True
-                card = self._draw_rare_card()
+                card = self._draw_rare_card(set_id)
             else:
-                card = random.choice(self.cards_by_rarity["uncommon"])
+                card = random.choice(uncommon_pool)
             drawn_cards.append(card)
 
         # Draw the rare or higher card
-        card = self._draw_rare_card()
+        card = self._draw_rare_card(set_id)
         drawn_cards.append(card)
 
         return drawn_cards
@@ -275,6 +309,63 @@ class BoosterCog(commands.Cog):
                 self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
 
             await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name=_T("set_booster_cmd-name"), description=_T("set_booster_cmd-desc"))
+    @app_commands.autocomplete(kind=booster_kind_autocomplete)
+    async def set_booster_command(self, interaction: discord.Interaction, kind: str,
+                                  with_image: Optional[bool] = None) -> None:
+        user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
+        user_language_id = user.settings.language_id
+
+        if user.is_banned:
+            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            return
+
+        if kind not in BoosterCog.booster_kinds:
+            await interaction.response.send_message(self._t(user_language_id, 'common.invalid_input'))
+            return
+
+        if kind in user.set_boosters_quantity and user.set_boosters_quantity[kind] > 0:
+            self.user_service.consume_booster(user.id, kind)
+        else:
+            await interaction.response.send_message(self._t(user_language_id,
+                                                            'set_booster_cmd.no_boosters_in_stock').format(set_id=kind))
+            return
+
+        drawn_cards = self._generate_booster_cards(kind)
+        drawn_card_ids = list(map(lambda drawn_card: drawn_card.id.lower(), drawn_cards))
+
+        accomplished_quests = self.user_service.update_progress_on_quests(user.id, QuestType.BOOSTER)
+        self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
+
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) opened a {kind} booster containing {drawn_card_ids}")
+
+        if with_image is None:
+            with_image = user.settings.booster_opening_with_image
+        if with_image:
+            formatted_cards = [self._format_card_for_embed(card, user_language_id,
+                                                           user.count_quantity_of_card(card.id) == 0)
+                               for card in drawn_cards]
+
+            paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
+                                             title=f"---------- {self._t(user_language_id, 'set_booster_cmd.title')} ----------",
+                                             discord_user=interaction.user)
+            await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
+        else:
+            embed = Embed(
+                title=f"---------- {self._t(user_language_id, 'set_booster_cmd.title')} ----------",
+                color=GREEN)
+            embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+
+            for card in drawn_cards:
+                self._display_full_booster_in_embed(card, embed, user.count_quantity_of_card(card.id) == 0)
+
+            await interaction.response.send_message(embed=embed)
+
+        for quest in accomplished_quests:
+            await interaction.followup.send(self._t(user_language_id, 'common.quest_accomplished').format(
+                quest_name=self.quest_service.compute_quest_description(quest, user_language_id)))
 
     @app_commands.command(name=_T("drop_rates_cmd-name"),
                           description=_T("drop_rates_cmd-desc"))

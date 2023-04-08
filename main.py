@@ -175,5 +175,6 @@ if __name__ == "__main__":
     PaginatedEmbed.setup_class(t)
     SearchCardsEmbed.setup_class(rarity_service)
     AdminCog.setup_class(set_service)
+    BoosterCog.setup_class(set_service)
 
     asyncio.run(main())

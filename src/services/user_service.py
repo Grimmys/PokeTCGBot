@@ -116,6 +116,8 @@ class UserService:
             return self._user_repository.change_basic_boosters_quantity(user_id, -1)
         elif kind == "Promo":
             return self._user_repository.change_promo_boosters_quantity(user_id, -1)
+        else:
+            return self._user_repository.change_set_boosters_quantity(user_id, kind, -1)
 
     def consume_grading(self, user_id: int) -> bool:
         return self._user_repository.change_gradings_quantity(user_id, -1)

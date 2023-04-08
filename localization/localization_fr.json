@@ -141,13 +141,19 @@
         "name": "booster",
         "desc": "Ouvre un booster de base",
         "title": "Booster",
-        "no_boosters_in_stock": "Vous n'avez aucun booster en stock."
+        "no_boosters_in_stock": "Vous n'avez aucun booster en stock"
     },
     "promo_booster_cmd": {
         "name": "booster_promo",
         "desc": "Ouvre un booster Promo",
         "title": "Booster Promo",
-        "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock."
+        "no_boosters_in_stock": "Vous n'avez aucun booster promo en stock"
+    },
+    "set_booster_cmd": {
+        "name": "booster_série",
+        "desc": "Ouvre un booster de série",
+        "title": "Booster Série",
+        "no_boosters_in_stock": "Vous n'avez aucun booster {set_id} en stock"
     },
     "market_booster_cmd": {
         "name": "boutique_boosters",
