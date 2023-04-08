@@ -144,18 +144,26 @@ class UserInfoCog(commands.Cog):
         await interaction.response.send_message(embed=custom_pages_embed.embed, view=custom_pages_embed.view)
 
     @app_commands.command(name=_T("cooldowns_cmd-name"), description=_T("cooldowns_cmd-desc"))
-    async def cooldowns_command(self, interaction: discord.Interaction) -> None:
+    async def cooldowns_command(self, interaction: discord.Interaction, member: discord.User = None) -> None:
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
+        discord_user = interaction.user
         user_language_id = user.settings.language_id
 
         if user.is_banned:
             await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
             return
 
+        if member is not None:
+            user = self.user_service.get_user(member)
+            discord_user = member
+
+            if user is None:
+                await interaction.response.send_message(self._t(user_language_id, 'common.user_not_found'))
+
         embed = Embed(
             title=f"---------- {self._t(user_language_id, 'cooldowns_cmd.title')} ----------",
             color=YELLOW)
-        embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+        embed.set_author(name=discord_user.display_name, icon_url=discord_user.display_avatar.url)
 
         available_message = f"{self._t(user_language_id, 'cooldowns_cmd.available')} ✅"
 
