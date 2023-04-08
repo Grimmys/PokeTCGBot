@@ -85,6 +85,15 @@ async def help_command(interaction: discord.Interaction) -> None:
     await interaction.response.send_message(embed=embed)
 
 
+@bot.tree.command(name=_T("tutorial_cmd-name"), description=_T("tutorial_cmd-desc"))
+async def tutorial_command(interaction: discord.Interaction) -> None:
+    user_language_id = settings_service.get_user_language_id(interaction.user)
+
+    embed = Embed(title=f"---------- {t(user_language_id, 'tutorial_cmd.title')} ----------",
+                  description=t(user_language_id, 'tutorial_cmd.description'), color=BLUE)
+    await interaction.response.send_message(embed=embed)
+
+
 @bot.tree.command(name=_T("support_cmd-name"), description=_T("support_cmd-desc"))
 async def support_command(interaction: discord.Interaction) -> None:
     user_language_id = settings_service.get_user_language_id(interaction.user)

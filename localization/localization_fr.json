@@ -117,6 +117,12 @@
         "title": "Aide",
         "description": "Liste des commandes disponibles"
     },
+    "tutorial_cmd": {
+        "name": "tutoriel",
+        "desc": "Explique comment jouer au bot",
+        "title": "Tutoriel",
+        "description": "PokéTCGBot est un bot visant à reproduire l'expérience du jeu de cartes Pokémon sur Discord"
+    },
     "support_cmd": {
         "name": "support",
         "desc": "Indications pour joindre le support en cas de besoin",

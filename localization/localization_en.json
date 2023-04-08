@@ -117,6 +117,12 @@
         "title": "Help",
         "description": "List of available commands"
     },
+    "tutorial_cmd": {
+        "name": "tutorial",
+        "desc": "Explain you how you can play this bot",
+        "title": "Tutorial",
+        "description": "PokéTCGBot is a bot focusing on providing you the experience of the Pokémon TCG in Discord"
+    },
     "support_cmd": {
         "name": "support",
         "desc": "Information about how to join support in case of any issue",
