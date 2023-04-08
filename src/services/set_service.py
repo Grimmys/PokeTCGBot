@@ -13,3 +13,7 @@ class SetService:
 
     def get_all_sets_by_id(self) -> dict[str, Set]:
         return self._all_sets_by_id
+
+    def get_set_by_id(self, set_id: str) -> Set:
+        if set_id.lower() in self._all_sets_by_id:
+            return self._all_sets_by_id[set_id.lower()]

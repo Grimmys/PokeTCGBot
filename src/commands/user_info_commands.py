@@ -18,6 +18,7 @@ from src.entities.user_entity import UserEntity
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
+from src.services.set_service import SetService
 from src.services.user_service import UserService, DEFAULT_BASIC_BOOSTER_COOLDOWN, DEFAULT_PROMO_BOOSTER_COOLDOWN
 from src.utils import discord_tools
 from src.utils.discord_tools import format_boolean_option_value
@@ -32,7 +33,7 @@ EMPTY_SLOT_IMAGE = Image.open("assets/card_background.png")
 class UserInfoCog(commands.Cog):
     def __init__(self, bot: commands.Bot, user_service: UserService,
                  localization_service: LocalizationService, quest_service: QuestService,
-                 card_service: CardService) -> None:
+                 card_service: CardService, set_service: SetService) -> None:
         self.bot = bot
         self._emojis = {}
         self._log_channel = None
@@ -40,6 +41,7 @@ class UserInfoCog(commands.Cog):
         self._t = localization_service.get_string
         self.quest_service = quest_service
         self.card_service = card_service
+        self.set_service = set_service
 
     @property
     def emojis(self):
@@ -83,7 +85,8 @@ class UserInfoCog(commands.Cog):
     def _format_user_set_boosters(self, user: UserEntity, user_language_id: int) -> Sequence[Field]:
         set_boosters = []
         for set_id, quantity in user.set_boosters_quantity.items():
-            set_boosters.append(Field(name=f"{set_id}",
+            card_set = self.set_service.get_set_by_id(set_id)
+            set_boosters.append(Field(name=f"{card_set.name}",
                                       value=f"**{self._t(user_language_id, 'common.set_id')}**: {set_id} / "
                                             f"**{self._t(user_language_id, 'common.quantity').capitalize()}**: {quantity}",
                                       inline=False))
