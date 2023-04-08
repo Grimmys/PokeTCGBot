@@ -75,6 +75,18 @@ class SearchCardsEmbed(PaginatedEmbed):
         rarity_filter_select.callback = self.filter_on_cards_rarity_action
         self.view.add_item(rarity_filter_select)
 
+    async def _filter_on_criteria_action(self, interaction: Interaction, criteria_matcher: Callable,
+                                         input_value: Optional[str] = None) -> None:
+        if interaction.user != self.original_interaction.user:
+            return
+        self.current_page = 0
+        input_value = input_value if input_value is not None else interaction.data["values"][0]
+        filter_method = lambda entry_card: criteria_matcher(entry_card, input_value)
+        self.content = list(filter(filter_method, self.content))
+        self.refresh_page()
+        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
+        await interaction.response.defer()
+
     async def filter_on_cards_owned_action(self, interaction: Interaction):
         if interaction.user != self.original_interaction.user:
             return
@@ -107,14 +119,7 @@ class SearchCardsEmbed(PaginatedEmbed):
         await interaction.response.send_modal(name_filter_popup)
 
     async def filter_on_card_name_action(self, interaction: Interaction, name_input: str):
-        if interaction.user != self.original_interaction.user:
-            return
-        self.current_page = 0
-        filter_method = lambda entry_card: self._is_card_matching_name(entry_card, name_input)
-        self.content = list(filter(filter_method, self.content))
-        self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
-        await interaction.response.defer()
+        await self._filter_on_criteria_action(interaction, self._is_card_matching_name, name_input)
 
     async def open_set_name_filter_popup(self, interaction: Interaction):
         if interaction.user != self.original_interaction.user:
@@ -127,37 +132,13 @@ class SearchCardsEmbed(PaginatedEmbed):
         await interaction.response.send_modal(set_filter_popup)
 
     async def filter_on_set_name_action(self, interaction: Interaction, name_input: str):
-        if interaction.user != self.original_interaction.user:
-            return
-        self.current_page = 0
-        filter_method = lambda entry_card: self._is_card_matching_set(entry_card, name_input)
-        self.content = list(filter(filter_method, self.content))
-        self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
-        await interaction.response.defer()
+        await self._filter_on_criteria_action(interaction, self._is_card_matching_set, name_input)
 
     async def filter_on_cards_grade_action(self, interaction: Interaction):
-        if interaction.user != self.original_interaction.user:
-            return
-        self.current_page = 0
-        grade_name = interaction.data["values"][0]
-        filter_method = lambda entry_card: self._is_card_matching_grade(entry_card, grade_name)
-        self.content = list(filter(filter_method, self.content))
-        self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
-        await interaction.response.defer()
+        await self._filter_on_criteria_action(interaction, self._is_card_matching_grade)
 
     async def filter_on_cards_rarity_action(self, interaction: Interaction):
-        if interaction.user != self.original_interaction.user:
-            return
-        self.current_page = 0
-        rarity_name = interaction.data["values"][0]
-        filter_method = lambda entry_card: self._is_card_matching_rarity(entry_card, rarity_name)
-        self.content = list(filter(filter_method, self.content))
-        self.refresh_page()
-        await self.original_interaction.edit_original_response(embed=self.embed, attachments=self.attachments)
-        await interaction.response.defer()
-
+        await self._filter_on_criteria_action(interaction, self._is_card_matching_rarity)
     @staticmethod
     def _is_card_owned(entry_card: EntryCard) -> bool:
         return entry_card["owned_quantity"] > 0
