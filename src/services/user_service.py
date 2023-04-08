@@ -106,7 +106,7 @@ class UserService:
         elif kind == "promo":
             return self._user_repository.change_all_promo_boosters_quantity(quantity)
         else:
-            return False
+            return self._user_repository.change_all_set_boosters_quantity(kind, quantity)
 
     def give_gradings(self, user_id: int, quantity: int) -> bool:
         return self._user_repository.change_gradings_quantity(user_id, quantity)

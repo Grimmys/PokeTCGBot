@@ -380,6 +380,30 @@ class PostgresUserRepository(UserRepository):
             print(f"Error while changing number of {set_id} boosters for {user_id} by {quantity}: {e}")
         return False
 
+    def change_all_set_boosters_quantity(self, set_id: str, quantity: int) -> bool:
+        try:
+            with get_cursor(self.connection_pool) as cursor:
+                user_booster_table = Table("player_booster")
+                user_table = Table("player")
+
+                get_all_player_ids_query: QueryBuilder = Query.select(user_table.id) \
+                                                              .from_(user_table)
+                cursor.execute(get_all_player_ids_query.get_sql())
+                all_ids_result = cursor.fetchall()
+
+                insert_booster_query: QueryBuilder = PostgreSQLQuery.into(user_booster_table)
+                for id_result in all_ids_result:
+                    insert_booster_query = insert_booster_query.insert(id_result["id"], set_id, quantity)
+                insert_booster_query = insert_booster_query.on_conflict(user_booster_table.player_id,
+                                                                        user_booster_table.booster_id) \
+                                                           .do_update(user_booster_table.quantity,
+                                                                      user_booster_table.quantity + quantity)
+                cursor.execute(insert_booster_query.get_sql())
+                return True
+        except Exception as e:
+            print(f"Error while changing number of {set_id} boosters for everybody by {quantity}: {e}")
+        return False
+
     def change_gradings_quantity(self, user_id: int, quantity: int) -> bool:
         try:
             with get_cursor(self.connection_pool) as cursor:

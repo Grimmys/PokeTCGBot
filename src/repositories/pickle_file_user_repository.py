@@ -127,6 +127,18 @@ class PickleFileUserRepository(UserRepository):
             return True
         return False
 
+    def change_all_set_boosters_quantity(self, set_id: str, quantity: int) -> bool:
+        users_by_id = PickleFileUserRepository._load_pickle_file()
+        for user in users_by_id.values():
+            if set_id in user.set_boosters_quantity:
+                user.set_boosters_quantity[set_id] += quantity
+                if user.set_boosters_quantity[set_id] == 0:
+                    del user.set_boosters_quantity[set_id]
+            else:
+                user.set_boosters_quantity[set_id] = quantity
+        PickleFileUserRepository._save_pickle_file(users_by_id)
+        return True
+
     def change_gradings_quantity(self, user_id: int, quantity: int) -> bool:
         users_by_id = PickleFileUserRepository._load_pickle_file()
         if user_id in users_by_id:
