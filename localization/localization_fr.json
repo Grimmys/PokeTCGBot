@@ -11,6 +11,7 @@
         "grading": "Évaluation",
         "rarity": "rareté",
         "set": "série",
+        "set_id": "ID de série",
         "quantity": "quantité",
         "card_is_owned": "possédée",
         "booster_cooldown": "Prochain booster gratuit :",
@@ -208,6 +209,7 @@
         "name": "profil",
         "desc": "Affiche le profil du joueur",
         "main_title": "Profil",
+        "boosters_title": "Réserve de boosters",
         "badges_title": "Collection de Badges",
         "badges_general_section": "Badges globaux"
     },

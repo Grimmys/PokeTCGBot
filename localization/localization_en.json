@@ -11,6 +11,7 @@
         "grading": "Grading",
         "rarity": "rarity",
         "set": "set",
+        "set_id": "Set ID",
         "quantity": "quantity",
         "card_is_owned": "owned",
         "booster_cooldown": "Next free booster:",
@@ -208,6 +209,7 @@
         "name": "profile",
         "desc": "Check user profile",
         "main_title": "Profile",
+        "boosters_title": "Set Boosters Stock",
         "badges_title": "Badges Collection",
         "badges_general_section": "General badges"
     },

@@ -80,6 +80,15 @@ class UserInfoCog(commands.Cog):
         for i in range(FAV_GALLERY_PAGES):
             UserInfoCog._generate_new_gallery(f"{gallery_base_path}_{i}.png")
 
+    def _format_user_set_boosters(self, user: UserEntity, user_language_id: int) -> Sequence[Field]:
+        set_boosters = []
+        for set_id, quantity in user.set_boosters_quantity.items():
+            set_boosters.append(Field(name=f"{set_id}",
+                                      value=f"**{self._t(user_language_id, 'common.set_id')}**: {set_id} / "
+                                            f"**{self._t(user_language_id, 'common.quantity').capitalize()}**: {quantity}",
+                                      inline=False))
+        return set_boosters
+
     def _format_user_badges(self, user: UserEntity, user_language_id: int) -> Sequence[Field]:
         badges = self.user_service.get_user_badges(user.id)
 
@@ -123,6 +132,7 @@ class UserInfoCog(commands.Cog):
                        Field(name=self._t(user_language_id, 'common.last_interaction'),
                              value=discord_tools.timestamp_to_relative_time_format(user.last_interaction_date),
                              inline=False)]),
+                 Page("📦", f"---------- {self._t(user_language_id, 'profile_cmd.boosters_title')} ----------", self._format_user_set_boosters(user, user_language_id)),
                  Page("🛡️", f"---------- {self._t(user_language_id, 'profile_cmd.badges_title')} ----------",
                       self._format_user_badges(user, user_language_id),
                       disable_check=lambda: not is_dev_mode())]
