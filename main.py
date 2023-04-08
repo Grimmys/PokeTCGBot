@@ -174,5 +174,6 @@ if __name__ == "__main__":
     t = localization_service.get_string
     PaginatedEmbed.setup_class(t)
     SearchCardsEmbed.setup_class(rarity_service)
+    AdminCog.setup_class(set_service)
 
     asyncio.run(main())

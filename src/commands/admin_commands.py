@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, List
 
 import discord
 from discord import app_commands
@@ -7,11 +7,36 @@ from discord.app_commands import locale_str as _T
 
 from config import BOT_ADMIN_USER_IDS
 from src.services.localization_service import LocalizationService
+from src.services.set_service import SetService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
 
 
+async def booster_kind_autocomplete(
+    interaction: discord.Interaction,
+    current: str,
+) -> List[app_commands.Choice[str]]:
+    return [
+               booster_kind
+               for booster_kind in AdminCog.booster_kinds_choices if current.lower() in booster_kind.name.lower()
+           ][:25]
+
+
 class AdminCog(commands.Cog):
+    booster_kinds_choices = [
+        app_commands.Choice(name="Basic", value="basic"),
+        app_commands.Choice(name="Promo", value="promo")
+    ]
+    booster_kinds = set()
+
+    @staticmethod
+    def setup_class(set_service: SetService):
+        sets = set_service.get_all_sets_by_id()
+        for card_set in sets.values():
+            AdminCog.booster_kinds_choices.append(app_commands.Choice(name=card_set.name, value=card_set.id))
+        AdminCog.booster_kinds.update({booster_kind_choice.value for booster_kind_choice in
+                                       AdminCog.booster_kinds_choices})
+
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
                  localization_service: LocalizationService, user_service: UserService) -> None:
         self.bot = bot
@@ -85,13 +110,17 @@ class AdminCog(commands.Cog):
                 self.t(user_language_id, 'common.user_or_card_not_found'))
 
     @app_commands.command(name="give_boosters", description="Give some boosters to the user")
+    @app_commands.autocomplete(kind=booster_kind_autocomplete)
     async def give_boosters_command(self, interaction: discord.Interaction, member: discord.User,
-                                    kind: Literal["Basic", "Promo"],
-                                    quantity: int) -> None:
+                                    kind: str, quantity: int) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        if kind not in AdminCog.booster_kinds:
+            await interaction.response.send_message(self.t(user_language_id, 'common.invalid_input'))
             return
 
         if self.user_service.give_boosters(member.id, kind, quantity):
@@ -103,13 +132,17 @@ class AdminCog(commands.Cog):
                 self.t(user_language_id, 'common.user_not_found'))
 
     @app_commands.command(name="give_all_boosters", description="Give some boosters to every users")
+    @app_commands.autocomplete(kind=booster_kind_autocomplete)
     async def give_all_boosters_command(self, interaction: discord.Interaction,
-                                        kind: Literal["Basic", "Promo"],
-                                        quantity: int) -> None:
+                                        kind: str, quantity: int) -> None:
         user_language_id = self.settings_service.get_user_language_id(interaction.user)
 
         if interaction.user.id not in BOT_ADMIN_USER_IDS:
             await interaction.response.send_message(self.t(user_language_id, 'common.not_allowed'))
+            return
+
+        if kind not in AdminCog.booster_kinds:
+            await interaction.response.send_message(self.t(user_language_id, 'common.invalid_input'))
             return
 
         if self.user_service.give_all_boosters(kind, quantity):

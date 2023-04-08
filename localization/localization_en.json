@@ -27,6 +27,7 @@
         "user_or_card_not_found": "User not found or they don't have the card",
         "no_results": "No results found",
         "not_allowed": "You are not allowed to use this command",
+        "invalid_input": "You provided an invalid value to one of the input arguments",
         "unknown_issue": "An unknown issue occurred during the process of the command"
     },
     "ping_cmd": {

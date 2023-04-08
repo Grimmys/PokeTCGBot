@@ -93,16 +93,20 @@ class UserService:
         return self._user_repository.change_all_money(amount)
 
     def give_boosters(self, user_id: int, kind: str, quantity: int) -> bool:
-        if kind == "Basic":
+        if kind == "basic":
             return self._user_repository.change_basic_boosters_quantity(user_id, quantity)
-        elif kind == "Promo":
+        elif kind == "promo":
             return self._user_repository.change_promo_boosters_quantity(user_id, quantity)
+        else:
+            return self._user_repository.change_set_boosters_quantity(user_id, kind, quantity)
 
     def give_all_boosters(self, kind: str, quantity: int) -> bool:
-        if kind == "Basic":
+        if kind == "basic":
             return self._user_repository.change_all_basic_boosters_quantity(quantity)
-        elif kind == "Promo":
+        elif kind == "promo":
             return self._user_repository.change_all_promo_boosters_quantity(quantity)
+        else:
+            return False
 
     def give_gradings(self, user_id: int, quantity: int) -> bool:
         return self._user_repository.change_gradings_quantity(user_id, quantity)

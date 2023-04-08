@@ -366,6 +366,20 @@ class PostgresUserRepository(UserRepository):
             print(f"Error while changing number of promo boosters of everybody by {quantity}: {e}")
         return False
 
+    def change_set_boosters_quantity(self, user_id: int, set_id: str, quantity: int) -> bool:
+        try:
+            with get_cursor(self.connection_pool) as cursor:
+                user_booster_table = Table("player_booster")
+                insert_booster_query: QueryBuilder = PostgreSQLQuery.into(user_booster_table) \
+                    .insert(user_id, set_id, quantity) \
+                    .on_conflict(user_booster_table.player_id, user_booster_table.booster_id) \
+                    .do_update(user_booster_table.quantity, user_booster_table.quantity + quantity)
+                cursor.execute(insert_booster_query.get_sql())
+                return True
+        except Exception as e:
+            print(f"Error while changing number of {set_id} boosters for {user_id} by {quantity}: {e}")
+        return False
+
     def change_gradings_quantity(self, user_id: int, quantity: int) -> bool:
         try:
             with get_cursor(self.connection_pool) as cursor:

@@ -89,6 +89,10 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def change_set_boosters_quantity(self, user_id: int, set_id: str, quantity: int) -> bool:
+        pass
+
+    @abstractmethod
     def change_daily_cooldown(self, user_id: int, updated_timestamp_for_cooldown: int) -> bool:
         pass
 
