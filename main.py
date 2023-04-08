@@ -29,6 +29,8 @@ from src.components.paginated_embed import PaginatedEmbed
 from src.components.search_cards_embed import SearchCardsEmbed
 from src.repositories.pickle_file_suggestion_repository import PickleFileSuggestionRepository
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
+from src.repositories.postgres_suggestion_repository import PostgresSuggestionRepository
+from src.repositories.postgres_user_repository import PostgresUserRepository
 from src.scripts.update_database import update_database_schema
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
@@ -156,8 +158,8 @@ if __name__ == "__main__":
                                                     host=HOSTNAME, dbname=DB_NAME, user=USERNAME,
                                                     password=PASSWORD, port=PORT_ID))
 
-    user_repository = PickleFileUserRepository()
-    suggestion_repository = PickleFileSuggestionRepository()
+    user_repository = PostgresUserRepository()
+    suggestion_repository = PostgresSuggestionRepository()
     localization_service = LocalizationService()
     suggestion_service = SuggestionService(suggestion_repository)
     card_service = CardService(localization_service)

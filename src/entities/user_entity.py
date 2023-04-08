@@ -8,10 +8,11 @@ from src.utils.card_grade import GRADES
 
 
 class UserEntity:
-    def __init__(self, user_id: int, name_tag: str = "", is_banned: bool = False, last_interaction_date: int = int(time.time()), money: int = 0,
-                 boosters_quantity: int = 0, promo_boosters_quantity: int = 0, grading_quantity: int = 0,
-                 cards_by_id: dict[str, int] = None,
-                 user_settings_entity: UserSettingsEntity = None,
+    def __init__(self, user_id: int, name_tag: str = "", is_banned: bool = False,
+                 last_interaction_date: int = int(time.time()), money: int = 0,
+                 boosters_quantity: int = 0, promo_boosters_quantity: int = 0,
+                 set_boosters_quantity: dict[str, int] = None, grading_quantity: int = 0,
+                 cards_by_id: dict[str, int] = None, user_settings_entity: UserSettingsEntity = None,
                  user_cooldowns_entity: UserCooldownsEntity = None, daily_quests: list[QuestEntity] = None,
                  next_daily_quests_refresh: int = 0, badges: list[BadgeEntity] = None):
         self.id: int = user_id
@@ -21,6 +22,7 @@ class UserEntity:
         self.money: int = money
         self.boosters_quantity: int = boosters_quantity
         self.promo_boosters_quantity: int = promo_boosters_quantity
+        self.set_boosters_quantity: dict[str, int] = set_boosters_quantity if set_boosters_quantity is not None else {}
         self.grading_quantity: int = grading_quantity
         self.cards: dict[tuple[str, str], int] = cards_by_id if cards_by_id is not None else {}
         self.settings: UserSettingsEntity = user_settings_entity if user_settings_entity is not None else UserSettingsEntity()
@@ -44,6 +46,7 @@ class UserEntity:
         self.money = state.get("money", 0)
         self.boosters_quantity = state.get("boosters_quantity", 0)
         self.promo_boosters_quantity = state.get("promo_boosters_quantity", 0)
+        self.set_boosters_quantity = state.get("set_boosters_quantity", {})
         self.grading_quantity: int = state.get("grading_quantity", 0)
         self.cards = state.get("cards", {})
         self.cards = {(card_id.lower(), grade): quantity for (card_id, grade), quantity in self.cards.items()}

@@ -38,6 +38,10 @@ class PostgresUserRepository(UserRepository):
         if table_entry["cards"] is not None:
             cards = {(card_id, grade_name): quantity for (card_id, grade_name, quantity) in table_entry["cards"]}
 
+        boosters = {}
+        if table_entry["boosters"] is not None:
+            boosters = {booster_id: quantity for (booster_id, quantity) in table_entry["boosters"]}
+
         quests = []
         if table_entry["quests"] is not None:
             quests = [QuestEntity(QuestType[kind], goal_value, QuestReward[reward_kind], reward_amount,
@@ -47,7 +51,7 @@ class PostgresUserRepository(UserRepository):
 
         return UserEntity(table_entry["id"], table_entry["name_tag"], table_entry["is_banned"],
                           table_entry["last_interaction_date"], table_entry["money"], table_entry["boosters_quantity"],
-                          table_entry["promo_boosters_quantity"], table_entry["grading_quantity"], cards,
+                          table_entry["promo_boosters_quantity"], boosters, table_entry["grading_quantity"], cards,
                           user_settings_entity, user_cooldowns_entity, quests, table_entry["next_daily_quests_refresh"])
 
     @staticmethod
@@ -61,6 +65,7 @@ class PostgresUserRepository(UserRepository):
         user_cooldowns_table = Table("player_cooldowns")
         user_settings_table = Table("player_settings")
         user_card_table = Table("player_card")
+        user_booster_table = Table("player_booster")
         quest_table = Table("player_quest")
 
         cards_query = Query.from_(user_card_table) \
@@ -70,6 +75,13 @@ class PostgresUserRepository(UserRepository):
                                                  user_card_table.quantity)).as_("cards"),
                     Count(user_card_table.card_id).distinct().as_("nb_cards")) \
             .groupby(user_card_table.player_id)
+
+        boosters_query = Query.from_(user_booster_table) \
+            .select(user_booster_table.player_id,
+                    JsonAggregate(JsonBuildArray(user_booster_table.booster_id,
+                                                 user_booster_table.quantity)).as_("boosters"),
+                    ) \
+            .groupby(user_booster_table.player_id)
 
         quests_query = Query.from_(quest_table) \
             .select(quest_table.player_id, JsonAggregate(JsonBuildArray(quest_table.id,
@@ -83,6 +95,7 @@ class PostgresUserRepository(UserRepository):
             .groupby(quest_table.player_id)
 
         return Query.with_(cards_query, "cards_by_player") \
+            .with_(boosters_query, "boosters_by_player") \
             .with_(quests_query, "quests_by_player") \
             .select(user_table.id, user_table.name_tag,
                     user_table.is_banned, user_table.last_interaction_date, user_table.money,
@@ -96,6 +109,7 @@ class PostgresUserRepository(UserRepository):
                     user_settings_table.booster_opening_with_image,
                     user_settings_table.only_use_stocked_action_with_option,
                     AliasedQuery("cards_by_player").cards,
+                    AliasedQuery("boosters_by_player").boosters,
                     AliasedQuery("quests_by_player").quests) \
             .from_(user_table) \
             .inner_join(user_cooldowns_table) \
@@ -104,6 +118,8 @@ class PostgresUserRepository(UserRepository):
             .on(user_table.id == user_settings_table.player_id) \
             .left_join(AliasedQuery("cards_by_player")) \
             .on(user_table.id == AliasedQuery("cards_by_player").player_id) \
+            .left_join(AliasedQuery("boosters_by_player")) \
+            .on(user_table.id == AliasedQuery("boosters_by_player").player_id) \
             .left_join(AliasedQuery("quests_by_player")) \
             .on(user_table.id == AliasedQuery("quests_by_player").player_id)
 
