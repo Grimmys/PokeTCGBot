@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Callable
 
 from discord import Interaction, User, TextStyle, SelectOption
 from discord.ui import Button, Modal, TextInput, Select
@@ -9,31 +9,17 @@ from src.utils.card_grade import GRADES
 from src.utils.types import EntryCard
 
 
-class _NameFilterQueryPopup(Modal, title="Filter by name"):
-    name = TextInput(label="Card name", style=TextStyle.short, required=True)
+class FilterQueryPopup(Modal, title="TBD"):
+    field = TextInput(label="TBD", style=TextStyle.short, required=True)
 
-    def __init__(self, related_embed: "SearchCardsEmbed"):
+    def __init__(self, action_on_submit: Callable, title: str, field_name: str):
         super().__init__()
-        self.related_embed = related_embed
-        self.name.label = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.card_name_input')
-        self.title = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.filter_by_name_label')
+        self.action = action_on_submit
+        self.title = title
+        self.field.label = field_name
 
-    async def on_submit(self, interaction: Interaction):
-        await self.related_embed.filter_on_card_name_action(interaction, self.name.value)
-        await interaction.response.defer()
-
-
-class _SetFilterQueryPopup(Modal, title="Filter by set"):
-    set_name = TextInput(label="Set name", style=TextStyle.short, required=True)
-
-    def __init__(self, related_embed: "SearchCardsEmbed"):
-        super().__init__()
-        self.related_embed = related_embed
-        self.set_name.label = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.set_name_input')
-        self.title = SearchCardsEmbed._t(related_embed.user_language_id, 'search_cards_embed.filter_by_set_name_label')
-
-    async def on_submit(self, interaction: Interaction):
-        await self.related_embed.filter_on_set_name_action(interaction, self.set_name.value)
+    async def on_submit(self, interaction: Interaction) -> None:
+        await self.action(interaction, self.field.value)
         await interaction.response.defer()
 
 
@@ -113,7 +99,11 @@ class SearchCardsEmbed(PaginatedEmbed):
     async def open_name_filter_popup(self, interaction: Interaction):
         if interaction.user != self.original_interaction.user:
             return
-        name_filter_popup = _NameFilterQueryPopup(self)
+        name_filter_popup = FilterQueryPopup(self.filter_on_card_name_action,
+                                             SearchCardsEmbed._t(self.user_language_id,
+                                                                 'search_cards_embed.filter_by_name_label'),
+                                             SearchCardsEmbed._t(self.user_language_id,
+                                                                 'search_cards_embed.card_name_input'))
         await interaction.response.send_modal(name_filter_popup)
 
     async def filter_on_card_name_action(self, interaction: Interaction, name_input: str):
@@ -129,7 +119,11 @@ class SearchCardsEmbed(PaginatedEmbed):
     async def open_set_name_filter_popup(self, interaction: Interaction):
         if interaction.user != self.original_interaction.user:
             return
-        set_filter_popup = _SetFilterQueryPopup(self)
+        set_filter_popup = FilterQueryPopup(self.filter_on_set_name_action,
+                                            SearchCardsEmbed._t(self.user_language_id,
+                                                                'search_cards_embed.filter_by_set_name_label'),
+                                            SearchCardsEmbed._t(self.user_language_id,
+                                                                'search_cards_embed.set_name_input'))
         await interaction.response.send_modal(set_filter_popup)
 
     async def filter_on_set_name_action(self, interaction: Interaction, name_input: str):
