@@ -36,6 +36,7 @@ from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
 from src.services.rarity_service import RarityService
+from src.services.set_service import SetService
 from src.services.settings_service import SettingsService
 from src.services.suggestion_service import SuggestionService
 from src.services.type_service import TypeService
@@ -163,6 +164,7 @@ if __name__ == "__main__":
     localization_service = LocalizationService()
     suggestion_service = SuggestionService(suggestion_repository)
     card_service = CardService(localization_service)
+    set_service = SetService()
     user_service = UserService(user_repository, card_service)
     settings_service = SettingsService(user_repository)
     rarity_service = RarityService()
