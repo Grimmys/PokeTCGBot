@@ -159,8 +159,8 @@ if __name__ == "__main__":
                                                     host=HOSTNAME, dbname=DB_NAME, user=USERNAME,
                                                     password=PASSWORD, port=PORT_ID))
 
-    user_repository = PickleFileUserRepository()
-    suggestion_repository = PickleFileSuggestionRepository()
+    user_repository = PostgresUserRepository()
+    suggestion_repository = PostgresSuggestionRepository()
     localization_service = LocalizationService()
     suggestion_service = SuggestionService(suggestion_repository)
     card_service = CardService(localization_service)

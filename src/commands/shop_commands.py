@@ -42,9 +42,9 @@ class ShoppingCog(commands.Cog):
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
         embed.add_field(name=f"{emojis['booster']} {self._t(user_language_id, 'common.basic_booster')}",
-                        value=f"{emojis['pokedollar']} {BOOSTERS_PRICE['Basic']}")
+                        value=f"{emojis['pokedollar']} {BOOSTERS_PRICE['basic']}")
         embed.add_field(name=f"{emojis['booster_promo']} {self._t(user_language_id, 'common.promo_booster')}",
-                        value=f"{emojis['pokedollar']} {BOOSTERS_PRICE['Promo']}")
+                        value=f"{emojis['pokedollar']} {BOOSTERS_PRICE['promo']}")
 
         await interaction.response.send_message(embed=embed)
 
