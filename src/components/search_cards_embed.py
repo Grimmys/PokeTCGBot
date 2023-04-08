@@ -152,4 +152,4 @@ class SearchCardsEmbed(PaginatedEmbed):
 
     @staticmethod
     def _is_card_matching_rarity(entry_card: EntryCard, rarity_name: str) -> bool:
-        return entry_card["card"].rarity == rarity_name.capitalize()
+        return entry_card["card"].rarity.lower() == rarity_name.lower()
