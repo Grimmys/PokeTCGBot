@@ -1,9 +1,13 @@
-from typing import Optional
+from typing import Optional, List, Sequence
 
 import discord
+from discord import app_commands
 from discord.app_commands import Translator, locale_str, TranslationContext
+from pokemontcgsdk import Set
 
 from src.services.localization_service import LocalizationService
+
+MAX_DISCORD_CHOICES = 25
 
 
 def timestamp_to_relative_time_format(timestamp: int) -> str:
@@ -12,6 +16,48 @@ def timestamp_to_relative_time_format(timestamp: int) -> str:
 
 def format_boolean_option_value(option_value: bool):
     return "✅" if option_value else "❌"
+
+
+set_booster_kinds_choices = []
+set_booster_kinds = set()
+
+all_booster_kinds_choices = [
+    app_commands.Choice(name="Basic", value="basic"),
+    app_commands.Choice(name="Promo", value="promo")
+]
+all_booster_kinds = set()
+
+
+def setup_booster_kinds_choices(sets: dict[str, Set]) -> None:
+    for card_set in sets.values():
+        set_booster_kinds_choices.append(app_commands.Choice(name=card_set.name, value=card_set.id))
+    set_booster_kinds.update({booster_kind_choice.value for booster_kind_choice in
+                              set_booster_kinds_choices})
+    all_booster_kinds_choices.extend(set_booster_kinds_choices)
+    all_booster_kinds.update({booster_kind_choice.value for booster_kind_choice in
+                              all_booster_kinds_choices})
+
+
+def compute_booster_choices_on_input(available_choices: Sequence[app_commands.Choice],
+                                     current_input: str) -> Sequence[app_commands.Choice]:
+    return [
+               booster_kind
+               for booster_kind in available_choices if current_input.lower() in booster_kind.name.lower()
+           ][:MAX_DISCORD_CHOICES]
+
+
+async def set_booster_kind_autocomplete(
+    interaction: discord.Interaction,
+    current: str,
+) -> Sequence[app_commands.Choice[str]]:
+    return compute_booster_choices_on_input(set_booster_kinds_choices, current)
+
+
+async def all_booster_kind_autocomplete(
+    interaction: discord.Interaction,
+    current: str,
+) -> Sequence[app_commands.Choice[str]]:
+    return compute_booster_choices_on_input(all_booster_kinds_choices, current)
 
 
 def get_language_id_from_locale(locale: discord.Locale) -> int:

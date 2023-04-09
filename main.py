@@ -41,6 +41,7 @@ from src.services.settings_service import SettingsService
 from src.services.suggestion_service import SuggestionService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
+from src.utils import discord_tools
 from src.utils.discord_tools import PTCGTranslator
 
 intents = Intents.default()
@@ -174,7 +175,6 @@ if __name__ == "__main__":
     t = localization_service.get_string
     PaginatedEmbed.setup_class(t)
     SearchCardsEmbed.setup_class(rarity_service)
-    AdminCog.setup_class(set_service)
-    BoosterCog.setup_class(set_service)
+    discord_tools.setup_booster_kinds_choices(set_service.get_all_sets_by_id())
 
     asyncio.run(main())

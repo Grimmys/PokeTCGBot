@@ -1,7 +1,7 @@
 import pickle
 import random
 import time
-from typing import Optional, List
+from typing import Optional
 
 import discord
 from discord import Embed, app_commands
@@ -16,11 +16,11 @@ from src.entities.quest_entity import QuestType
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
 from src.services.rarity_service import RarityService
-from src.services.set_service import SetService
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
 from src.utils import discord_tools
+from src.utils.discord_tools import set_booster_kind_autocomplete, set_booster_kinds
 
 TIER_0_RARITIES = {"Rare"}
 TIER_1_RARITIES = {"Rare Holo"}
@@ -38,29 +38,8 @@ TIER_DROP_RATES = [
 ]
 
 
-async def booster_kind_autocomplete(
-    interaction: discord.Interaction,
-    current: str,
-) -> List[app_commands.Choice[str]]:
-    return [
-               booster_kind
-               for booster_kind in BoosterCog.booster_kinds_choices if current.lower() in booster_kind.name.lower()
-           ][:25]
-
-
 class BoosterCog(commands.Cog):
     CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
-
-    booster_kinds_choices = []
-    booster_kinds = set()
-
-    @staticmethod
-    def setup_class(set_service: SetService):
-        sets = set_service.get_all_sets_by_id()
-        for card_set in sets.values():
-            BoosterCog.booster_kinds_choices.append(app_commands.Choice(name=card_set.name, value=card_set.id))
-        BoosterCog.booster_kinds.update({booster_kind_choice.value for booster_kind_choice in
-                                         BoosterCog.booster_kinds_choices})
 
     def __init__(self, bot: commands.Bot, settings_service: SettingsService,
                  localization_service: LocalizationService, user_service: UserService, rarity_service: RarityService,
@@ -311,7 +290,7 @@ class BoosterCog(commands.Cog):
             await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name=_T("set_booster_cmd-name"), description=_T("set_booster_cmd-desc"))
-    @app_commands.autocomplete(kind=booster_kind_autocomplete)
+    @app_commands.autocomplete(kind=set_booster_kind_autocomplete)
     async def set_booster_command(self, interaction: discord.Interaction, kind: str,
                                   with_image: Optional[bool] = None) -> None:
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
@@ -321,7 +300,7 @@ class BoosterCog(commands.Cog):
             await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
             return
 
-        if kind not in BoosterCog.booster_kinds:
+        if kind not in set_booster_kinds:
             await interaction.response.send_message(self._t(user_language_id, 'common.invalid_input'))
             return
 
