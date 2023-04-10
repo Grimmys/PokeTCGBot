@@ -39,7 +39,7 @@ def setup_booster_kinds_choices(sets: dict[str, Set]) -> None:
 
 
 def compute_booster_choices_on_input(available_choices: Sequence[app_commands.Choice],
-                                     current_input: str) -> Sequence[app_commands.Choice]:
+                                     current_input: str) -> list[app_commands.Choice]:
     return [
                booster_kind
                for booster_kind in available_choices if current_input.lower() in booster_kind.name.lower()
@@ -49,14 +49,14 @@ def compute_booster_choices_on_input(available_choices: Sequence[app_commands.Ch
 async def set_booster_kind_autocomplete(
     interaction: discord.Interaction,
     current: str,
-) -> Sequence[app_commands.Choice[str]]:
+) -> list[app_commands.Choice[str]]:
     return compute_booster_choices_on_input(set_booster_kinds_choices, current)
 
 
 async def all_booster_kind_autocomplete(
     interaction: discord.Interaction,
     current: str,
-) -> Sequence[app_commands.Choice[str]]:
+) -> list[app_commands.Choice[str]]:
     return compute_booster_choices_on_input(all_booster_kinds_choices, current)
 
 
