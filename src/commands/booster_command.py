@@ -15,27 +15,13 @@ from src.components.paginated_embed import PaginatedEmbed
 from src.entities.quest_entity import QuestType
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
-from src.services.rarity_service import RarityService
+from src.services.rarity_service import RarityService, TIER_0_RARITIES, TIER_1_RARITIES, TIER_2_RARITIES, \
+    TIER_3_RARITIES, TIER_4_RARITIES, TIER_DROP_RATES
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
 from src.utils import discord_tools
 from src.utils.discord_tools import set_booster_kind_autocomplete, set_booster_kinds
-
-TIER_0_RARITIES = {"Rare"}
-TIER_1_RARITIES = {"Rare Holo"}
-TIER_2_RARITIES = {"Rare Holo EX", "Rare Holo GX", "Rare Holo V", "Rare BREAK"}
-TIER_3_RARITIES = {"Radiant Rare", "Rare Holo LV.X", "Rare Holo VMAX", "Rare ACE", "Rare Ultra", "Amazing Rare",
-                   "Rare Prime", "Rare Prism Star", "Rare Shining", "Rare Shiny"}
-TIER_4_RARITIES = {"LEGEND", "Rare Holo Star", "Rare Rainbow", "Rare Secret", "Rare Shiny GX",
-                   "Rare Holo VSTAR"}
-TIER_DROP_RATES = [
-    40,
-    30,
-    20,
-    8,
-    2,
-]
 
 
 class BoosterCog(commands.Cog):
