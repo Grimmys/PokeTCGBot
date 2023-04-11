@@ -1,7 +1,7 @@
 import pickle
 import random
 import time
-from typing import Optional
+from typing import Optional, Sequence
 
 import discord
 from discord import Embed, app_commands
@@ -13,10 +13,10 @@ import config
 from src.colors import GREEN, RED
 from src.components.paginated_embed import PaginatedEmbed
 from src.entities.quest_entity import QuestType
+from src.entities.rarity_entity import RarityEntity
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
-from src.services.rarity_service import RarityService, TIER_0_RARITIES, TIER_1_RARITIES, TIER_2_RARITIES, \
-    TIER_3_RARITIES, TIER_4_RARITIES, TIER_DROP_RATES
+from src.services.rarity_service import RarityService, TIER_DROP_RATES
 from src.services.settings_service import SettingsService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
@@ -39,7 +39,7 @@ class BoosterCog(commands.Cog):
         self.type_service = type_service
         self.quest_service = quest_service
         self.sets: list[Set] = Set.all()
-        self.cards_by_rarity: dict[str, list[Card]] = BoosterCog._compute_all_cards()
+        self.cards_by_rarity: dict[str, list[Card]] = self._compute_all_cards()
 
     @property
     def log_channel(self):
@@ -48,27 +48,26 @@ class BoosterCog(commands.Cog):
         return self._log_channel
 
     @staticmethod
-    def _filter_cards_for_rarities(cards: list[Card], rarities: set[str]) -> list[Card]:
+    def _filter_cards_for_rarities(cards: list[Card], rarities: Sequence[RarityEntity]) -> list[Card]:
         filtered_cards = []
         for card in cards:
-            if card.rarity in rarities:
+            if card.rarity.lower() in rarities:
                 filtered_cards.append(card)
         return filtered_cards
 
-    @staticmethod
-    def _compute_all_cards() -> dict[str, list[Card]]:
+    def _compute_all_cards(self) -> dict[str, list[Card]]:
         cards: list[Card] = pickle.load(open(BoosterCog.CARDS_PICKLE_FILE_LOCATION, "rb"))
         # TODO: find out why some cards don't have any rarity and define what should be the default rarity for them
         cards_with_rarity = list(filter(lambda card: card.rarity is not None, cards))
         return {
-            "common": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"Common"}),
-            "uncommon": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"Uncommon"}),
-            "tier_0": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_0_RARITIES),
-            "tier_1": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_1_RARITIES),
-            "tier_2": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_2_RARITIES),
-            "tier_3": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_3_RARITIES),
-            "tier_4": BoosterCog._filter_cards_for_rarities(cards_with_rarity, TIER_4_RARITIES),
-            "promo": BoosterCog._filter_cards_for_rarities(cards_with_rarity, {"Promo"})
+            "common": BoosterCog._filter_cards_for_rarities(cards_with_rarity, [self.rarity_service.get_rarity("common")]),
+            "uncommon": BoosterCog._filter_cards_for_rarities(cards_with_rarity, [self.rarity_service.get_rarity("uncommon")]),
+            "tier_0": BoosterCog._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(0)),
+            "tier_1": BoosterCog._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(1)),
+            "tier_2": BoosterCog._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(2)),
+            "tier_3": BoosterCog._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(3)),
+            "tier_4": BoosterCog._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(4)),
+            "promo": BoosterCog._filter_cards_for_rarities(cards_with_rarity, [self.rarity_service.get_rarity("promo")])
         }
 
     def _get_card_type_display(self, card: Card) -> str:
@@ -109,8 +108,8 @@ class BoosterCog(commands.Cog):
         return random.choice(rare_pool)
 
     @staticmethod
-    def _formatted_tier_list(rarity_tier: set[str]) -> str:
-        return "\n* ".join(rarity_tier)
+    def _formatted_tier_list(rarities: Sequence[RarityEntity]) -> str:
+        return "\n* ".join(map(lambda rarity: rarity.display_name, rarities))
 
     def _generate_booster_cards(self, set_id: Optional[str] = None) -> list[Card]:
         drawn_cards = []
@@ -344,14 +343,14 @@ class BoosterCog(commands.Cog):
         )
 
         embed.add_field(name=f"Tier 0 - {TIER_DROP_RATES[0]}%".ljust(20, ""),
-                        value=f"* {BoosterCog._formatted_tier_list(TIER_0_RARITIES)}")
+                        value=f"* {BoosterCog._formatted_tier_list(self.rarity_service.get_rarities_by_tier(0))}")
         embed.add_field(name=f"Tier 1 - {TIER_DROP_RATES[1]}%".ljust(20, ""),
-                        value=f"* {BoosterCog._formatted_tier_list(TIER_1_RARITIES)}")
+                        value=f"* {BoosterCog._formatted_tier_list(self.rarity_service.get_rarities_by_tier(1))}")
         embed.add_field(name=f"Tier 2 - {TIER_DROP_RATES[2]}%".ljust(5, ""),
-                        value=f"* {BoosterCog._formatted_tier_list(TIER_2_RARITIES)}")
+                        value=f"* {BoosterCog._formatted_tier_list(self.rarity_service.get_rarities_by_tier(2))}")
         embed.add_field(name=f"Tier 3 - {TIER_DROP_RATES[3]}%".ljust(5, ""),
-                        value=f"* {BoosterCog._formatted_tier_list(TIER_3_RARITIES)}")
+                        value=f"* {BoosterCog._formatted_tier_list(self.rarity_service.get_rarities_by_tier(3))}")
         embed.add_field(name=f"Tier 4 - {TIER_DROP_RATES[4]}%".ljust(5, ""),
-                        value=f"* {BoosterCog._formatted_tier_list(TIER_4_RARITIES)}")
+                        value=f"* {BoosterCog._formatted_tier_list(self.rarity_service.get_rarities_by_tier(4))}")
 
         await interaction.response.send_message(embed=embed)
