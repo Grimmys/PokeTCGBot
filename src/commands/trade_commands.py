@@ -6,6 +6,7 @@ from discord.ui import View, Button
 
 from config import LOG_CHANNEL_ID
 from src.colors import GREEN
+from src.entities.user_entity import UserEntity
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.user_service import UserService
@@ -105,6 +106,19 @@ class TradingCog(commands.Cog):
             grade_part = f", {self._t(user_language_id, grade.translation_key)}"
         return f"{card_id} ({card.rarity}{grade_part})"
 
+    def _add_player_ressources_involved_to_embed(self, user: UserEntity, user_language_id: int,
+                                                 card_ids: set[tuple[str, str]], money: int, embed: Embed):
+        formatted_card_ids = [self._format_card_for_trade(card_id, grade, user_language_id)
+                              for (card_id, grade) in card_ids]
+        formatted_money = ""
+        if money > 0:
+            formatted_money = f"{money} {self.emojis['pokedollar']}"
+            if len(formatted_card_ids) > 0:
+                formatted_money = ", " + formatted_money
+        embed.add_field(name=f"{user.name_tag}:",
+                        value=", ".join(formatted_card_ids) + formatted_money,
+                        inline=False)
+
     @app_commands.command(name=_T("secured_trade_cmd-name"), description=_T("secured_trade_cmd-desc"))
     async def secured_trade_command(self, interaction: discord.Interaction, member: discord.User, own_card_ids: str,
                                     other_player_card_ids: str) -> None:
@@ -157,7 +171,7 @@ class TradingCog(commands.Cog):
             if item.isdigit():
                 other_player_money = int(item)
             else:
-                own_card_ids_split.add(self.card_service.parse_card_id(item))
+                other_player_card_ids_split.add(self.card_service.parse_card_id(item))
         if len(other_player_card_ids_split) > TRADE_CARDS_LIMIT:
             await interaction.response.send_message(self._t(
                 user_language_id, 'secured_trade_cmd.other_player_too_many_cards').format(user=other_user.name_tag,
@@ -183,17 +197,9 @@ class TradingCog(commands.Cog):
             color=GREEN)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
 
-        formatted_own_card_ids = [self._format_card_for_trade(card_id, grade, user_language_id)
-                                  for (card_id, grade) in own_card_ids_split]
-        embed.add_field(name=f"{user.name_tag}:",
-                        value=", ".join(formatted_own_card_ids) + f", {own_money} {self.emojis['pokedollar']}",
-                        inline=False)
-        formatted_other_player_card_ids = [self._format_card_for_trade(card_id, grade, user_language_id)
-                                           for (card_id, grade) in other_player_card_ids_split]
-        embed.add_field(name=f"{other_user.name_tag}:",
-                        value=", ".join(
-                            formatted_other_player_card_ids) + f", {other_player_money} {self.emojis['pokedollar']}",
-                        inline=False)
+        self._add_player_ressources_involved_to_embed(user, user_language_id, own_card_ids_split, own_money, embed)
+        self._add_player_ressources_involved_to_embed(other_user, user_language_id, other_player_card_ids_split,
+                                                      other_player_money, embed)
 
         async def validate_trade(confirm_interaction: discord.Interaction):
             if confirm_interaction.user.id != other_user.id:
