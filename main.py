@@ -110,7 +110,10 @@ async def support_command(interaction: discord.Interaction) -> None:
 
 @bot.event
 async def on_ready():
-    type_service.load_emojis({emoji.name: str(emoji) for emoji in bot.emojis})
+    emojis = {emoji.name: str(emoji) for emoji in bot.emojis}
+    type_service.load_types(emojis)
+    rarity_service.load_rarity_emojis(emojis)
+    print("Bot ready")
 
 
 def setup_logs():

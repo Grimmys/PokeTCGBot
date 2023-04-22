@@ -82,7 +82,7 @@ class BoosterCog(commands.Cog):
         type_emoji = self._get_card_type_display(card)
         is_new_label = emojis["new"] if is_new else ""
         embed.add_field(name=f"{card.name} {is_new_label}",
-                        value=f"{card.id} {type_emoji}\n `{card.rarity} {rarity_emoji}`\n ~ {card.set.name} ~")
+                        value=f"{card.id} {type_emoji}\n `{card.rarity}` {rarity_emoji}\n ~ {card.set.name} ~")
 
     def _format_card_for_embed(self, card: Card, user_language_id: int, is_new: bool):
         emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}

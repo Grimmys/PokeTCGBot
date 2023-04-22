@@ -7,7 +7,7 @@ class TypeService:
     def __init__(self):
         self._types: dict[str, TypeEntity] = {}
 
-    def load_emojis(self, emojis):
+    def load_types(self, emojis):
         self._types: dict[str, TypeEntity] = {
             "colorless": TypeEntity("colorless", emojis["colorless_type"]),
             "darkness": TypeEntity("darkness", emojis["darkness_type"]),
