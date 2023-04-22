@@ -190,10 +190,10 @@ class BoosterCog(commands.Cog):
         accomplished_quests = self.user_service.update_progress_on_quests(user.id, QuestType.BOOSTER)
         self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 
-        await self.log_channel.send(
-            f"{user.id} ({user.name_tag}) opened a basic booster containing {drawn_card_ids}")
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) opened a basic booster containing {drawn_card_ids}, with image mode: {with_image}")
         if with_image:
             formatted_cards = [self._format_card_for_embed(card, user_language_id,
                                                            user.count_quantity_of_card(card.id) == 0)
@@ -250,10 +250,10 @@ class BoosterCog(commands.Cog):
 
         self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 
-        await self.log_channel.send(
-            f"{user.id} ({user.name_tag}) opened a Promo booster containing {drawn_card_ids}")
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) opened a Promo booster containing {drawn_card_ids}, with image mode: {with_image}")
         if with_image:
             formatted_cards = [self._format_card_for_embed(card, user_language_id, card.id not in user.cards.keys())
                                for card in drawn_cards]
@@ -302,11 +302,10 @@ class BoosterCog(commands.Cog):
         accomplished_quests = self.user_service.update_progress_on_quests(user.id, QuestType.BOOSTER)
         self.user_service.add_cards_to_collection(user.id, drawn_card_ids)
 
-        await self.log_channel.send(
-            f"{user.id} ({user.name_tag}) opened a {kind} booster containing {drawn_card_ids}")
-
         if with_image is None:
             with_image = user.settings.booster_opening_with_image
+        await self.log_channel.send(
+            f"{user.id} ({user.name_tag}) opened a {kind} booster containing {drawn_card_ids}, with image mode: {with_image}")
         if with_image:
             formatted_cards = [self._format_card_for_embed(card, user_language_id,
                                                            user.count_quantity_of_card(card.id) == 0)
