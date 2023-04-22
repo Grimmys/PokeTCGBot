@@ -8,6 +8,7 @@ from pokemontcgsdk import Set
 from src.services.localization_service import LocalizationService
 
 MAX_DISCORD_CHOICES = 25
+MAX_DISCORD_SELECT_OPTIONS = 25
 
 
 def timestamp_to_relative_time_format(timestamp: int) -> str:

@@ -6,6 +6,7 @@ from discord.ui import Button, Modal, TextInput, Select
 from src.components.paginated_embed import PaginatedEmbed
 from src.services.rarity_service import RarityService
 from src.utils.card_grade import GRADES
+from src.utils.discord_tools import MAX_DISCORD_SELECT_OPTIONS
 from src.utils.types import EntryCard
 
 
@@ -71,7 +72,8 @@ class SearchCardsEmbed(PaginatedEmbed):
         rarity_filter_select = Select(
             placeholder=SearchCardsEmbed._t(user_language_id, 'search_cards_embed.filter_by_rarity_label'),
             options=[SelectOption(label=rarity.upper(),
-                                  value=rarity) for rarity in SearchCardsEmbed._rarity_service.get_all_rarity_names()])
+                                  value=rarity) for rarity in SearchCardsEmbed._rarity_service.get_all_rarity_names()]
+                    [:MAX_DISCORD_SELECT_OPTIONS])
         rarity_filter_select.callback = self.filter_on_cards_rarity_action
         self.view.add_item(rarity_filter_select)
 
