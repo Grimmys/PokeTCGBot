@@ -31,7 +31,7 @@ class RarityService:
             RarityEntity("rare ultra", "Rare Ultra", "rare_ultra", tier=3),
             RarityEntity("amazing rare", "Amazing Rare", "amazing_rare", tier=3),
             RarityEntity("rare prime", "Rare Prime", "rare_prime", tier=3),
-            RarityEntity("rare prism star", "Rare Prism Star", "💫", tier=3),
+            RarityEntity("rare prism star", "Rare Prism Star", "rare_prism_star", tier=3),
             RarityEntity("rare shining", "Rare Shining", "rare_shining", tier=3),
             RarityEntity("rare shiny", "Rare Shiny", "rare_shiny", tier=3),
             RarityEntity("ultra rare", "Double Rare Ultra", "double_rare_ultra", tier=3),
