@@ -1,0 +1,116 @@
+import pickle
+import random
+from typing import Sequence, Optional
+
+from pokemontcgsdk import Card
+
+import config
+from src.entities.rarity_entity import RarityEntity
+from src.entities.rarity_rate_entity import RarityRateEntity
+from src.services.rarity_service import RarityService, TIER_DROP_RATES
+
+
+class BoosterService:
+    CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
+
+    def __init__(self, rarity_service: RarityService):
+        self.rarity_service = rarity_service
+        self.boosters_composition = {
+            "sv1": [[RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("common")],
+                    [RarityRateEntity("common")], [RarityRateEntity("uncommon")], [RarityRateEntity("uncommon")],
+                    [RarityRateEntity("uncommon")],
+                    [RarityRateEntity("ultra rare", 0.05), RarityRateEntity("double rare", 0.15),
+                     RarityRateEntity("rare", 0.8)],
+                    [RarityRateEntity("hyper rare", 0.01), RarityRateEntity("special illustration rare", 0.03),
+                     RarityRateEntity("illustration rare", 0.08), RarityRateEntity("rare", 0.88)]]
+        }
+        self.cards_by_rarity: dict[str, list[Card]] = self._compute_all_cards()
+
+    @staticmethod
+    def _filter_cards_for_rarities(cards: list[Card], rarities: Sequence[RarityEntity]) -> list[Card]:
+        filtered_cards = []
+        for card in cards:
+            if card.rarity.lower() in rarities:
+                filtered_cards.append(card)
+        return filtered_cards
+
+    def _compute_all_cards(self) -> dict[str, list[Card]]:
+        cards: list[Card] = pickle.load(open(BoosterService.CARDS_PICKLE_FILE_LOCATION, "rb"))
+        # TODO: find out why some cards don't have any rarity and define what should be the default rarity for them
+        cards_with_rarity = list(filter(lambda card: card.rarity is not None, cards))
+        cards_by_rarity = {
+            "tier_0": self._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(0)),
+            "tier_1": self._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(1)),
+            "tier_2": self._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(2)),
+            "tier_3": self._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(3)),
+            "tier_4": self._filter_cards_for_rarities(cards_with_rarity, self.rarity_service.get_rarities_by_tier(4)),
+        }
+        for rarity in self.rarity_service.get_all_rarities():
+            cards_by_rarity[rarity.name] = self._filter_cards_for_rarities(cards_with_rarity, [rarity])
+        return cards_by_rarity
+
+    def _draw_rare_card(self, set_id: Optional[str] = None) -> Card:
+        rare_pool = []
+        while len(rare_pool) == 0:
+            card_tier = random.choices(["tier_0", "tier_1", "tier_2", "tier_3", "tier_4"], weights=TIER_DROP_RATES)[0]
+            rare_pool = self.cards_by_rarity[card_tier]
+            if set_id is not None:
+                rare_pool = list(filter(lambda card: card.set.id == set_id, rare_pool))
+        return random.choice(rare_pool)
+
+    def _generate_cards_for_set(self, slots: Sequence[Sequence[RarityRateEntity]]):
+        drawn_cards = []
+
+        for slot in slots:
+            card_rarity = random.choices(list(map(lambda rarity_rate: rarity_rate.name, slot)),
+                                         weights=list(map(lambda rarity_rate: rarity_rate.rate, slot)))[0]
+            rare_pool = self.cards_by_rarity[card_rarity]
+            card = random.choice(rare_pool)
+            drawn_cards.append(card)
+
+        return drawn_cards
+
+    def generate_booster_cards(self, set_id: Optional[str] = None) -> list[Card]:
+        drawn_cards = []
+
+        common_pool = self.cards_by_rarity["common"]
+        uncommon_pool = self.cards_by_rarity["uncommon"]
+
+        if set_id is not None:
+            if set_id in self.boosters_composition:
+                # Follow the specific composition of the set
+                return self._generate_cards_for_set(self.boosters_composition[set_id])
+
+            common_pool = list(filter(lambda card: card.set.id == set_id, common_pool))
+            uncommon_pool = list(filter(lambda card: card.set.id == set_id, uncommon_pool))
+
+        # Draw the 5 common cards
+        for _ in range(5):
+            card = random.choice(common_pool)
+            drawn_cards.append(card)
+
+        # Draw the 3 uncommon cards
+        uncommon_upgrade_triggered = False
+        for _ in range(3):
+            if not uncommon_upgrade_triggered and random.random() < config.UNCOMMON_UPGRADE_RATE:
+                uncommon_upgrade_triggered = True
+                card = self._draw_rare_card(set_id)
+            else:
+                card = random.choice(uncommon_pool)
+            drawn_cards.append(card)
+
+        # Draw the rare or higher card
+        card = self._draw_rare_card(set_id)
+        drawn_cards.append(card)
+
+        return drawn_cards
+
+    def generate_promo_booster_cards(self) -> list[Card]:
+        drawn_cards = []
+
+        # Draw the 3 Promo cards
+        for _ in range(3):
+            card = random.choice(self.cards_by_rarity["promo"])
+            drawn_cards.append(card)
+
+        return drawn_cards

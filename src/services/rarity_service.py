@@ -63,6 +63,9 @@ class RarityService:
                 return rarity
         return None
 
+    def get_all_rarities(self) -> Sequence[RarityEntity]:
+        return self._rarities
+
     def get_all_rarity_names(self) -> Sequence[str]:
         return list(map(lambda rarity: rarity.name, self._rarities))
 

@@ -2,7 +2,8 @@ from typing import Optional
 
 
 class RarityEntity:
-    def __init__(self, rarity_name: str, display_name: str, emoji: str, abbreviation: str = "", tier: Optional[int] = None):
+    def __init__(self, rarity_name: str, display_name: str, emoji: str, abbreviation: str = "",
+                 tier: Optional[int] = None):
         self.name: str = rarity_name
         self.display_name: str = display_name
         self.emoji: str = emoji

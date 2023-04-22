@@ -29,9 +29,8 @@ from src.components.paginated_embed import PaginatedEmbed
 from src.components.search_cards_embed import SearchCardsEmbed
 from src.repositories.pickle_file_suggestion_repository import PickleFileSuggestionRepository
 from src.repositories.pickle_file_user_repository import PickleFileUserRepository
-from src.repositories.postgres_suggestion_repository import PostgresSuggestionRepository
-from src.repositories.postgres_user_repository import PostgresUserRepository
 from src.scripts.update_database import update_database_schema
+from src.services.booster_service import BoosterService
 from src.services.card_service import CardService
 from src.services.localization_service import LocalizationService
 from src.services.quest_service import QuestService
@@ -132,7 +131,7 @@ async def setup_cogs():
     await bot.add_cog(DailyCog(bot, localization_service, user_service, quest_service))
     await bot.add_cog(
         BoosterCog(bot, settings_service, localization_service, user_service,
-                   rarity_service, type_service, quest_service))
+                   rarity_service, type_service, quest_service, booster_service))
     await bot.add_cog(ShoppingCog(bot, user_service, localization_service))
     await bot.add_cog(TradingCog(bot, user_service, card_service, localization_service))
     await bot.add_cog(UserInfoCog(bot, user_service, localization_service, quest_service, card_service, set_service))
@@ -174,6 +173,7 @@ if __name__ == "__main__":
     rarity_service = RarityService()
     type_service = TypeService()
     quest_service = QuestService(localization_service)
+    booster_service = BoosterService(rarity_service)
 
     t = localization_service.get_string
     PaginatedEmbed.setup_class(t)
