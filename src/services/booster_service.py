@@ -22,7 +22,16 @@ class BoosterService:
                     [RarityRateEntity("ultra rare", 0.05), RarityRateEntity("double rare", 0.15),
                      RarityRateEntity("rare", 0.8)],
                     [RarityRateEntity("hyper rare", 0.01), RarityRateEntity("special illustration rare", 0.03),
-                     RarityRateEntity("illustration rare", 0.08), RarityRateEntity("rare", 0.88)]]
+                     RarityRateEntity("illustration rare", 0.08), RarityRateEntity("rare", 0.88)]],
+            "swsh12pt5": [[RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("common")],
+                          [RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("uncommon")],
+                          [RarityRateEntity("uncommon")], [RarityRateEntity("uncommon")],
+                          [RarityRateEntity("rare secret", 0.01), RarityRateEntity("rare ultra", 0.04),
+                           RarityRateEntity("rare holo vmax", 0.025), RarityRateEntity("rare holo vstar", 0.035),
+                           RarityRateEntity("rare holo v", 0.1), RarityRateEntity("rare holo", 0.15), RarityRateEntity("rare", 0.64)],
+                          [RarityRateEntity("trainer gallery rare secret", 0.008), RarityRateEntity("trainer gallery rare ultra", 0.03),
+                           RarityRateEntity("trainer gallery rare holo v", 0.07), RarityRateEntity("trainer gallery rare holo", 0.2),
+                           RarityRateEntity("radiant rare", 0.04), RarityRateEntity("rare", 0.652)]]
         }
         self.cards_by_rarity: dict[str, list[Card]] = self._compute_all_cards()
 
@@ -58,14 +67,15 @@ class BoosterService:
                 rare_pool = list(filter(lambda card: card.set.id == set_id, rare_pool))
         return random.choice(rare_pool)
 
-    def _generate_cards_for_set(self, slots: Sequence[Sequence[RarityRateEntity]]):
+    def _generate_cards_for_set(self, subset_ids: Sequence[str], slots: Sequence[Sequence[RarityRateEntity]]):
         drawn_cards = []
 
         for slot in slots:
             card_rarity = random.choices(list(map(lambda rarity_rate: rarity_rate.name, slot)),
                                          weights=list(map(lambda rarity_rate: rarity_rate.rate, slot)))[0]
-            rare_pool = self.cards_by_rarity[card_rarity]
-            card = random.choice(rare_pool)
+            pool = self.cards_by_rarity[card_rarity]
+            pool = list(filter(lambda card: card.set.id in subset_ids, pool))
+            card = random.choice(pool)
             drawn_cards.append(card)
 
         return drawn_cards
@@ -79,7 +89,10 @@ class BoosterService:
         if set_id is not None:
             if set_id in self.boosters_composition:
                 # Follow the specific composition of the set
-                return self._generate_cards_for_set(self.boosters_composition[set_id])
+                subset_ids = [set_id]
+                if set_id == "swsh12pt5":
+                    subset_ids.append("swsh12pt5gg")
+                return self._generate_cards_for_set(subset_ids, self.boosters_composition[set_id])
 
             common_pool = list(filter(lambda card: card.set.id == set_id, common_pool))
             uncommon_pool = list(filter(lambda card: card.set.id == set_id, uncommon_pool))
