@@ -28,10 +28,25 @@ class BoosterService:
                           [RarityRateEntity("uncommon")], [RarityRateEntity("uncommon")],
                           [RarityRateEntity("rare secret", 0.01), RarityRateEntity("rare ultra", 0.04),
                            RarityRateEntity("rare holo vmax", 0.025), RarityRateEntity("rare holo vstar", 0.035),
-                           RarityRateEntity("rare holo v", 0.1), RarityRateEntity("rare holo", 0.15), RarityRateEntity("rare", 0.64)],
-                          [RarityRateEntity("trainer gallery rare secret", 0.008), RarityRateEntity("trainer gallery rare ultra", 0.03),
-                           RarityRateEntity("trainer gallery rare holo v", 0.07), RarityRateEntity("trainer gallery rare holo", 0.2),
-                           RarityRateEntity("radiant rare", 0.04), RarityRateEntity("rare", 0.652)]]
+                           RarityRateEntity("rare holo v", 0.1), RarityRateEntity("rare holo", 0.15),
+                           RarityRateEntity("rare", 0.64)],
+                          [RarityRateEntity("trainer gallery rare secret", 0.008, subset_name="swsh12pt5gg"),
+                           RarityRateEntity("trainer gallery rare ultra", 0.03, subset_name="swsh12pt5gg"),
+                           RarityRateEntity("trainer gallery rare holo v", 0.07, subset_name="swsh12pt5gg"),
+                           RarityRateEntity("trainer gallery rare holo", 0.2, subset_name="swsh12pt5gg"),
+                           RarityRateEntity("radiant rare", 0.04), RarityRateEntity("rare", 0.652)]],
+            "swsh10": [[RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("common")],
+                       [RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("uncommon")],
+                       [RarityRateEntity("uncommon")], [RarityRateEntity("uncommon")],
+                       [RarityRateEntity("rare secret", 0.008), RarityRateEntity("rare rainbow", 0.01),
+                        RarityRateEntity("rare holo vmax", 0.005), RarityRateEntity("rare holo vstar", 0.025),
+                        RarityRateEntity("rare holo v", 0.125), RarityRateEntity("rare ultra", 0.03),
+                        RarityRateEntity("rare holo", 0.4), RarityRateEntity("rare", 0.397)],
+                       [RarityRateEntity("rare secret", 0.007, subset_name="swsh10tg"),
+                        RarityRateEntity("rare ultra", 0.01, subset_name="swsh10tg"),
+                        RarityRateEntity("rare holo v", 0.02, subset_name="swsh10tg"),
+                        RarityRateEntity("rare holo", 0.08, subset_name="swsh10tg"),
+                        RarityRateEntity("radiant rare", 0.05), RarityRateEntity("rare", 0.833)]]
         }
         self.cards_by_rarity: dict[str, list[Card]] = self._compute_all_cards()
 
@@ -67,14 +82,14 @@ class BoosterService:
                 rare_pool = list(filter(lambda card: card.set.id == set_id, rare_pool))
         return random.choice(rare_pool)
 
-    def _generate_cards_for_set(self, subset_ids: Sequence[str], slots: Sequence[Sequence[RarityRateEntity]]):
+    def _generate_cards_for_set(self, set_id: str, slots: Sequence[Sequence[RarityRateEntity]]):
         drawn_cards = []
 
         for slot in slots:
-            card_rarity = random.choices(list(map(lambda rarity_rate: rarity_rate.name, slot)),
-                                         weights=list(map(lambda rarity_rate: rarity_rate.rate, slot)))[0]
-            pool = self.cards_by_rarity[card_rarity]
-            pool = list(filter(lambda card: card.set.id in subset_ids, pool))
+            card_rarity = random.choices(slot, weights=list(map(lambda rarity_rate: rarity_rate.rate, slot)))[0]
+            pool = self.cards_by_rarity[card_rarity.name]
+            subset_id = card_rarity.subset if card_rarity.subset is not None else set_id
+            pool = list(filter(lambda card: card.set.id == subset_id, pool))
             card = random.choice(pool)
             drawn_cards.append(card)
 
@@ -89,10 +104,7 @@ class BoosterService:
         if set_id is not None:
             if set_id in self.boosters_composition:
                 # Follow the specific composition of the set
-                subset_ids = [set_id]
-                if set_id == "swsh12pt5":
-                    subset_ids.append("swsh12pt5gg")
-                return self._generate_cards_for_set(subset_ids, self.boosters_composition[set_id])
+                return self._generate_cards_for_set(set_id, self.boosters_composition[set_id])
 
             common_pool = list(filter(lambda card: card.set.id == set_id, common_pool))
             uncommon_pool = list(filter(lambda card: card.set.id == set_id, uncommon_pool))

@@ -4,7 +4,7 @@ from src.services.booster_service import BoosterService
 from src.services.rarity_service import RarityService
 
 NUMBER_OF_OPENINGS = 1000
-SET_ID = "swsh12pt5"
+SET_ID = "swsh10"
 
 rarity_service = RarityService()
 BoosterService.CARDS_PICKLE_FILE_LOCATION = "../../data/cards.p"
