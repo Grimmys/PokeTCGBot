@@ -173,11 +173,11 @@ if __name__ == "__main__":
     rarity_service = RarityService()
     type_service = TypeService()
     quest_service = QuestService(localization_service)
-    booster_service = BoosterService(rarity_service)
+    booster_service = BoosterService(rarity_service, set_service)
 
     t = localization_service.get_string
     PaginatedEmbed.setup_class(t)
     SearchCardsEmbed.setup_class(rarity_service)
-    discord_tools.setup_booster_kinds_choices(set_service.get_all_sets_by_id())
+    discord_tools.setup_booster_kinds_choices(booster_service.set_booster_kinds)
 
     asyncio.run(main())

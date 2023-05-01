@@ -8,12 +8,13 @@ import config
 from src.entities.rarity_entity import RarityEntity
 from src.entities.rarity_rate_entity import RarityRateEntity
 from src.services.rarity_service import RarityService, TIER_DROP_RATES
+from src.services.set_service import SetService
 
 
 class BoosterService:
     CARDS_PICKLE_FILE_LOCATION = "data/cards.p"
 
-    def __init__(self, rarity_service: RarityService):
+    def __init__(self, rarity_service: RarityService, set_service: SetService):
         self.rarity_service = rarity_service
         self.boosters_composition = {
             # Scarlet & Violet
@@ -64,6 +65,7 @@ class BoosterService:
                         RarityRateEntity("rare holo", 0.08, subset_name="swsh10tg"),
                         RarityRateEntity("radiant rare", 0.05), RarityRateEntity("rare", 0.833)]]
         }
+        self.set_booster_kinds = {set_id: set_service.get_set_by_id(set_id) for set_id in self.boosters_composition.keys()}
         self.cards_by_rarity: dict[str, list[Card]] = self._compute_all_cards()
 
     @staticmethod
