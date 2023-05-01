@@ -16,6 +16,7 @@ class BoosterService:
     def __init__(self, rarity_service: RarityService):
         self.rarity_service = rarity_service
         self.boosters_composition = {
+            # Scarlet & Violet
             "sv1": [[RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("common")],
                     [RarityRateEntity("common")], [RarityRateEntity("uncommon")], [RarityRateEntity("uncommon")],
                     [RarityRateEntity("uncommon")],
@@ -23,6 +24,7 @@ class BoosterService:
                      RarityRateEntity("rare", 0.8)],
                     [RarityRateEntity("hyper rare", 0.01), RarityRateEntity("special illustration rare", 0.03),
                      RarityRateEntity("illustration rare", 0.08), RarityRateEntity("rare", 0.88)]],
+            # Crown Zenith
             "swsh12pt5": [[RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("common")],
                           [RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("uncommon")],
                           [RarityRateEntity("uncommon")], [RarityRateEntity("uncommon")],
@@ -35,12 +37,26 @@ class BoosterService:
                            RarityRateEntity("trainer gallery rare holo v", 0.07, subset_name="swsh12pt5gg"),
                            RarityRateEntity("trainer gallery rare holo", 0.2, subset_name="swsh12pt5gg"),
                            RarityRateEntity("radiant rare", 0.04), RarityRateEntity("rare", 0.652)]],
+            # Silver Tempest
+            "swsh12": [[RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("common")],
+                       [RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("uncommon")],
+                       [RarityRateEntity("uncommon")], [RarityRateEntity("uncommon")],
+                       [RarityRateEntity("rare ultra", 0.04), RarityRateEntity("rare secret", 0.01),
+                        RarityRateEntity("rare rainbow", 0.01), RarityRateEntity("rare holo vmax", 0.007),
+                        RarityRateEntity("rare holo vstar", 0.03), RarityRateEntity("rare holo v", 0.12),
+                        RarityRateEntity("rare holo", 0.4), RarityRateEntity("rare", 0.383)],
+                       [RarityRateEntity("trainer gallery rare secret", 0.008, subset_name="swsh12tg"),
+                        RarityRateEntity("trainer gallery rare ultra", 0.013, subset_name="swsh12tg"),
+                        RarityRateEntity("trainer gallery rare holo v", 0.02, subset_name="swsh12tg"),
+                        RarityRateEntity("trainer gallery rare holo", 0.08, subset_name="swsh12tg"),
+                        RarityRateEntity("radiant rare", 0.05), RarityRateEntity("rare", 0.829)]],
+            # Astral Radiance
             "swsh10": [[RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("common")],
                        [RarityRateEntity("common")], [RarityRateEntity("common")], [RarityRateEntity("uncommon")],
                        [RarityRateEntity("uncommon")], [RarityRateEntity("uncommon")],
-                       [RarityRateEntity("rare secret", 0.008), RarityRateEntity("rare rainbow", 0.01),
-                        RarityRateEntity("rare holo vmax", 0.005), RarityRateEntity("rare holo vstar", 0.025),
-                        RarityRateEntity("rare holo v", 0.125), RarityRateEntity("rare ultra", 0.03),
+                       [RarityRateEntity("rare ultra", 0.03), RarityRateEntity("rare secret", 0.008),
+                        RarityRateEntity("rare rainbow", 0.01), RarityRateEntity("rare holo vmax", 0.005),
+                        RarityRateEntity("rare holo vstar", 0.025), RarityRateEntity("rare holo v", 0.125),
                         RarityRateEntity("rare holo", 0.4), RarityRateEntity("rare", 0.397)],
                        [RarityRateEntity("rare secret", 0.007, subset_name="swsh10tg"),
                         RarityRateEntity("rare ultra", 0.01, subset_name="swsh10tg"),
