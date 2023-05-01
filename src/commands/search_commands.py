@@ -15,6 +15,7 @@ from src.services.localization_service import LocalizationService
 from src.services.settings_service import SettingsService
 from src.services.user_service import UserService
 from src.utils.card_grade import CardGrade, CardGradeEnum, card_grade_from, OBTAINABLE_GRADES
+from src.utils.discord_tools import format_boolean_option_value
 from src.utils.types import EntryCard
 
 SEARCH_PAGE_SIZE = 10
@@ -32,10 +33,6 @@ class SearchCog(commands.Cog):
         self.user_service = user_service
         self.card_service = card_service
         self.cards_by_id = self.card_service.get_all_cards_by_id()
-
-    @staticmethod
-    def _format_boolean_option_value(option_value: bool):
-        return "✅" if option_value else "❌"
 
     @property
     def emojis(self):
@@ -58,8 +55,8 @@ class SearchCog(commands.Cog):
         formatted_quantity = f"**{self._t(user_language_id, 'common.quantity').capitalize()}**: {quantity}"
 
         owned_quantity = entry_card["owned_quantity"]
-        owned_value = f"{SearchCog._format_boolean_option_value(True)} ({owned_quantity})" if owned_quantity > 0 else SearchCog._format_boolean_option_value(
-            False)
+        owned_value = f"{format_boolean_option_value(True)} ({owned_quantity})/" if owned_quantity > 0 else \
+            format_boolean_option_value(False)
         formatted_own = f"**{self._t(user_language_id, 'common.card_is_owned').capitalize()}**: {owned_value}"
 
         spliter_chain = "\n" if with_image else " / "
