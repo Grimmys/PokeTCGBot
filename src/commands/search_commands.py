@@ -3,9 +3,9 @@ from typing import Literal, Optional
 
 import discord
 from discord import app_commands, Embed, File
-from discord.ext import commands
 from discord.app_commands import locale_str as _T
-from pokemontcgsdk import Card, PokemonTcgException
+from discord.ext import commands
+from pokemontcgsdk import Card
 
 from config import BOT_ADMIN_USER_IDS
 from src.colors import ORANGE
@@ -26,6 +26,7 @@ class SearchCog(commands.Cog):
                  localization_service: LocalizationService, user_service: UserService,
                  card_service: CardService) -> None:
         self.bot = bot
+        self._emojis = {}
         self.settings_service = settings_service
         self._t = localization_service.get_string
         self.user_service = user_service
@@ -35,6 +36,12 @@ class SearchCog(commands.Cog):
     @staticmethod
     def _format_boolean_option_value(option_value: bool):
         return "✅" if option_value else "❌"
+
+    @property
+    def emojis(self):
+        if not self._emojis:
+            self._emojis = {emoji.name: str(emoji) for emoji in self.bot.emojis}
+        return self._emojis
 
     def _format_card_for_embed(self, card: Card, with_image: bool, user_language_id: int, quantity: int,
                                owned_flag: bool = False, viewer_quantity: Optional[int] = None,
@@ -59,7 +66,7 @@ class SearchCog(commands.Cog):
 
         entry_card["value"] = f"{formatted_id}"
         if should_display_grade:
-            formatted_grade = f"**{self._t(user_language_id, 'common.grade').capitalize()}**: {self._t(user_language_id, grade.translation_key)}"
+            formatted_grade = f"**{self._t(user_language_id, 'common.grade').capitalize()}**: {self._t(user_language_id, grade.translation_key)} {grade.emojis}"
             entry_card["value"] += f"{spliter_chain}{formatted_grade}"
         entry_card["value"] += f"{spliter_chain}{formatted_rarity}{spliter_chain}{formatted_set}"
         if not owned_flag or viewer_quantity is not None:

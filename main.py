@@ -40,7 +40,7 @@ from src.services.settings_service import SettingsService
 from src.services.suggestion_service import SuggestionService
 from src.services.type_service import TypeService
 from src.services.user_service import UserService
-from src.utils import discord_tools
+from src.utils import discord_tools, card_grade
 from src.utils.discord_tools import PTCGTranslator
 
 intents = Intents.default()
@@ -110,6 +110,7 @@ async def support_command(interaction: discord.Interaction) -> None:
 @bot.event
 async def on_ready():
     emojis = {emoji.name: str(emoji) for emoji in bot.emojis}
+    card_grade.load_grades(emojis)
     type_service.load_types(emojis)
     rarity_service.load_rarity_emojis(emojis)
     print("Bot ready")
