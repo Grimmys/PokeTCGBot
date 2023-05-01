@@ -29,12 +29,12 @@ class CardGradeEnum(Enum):
 
 CARD_GRADE_NAMES = ["UNGRADED", "POOR", "AVERAGE", "GOOD", "EXCELLENT"]
 
-OBTAINABLE_GRADES: set[CardGrade] = set()
-GRADES: set[CardGrade] = set()
+OBTAINABLE_GRADES: list[CardGrade] = []
+GRADES: list[CardGrade] = []
 
 
 def load_grades(emojis: dict[str, str]):
-    OBTAINABLE_GRADES.update([
+    OBTAINABLE_GRADES.extend([
         CardGrade(CARD_GRADE_NAMES[1], "grade.0", emojis["grade_star"],
                   20, [Image.open("assets/quality_filters/poor_card_1.png"),
                        Image.open("assets/quality_filters/poor_card_2.png")]),
@@ -47,8 +47,8 @@ def load_grades(emojis: dict[str, str]):
         CardGrade(CARD_GRADE_NAMES[4], "grade.3", emojis["grade_star"] * 4, 10)
     ])
 
-    GRADES.update(OBTAINABLE_GRADES)
-    GRADES.add(CardGrade(CARD_GRADE_NAMES[0], "grade.not_graded", "❌"))
+    GRADES.extend(OBTAINABLE_GRADES)
+    GRADES.append(CardGrade(CARD_GRADE_NAMES[0], "grade.not_graded", "❌"))
 
 
 def card_grade_from(name: str) -> CardGrade:
