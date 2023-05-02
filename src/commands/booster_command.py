@@ -90,8 +90,10 @@ class BoosterCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
+        await interaction.response.defer()
+
         if user.is_banned:
-            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            await interaction.followup.send(self._t(user_language_id, 'common.user_banned'))
             return
 
         if use_booster_stock or user.cooldowns.timestamp_for_next_basic_booster > time.time():
@@ -99,12 +101,12 @@ class BoosterCog(commands.Cog):
                                                or use_booster_stock):
                 self.user_service.consume_booster(user.id, "Basic")
             elif use_booster_stock:
-                await interaction.response.send_message(self._t(user_language_id, 'booster_cmd.no_boosters_in_stock'))
+                await interaction.followup.send(self._t(user_language_id, 'booster_cmd.no_boosters_in_stock'))
                 return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_basic_booster)
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     f"{self._t(user_language_id, 'common.booster_cooldown')} {discord_formatted_timestamp}")
                 return
         else:
@@ -128,7 +130,7 @@ class BoosterCog(commands.Cog):
             paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
                                              title=f"---------- {self._t(user_language_id, 'booster_cmd.title')} ----------",
                                              discord_user=interaction.user)
-            await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
+            await interaction.followup.send(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
                 title=f"---------- {self._t(user_language_id, 'booster_cmd.title')} ----------",
@@ -138,7 +140,7 @@ class BoosterCog(commands.Cog):
             for card in drawn_cards:
                 self._display_full_booster_in_embed(card, embed, user.count_quantity_of_card(card.id) == 0)
 
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
 
         for quest in accomplished_quests:
             await interaction.followup.send(self._t(user_language_id, 'common.quest_accomplished').format(
@@ -150,8 +152,10 @@ class BoosterCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
+        await interaction.response.defer()
+
         if user.is_banned:
-            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            await interaction.followup.send(self._t(user_language_id, 'common.user_banned'))
             return
 
         if use_booster_stock or user.cooldowns.timestamp_for_next_promo_booster > time.time():
@@ -159,13 +163,13 @@ class BoosterCog(commands.Cog):
                                                      use_booster_stock):
                 self.user_service.consume_booster(user.id, "Promo")
             elif use_booster_stock:
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     self._t(user_language_id, 'promo_booster_cmd.no_boosters_in_stock'))
                 return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_promo_booster)
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     f"{self._t(user_language_id, 'common.promo_booster_cooldown')} {discord_formatted_timestamp}")
                 return
         else:
@@ -188,7 +192,7 @@ class BoosterCog(commands.Cog):
                                              title=f"---------- {self._t(user_language_id, 'booster_cmd.title')} ----------",
                                              discord_user=interaction.user)
 
-            await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
+            await interaction.followup.send(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
                 title=f"---------- {self._t(user_language_id, 'promo_booster_cmd.title')} ----------",
@@ -198,7 +202,7 @@ class BoosterCog(commands.Cog):
             for card in drawn_cards:
                 self._display_full_booster_in_embed(card, embed, card.id not in user.cards.keys())
 
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
 
     @app_commands.command(name=_T("set_booster_cmd-name"), description=_T("set_booster_cmd-desc"))
     @app_commands.autocomplete(kind=set_booster_kind_autocomplete)
@@ -207,18 +211,20 @@ class BoosterCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
+        await interaction.response.defer()
+
         if user.is_banned:
-            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            await interaction.followup.send(self._t(user_language_id, 'common.user_banned'))
             return
 
         if kind not in set_booster_kinds:
-            await interaction.response.send_message(self._t(user_language_id, 'common.invalid_input'))
+            await interaction.followup.send(self._t(user_language_id, 'common.invalid_input'))
             return
 
         if kind in user.set_boosters_quantity and user.set_boosters_quantity[kind] > 0:
             self.user_service.consume_booster(user.id, kind)
         else:
-            await interaction.response.send_message(self._t(user_language_id,
+            await interaction.followup.send(self._t(user_language_id,
                                                             'set_booster_cmd.no_boosters_in_stock').format(set_id=kind))
             return
 
@@ -240,7 +246,7 @@ class BoosterCog(commands.Cog):
             paginated_embed = PaginatedEmbed(interaction, formatted_cards, True, user_language_id, 1,
                                              title=f"---------- {self._t(user_language_id, 'set_booster_cmd.title')} ----------",
                                              discord_user=interaction.user)
-            await interaction.response.send_message(embed=paginated_embed.embed, view=paginated_embed.view)
+            await interaction.followup.send(embed=paginated_embed.embed, view=paginated_embed.view)
         else:
             embed = Embed(
                 title=f"---------- {self._t(user_language_id, 'set_booster_cmd.title')} ----------",
@@ -250,7 +256,7 @@ class BoosterCog(commands.Cog):
             for card in drawn_cards:
                 self._display_full_booster_in_embed(card, embed, user.count_quantity_of_card(card.id) == 0)
 
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
 
         for quest in accomplished_quests:
             await interaction.followup.send(self._t(user_language_id, 'common.quest_accomplished').format(
