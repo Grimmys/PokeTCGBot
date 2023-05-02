@@ -49,31 +49,33 @@ class GradeCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
+        await interaction.response.defer()
+
         if user.is_banned:
-            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            await interaction.followup.send(self._t(user_language_id, 'common.user_banned'))
             return
 
         card_id = card_id.lower()
         if (card_id, "UNGRADED") not in user.cards:
-            await interaction.response.send_message(self._t(user_language_id, 'grade_cmd.no_available_copy'))
+            await interaction.followup.send(self._t(user_language_id, 'grade_cmd.no_available_copy'))
             return
 
         if use_grading_stock or user.cooldowns.timestamp_for_next_grading > time.time():
             if user.grading_quantity > 0 and (not user.settings.only_use_action_from_stock_with_option or use_grading_stock):
                 self.user_service.consume_grading(user.id)
             elif use_grading_stock:
-                await interaction.response.send_message(self._t(user_language_id, 'grade_cmd.no_gradings_in_stock'))
+                await interaction.followup.send(self._t(user_language_id, 'grade_cmd.no_gradings_in_stock'))
                 return
             else:
                 discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                     user.cooldowns.timestamp_for_next_grading)
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     f"{self._t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
                 return
         else:
             self.user_service.reset_grading_cooldown(user.id)
 
-        await interaction.response.send_message(self._t(user_language_id, 'common.loading'))
+        await interaction.followup.send(self._t(user_language_id, 'common.loading'))
 
         card = self.cards_by_id.get(card_id)
         grade: CardGrade = random.choices(OBTAINABLE_GRADES,
@@ -102,14 +104,16 @@ class GradeCog(commands.Cog):
         user = self.user_service.get_and_update_user(interaction.user, interaction.locale)
         user_language_id = user.settings.language_id
 
+        await interaction.response.defer()
+
         if user.is_banned:
-            await interaction.response.send_message(self._t(user_language_id, 'common.user_banned'))
+            await interaction.followup.send(self._t(user_language_id, 'common.user_banned'))
             return
 
         if user.cooldowns.timestamp_for_next_grading > time.time():
             discord_formatted_timestamp = discord_tools.timestamp_to_relative_time_format(
                 user.cooldowns.timestamp_for_next_grading)
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 f"{self._t(user_language_id, 'common.grading_cooldown')} {discord_formatted_timestamp}")
             return
 
@@ -118,7 +122,7 @@ class GradeCog(commands.Cog):
 
         await self.log_channel.send(
             f"{user.id} ({user.name_tag}) stored a grading action")
-        await interaction.response.send_message(self._t(user_language_id, 'stock_grade_cmd.response_msg'))
+        await interaction.followup.send(self._t(user_language_id, 'stock_grade_cmd.response_msg'))
 
     @app_commands.command(name=_T("grade_rates_cmd-name"),
                           description=_T("grade_rates_cmd-desc"))
