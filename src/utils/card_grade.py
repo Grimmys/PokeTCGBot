@@ -3,6 +3,7 @@ from typing import Optional, Sequence
 
 from PIL import Image
 
+ASSETS_FOLDER_LOCATION = "assets"
 
 class CardGrade:
     def __init__(self, in_application_name: str, translation_key: str, emojis: str, probability: Optional[int] = None,
@@ -36,14 +37,14 @@ GRADES: list[CardGrade] = []
 def load_grades(emojis: dict[str, str]):
     OBTAINABLE_GRADES.extend([
         CardGrade(CARD_GRADE_NAMES[1], "grade.0", emojis["grade_star"],
-                  20, [Image.open("assets/quality_filters/poor_card_1.png"),
-                       Image.open("assets/quality_filters/poor_card_2.png")]),
+                  20, [Image.open(f"{ASSETS_FOLDER_LOCATION}/quality_filters/poor_card_1.png"),
+                       Image.open(f"{ASSETS_FOLDER_LOCATION}/quality_filters/poor_card_2.png")]),
         CardGrade(CARD_GRADE_NAMES[2], "grade.1", emojis["grade_star"] * 2,
-                  50, [Image.open("assets/quality_filters/average_card_1.png"),
-                       Image.open("assets/quality_filters/average_card_2.png")]),
+                  50, [Image.open(f"{ASSETS_FOLDER_LOCATION}/quality_filters/average_card_1.png"),
+                       Image.open(f"{ASSETS_FOLDER_LOCATION}/quality_filters/average_card_2.png")]),
         CardGrade(CARD_GRADE_NAMES[3], "grade.2", emojis["grade_star"] * 3,
-                  20, [Image.open("assets/quality_filters/good_card_1.png"),
-                       Image.open("assets/quality_filters/good_card_2.png")]),
+                  20, [Image.open(f"{ASSETS_FOLDER_LOCATION}/quality_filters/good_card_1.png"),
+                       Image.open(f"{ASSETS_FOLDER_LOCATION}/quality_filters/good_card_2.png")]),
         CardGrade(CARD_GRADE_NAMES[4], "grade.3", emojis["grade_star"] * 4, 10)
     ])
 
