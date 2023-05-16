@@ -2,13 +2,15 @@ import time
 
 from src.services.booster_service import BoosterService
 from src.services.rarity_service import RarityService
+from src.services.set_service import SetService
 
 NUMBER_OF_OPENINGS = 1000
-SET_ID = "swsh10"
+SET_ID = "swsh12"
 
 rarity_service = RarityService()
+set_service = SetService()
 BoosterService.CARDS_PICKLE_FILE_LOCATION = "../../data/cards.p"
-booster_service = BoosterService(rarity_service)
+booster_service = BoosterService(rarity_service, set_service)
 
 cards = []
 simulation_start = time.time()
