@@ -1,7 +1,5 @@
 # PokeTCGOnline
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V7K578F)
-
 ## Requirements
 
 This project requires the following:
